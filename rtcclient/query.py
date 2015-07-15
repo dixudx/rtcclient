@@ -1,20 +1,45 @@
 import string
 import xmltodict
-from rtcclient.base import Workitem
+from rtcclient.workitem import Workitem
 import re
+from rtcclient.base import RTCBase
+
+try:
+    import urlparse
+    from urllib import quote as urlquote, urlencode
+except ImportError:
+    # Python3
+    import urllib.parse as urlparse
+    from urllib.parse import quote as urlquote, urlencode
 
 
-class Query(object):
-    def __init__(self, client):
-        self.client = client
-
-    def queryWorkitems(self, projectarea_id, query_str):
+class Query(RTCBase):
+    def __init__(self, baseurl, rtc_obj, query_str):
         """
-        @param projectarea_id: the project area id
-        @param query_str: vaild query string
-        @return: workitems list
+        :param baseurl: basic url for querying
+        :param rtc_obj: a ref to the rtc object
+        :param query_str: a valid query string
+        :return: Query obj
         """
-        query_str = self.formatQueryStr(query_str)
+        self.rtc_obj = rtc_obj
+        self.query_str = query_str
+        RTCBase.__init__(self, baseurl)
+
+    def __str__(self):
+        return self.query_str
+
+    def get_rtc_obj(self):
+        return self.rtc_obj
+
+    def queryWorkitems(self, projectarea_id):
+        """
+        :param projectarea_id: the project area id
+        :return: workitems list
+        """
+        query_str = self.formatQueryStr(self.query_str)
+        query_url = "/".join([self.baseurl,
+                              projectarea_id,
+                              ])
         query_url = "/".join([self.client.baseurl,
                               "oslc/contexts",
                               projectarea_id,
@@ -35,21 +60,4 @@ class Query(object):
 
         return workitems_list
 
-    def formatQueryStr(self, query_str):
-        """
-        @param query_str: vaild query string
-        @return: format string
-        """
-        query_str = query_str.strip()
-        punctuation = string.punctuation + " "
-        # remove % from punctuation
-        punctuation = punctuation.replace("%", "")
-
-        trans_table = dict((char, hex(ord(char)).replace("0x", "%").upper())
-                           for char in punctuation)
-        regex = re.compile("(%s)" % "|".join(map(re.escape,
-                                                 trans_table.keys())))
-        qs = regex.sub(lambda m: trans_table[m.string[m.start():m.end()]],
-                       query_str)
-        return qs
 
