@@ -1,6 +1,7 @@
 from rtcclient.base import RTCBase
 import xmltodict
 import requests
+from rtcclient import exception
 
 try:
     import urlparse
@@ -66,9 +67,22 @@ class RTCClient(RTCBase):
         projectareas = xmltodict.parse(resp.content)
         return projectareas
 
+    def getProjectAreas(self):
+        """
+        :return: Get all the project areas
+        """
+        pass
+
+    def getProjectArea(self, projectarea_name):
+        """
+        :param projectarea_name: the project area name
+        :return: The project area object
+        """
+        pass
+
     def getProjectAreaId(self, projectarea_name):
         """
-        @param projectarea_name: the project area name
+        :param projectarea_name: the project area name
         """
         projectareas = self.getCatalog()
         sp_catalog = projectareas.get("oslc_disc:ServiceProviderCatalog")
@@ -83,6 +97,18 @@ class RTCClient(RTCBase):
         else:
             return None
         return projectarea_id
+
+    def getWorkitem(self, workitem_id):
+        """
+        :param workitem_id: the workitem number
+        :return: the workitem object
+        """
+        try:
+            if int(workitem_id):
+                pass
+        except ValueError:
+            raise exception.BadValue("Please input valid workitem id.")
+
 
     def get_query_url(self, projectarea_name, query_str=""):
         """
