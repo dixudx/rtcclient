@@ -12,3 +12,18 @@ class Workitem(RTCBase):
 
     def get_rtc_obj(self):
         return self.rtc_obj
+
+    def getState(self):
+        """
+        Get the workitem state
+        """
+        pass
+
+    def updateWorkitem(self):
+        pass
+
+    def updateField(self, field):
+        pass
+
+    def getFields(self):
+        pass
