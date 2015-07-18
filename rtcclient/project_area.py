@@ -12,3 +12,8 @@ class ProjectArea(RTCBase):
 
     def get_rtc_obj(self):
         return self.rtc_obj
+
+    def updateProjectArea(self, new_proj_area):
+        pass
+
+
