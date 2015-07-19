@@ -114,6 +114,13 @@ class RTCClient(RTCBase):
         except ValueError:
             raise exception.BadValue("Please input valid workitem id.")
 
+    def getWorkitems(self, projectarea_name):
+        """
+        :param projectarea_name: the project area name
+        :return: all the workitems in projectarea_name
+        """
+        pass
+
     def get_query_url(self, projectarea_name, query_str=""):
         """
         :param projectarea_name: the project area name
