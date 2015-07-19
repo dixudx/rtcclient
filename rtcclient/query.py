@@ -1,8 +1,8 @@
-import string
 import xmltodict
 from rtcclient.workitem import Workitem
-import re
+import requests
 from rtcclient.base import RTCBase
+import logging
 
 try:
     import urlparse
@@ -14,9 +14,11 @@ except ImportError:
 
 
 class Query(RTCBase):
+    log = logging.getLogger("query:Query")
+
     def __init__(self, baseurl, rtc_obj, query_str):
         """
-        :param baseurl: basic url for querying
+        :param baseurl: base url for querying
         :param rtc_obj: a ref to the rtc object
         :param query_str: a valid query string
         :return: Query obj
@@ -36,28 +38,33 @@ class Query(RTCBase):
         :param projectarea_id: the project area id
         :return: workitems list
         """
-        query_str = self.formatQueryStr(self.query_str)
-        query_url = "/".join([self.baseurl,
-                              projectarea_id,
-                              ])
-        query_url = "/".join([self.client.baseurl,
+        query_str = urlquote(self.query_str)
+        query_url = "/".join([self.url,
                               "oslc/contexts",
                               projectarea_id,
                               "workitems?oslc_cm.query=%s" % query_str])
-        resp = self.client.get(query_url,
-                               verify=False,
-                               headers=self.client.headers)
-        workitems_info = xmltodict.parse(resp.content)
-        workitems = workitems_info.get("oslc_cm:Collection") \
-                                  .get("oslc_cm:ChangeRequest")
+        resp = requests.get(query_url,
+                            verify=False,
+                            headers=self.rtc_obj.headers)
+        workitems_raw_info = xmltodict.parse(resp.content)
+
+        totalCount = int(workitems_raw_info.get("oslc_cm:Collection")
+                                           .get("@oslc_cm:totalCount"))
+        if totalCount == 0:
+            self.log.warning("No workitems matched query string: %s",
+                             self)
+            return None
+
+        workitems_raw = workitems_raw_info.get("oslc_cm:Collection") \
+                                          .get("oslc_cm:ChangeRequest")
 
         workitems_list = list()
-        for workitem in workitems:
-            wk = Workitem()
-            wk.id = workitem.get("dc:identifier")
-            wk.cirats_number = workitem.get("rtc_cm:cirats_number")
-            workitems_list.append(wk)
+        for workitem_raw in workitems_raw:
+            workitem = Workitem("/".join([self.url,
+                                          "oslc/workitem",
+                                          workitem_raw.get("dc:identifier")]),
+                                self.rtc_obj)
+            workitem.initialize(workitem_raw)
+            workitems_list.append(workitem)
 
         return workitems_list
-
-
