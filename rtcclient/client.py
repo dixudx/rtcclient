@@ -2,6 +2,8 @@ from rtcclient.base import RTCBase
 import xmltodict
 import requests
 from rtcclient import exception
+from rtcclient.project_area import ProjectArea
+import logging
 
 try:
     import urlparse
@@ -13,6 +15,7 @@ except ImportError:
 
 
 class RTCClient(RTCBase):
+    log = logging.getLogger("client.RTCClient")
 
     def __init__(self, baseurl, username, password):
         self.username = username
@@ -55,48 +58,50 @@ class RTCClient(RTCBase):
         _headers['Accept'] = RTCBase.CONTENT_XML
         return _headers
 
-    def getCatalog(self):
-        """
-        get oslc catalog
-        """
-        catalog_url = "/".join([self.baseurl,
-                                "oslc-scm/catalog"])
-        resp = requests.get(catalog_url,
-                            verify=False,
-                            headers=self.headers)
-        projectareas = xmltodict.parse(resp.content)
-        return projectareas
-
     def getProjectAreas(self):
         """
         :return: Get all the project areas
         """
-        pass
+        proj_areas_url = "".join([self.baseurl,
+                                  "/process/project-areas"])
+        resp = requests.get(proj_areas_url,
+                            verify=False,
+                            headers=self.headers)
+
+        proj_areas_list = list()
+        raw_data = xmltodict.parse(resp.content)
+        proj_areas_raw = raw_data['jp06:project-areas']['jp06:project-area']
+        if not proj_areas_raw:
+            self.log.info("No projects found in this RTC:<%s>" % self.baseurl)
+            return None
+        for proj_area_raw in proj_areas_raw:
+            proj_area = ProjectArea(proj_area_raw.get("jp06:url"), self)
+            proj_area.initialize(proj_area_raw)
+            proj_areas_list.append(proj_area)
+        return proj_areas_list
 
     def getProjectArea(self, projectarea_name):
         """
         :param projectarea_name: the project area name
         :return: The project area object
         """
-        pass
+        proj_areas = self.getProjectAreas()
+        for proj_area in proj_areas:
+            if proj_area.name == projectarea_name:
+                self.log.info("Find <ProjectArea %s>" % proj_area)
+                return proj_area
+        else:
+            self.log.error("No Project Area named %s" % projectarea_name)
+            return None
 
-    def getProjectAreaId(self, projectarea_name):
+    def getProjectAreaID(self, projectarea_name):
         """
         :param projectarea_name: the project area name
         """
-        projectareas = self.getCatalog()
-        sp_catalog = projectareas.get("oslc_disc:ServiceProviderCatalog")
-        entries = sp_catalog.get("oslc_disc:entry")
-        for entry in entries:
-            sp = entry.get("oslc_disc:ServiceProvider")
-            if sp.get("dcterms:title") == projectarea_name:
-                details_url = sp.get("oslc_disc:details").get("@rdf:resource")
-                projectarea_id = details_url.split("/")[-1]
-                break
-            continue
-        else:
-            return None
-        return projectarea_id
+        proj_area = self.getProjectArea(projectarea_name)
+        if proj_area:
+            return proj_area.id
+        return None
 
     def getWorkitem(self, workitem_id):
         """
@@ -109,15 +114,14 @@ class RTCClient(RTCBase):
         except ValueError:
             raise exception.BadValue("Please input valid workitem id.")
 
-
     def get_query_url(self, projectarea_name, query_str=""):
         """
         :param projectarea_name: the project area name
         :param query_str: the query string
         :return: the url for query
         """
-        projectarea_id = self.getProjectAreaId(projectarea_name)
-        url = "/".join([self.base_url,
-                        "oslc/contexts/%s" % projectarea_id,
-                        "workitems?oslc_cm.query=%s" % urlquote(query_str)])
+        projectarea_id = self.getProjectAreaID(projectarea_name)
+        url = "".join([self.baseurl,
+                       "/oslc/contexts/%s" % projectarea_id,
+                       "/workitems?oslc_cm.query=%s" % urlquote(query_str)])
         return url
