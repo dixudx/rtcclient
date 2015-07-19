@@ -11,8 +11,8 @@ class RTCBase(object):
     OSLC_CR_XML = "application/x-oslc-cm-change-request+xml"
     OSLC_CR_JSON = "application/x-oslc-cm-change-request+json"
 
-    def __init__(self, baseurl):
-        self.baseurl = self.validate_url(baseurl)
+    def __init__(self, url):
+        self.url = self.validate_url(url)
 
     def __repr__(self):
         return "<%s %s>" % (self.__class__.__name__,
@@ -28,7 +28,7 @@ class RTCBase(object):
         """
         if not isinstance(other, self.__class__):
             return False
-        if not other.baseurl == self.baseurl:
+        if not other.url == self.url:
             return False
         return True
 
@@ -65,3 +65,8 @@ class RTCBase(object):
         while url.endswith('/'):
             url = url[:-1]
         return url
+
+    def _initialize(self, data):
+        for (key, value) in data.iteritems():
+            attr = key.split(":")[-1].replace("-", "_")
+            self.setattr(attr, value)

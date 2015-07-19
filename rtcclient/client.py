@@ -17,14 +17,14 @@ except ImportError:
 class RTCClient(RTCBase):
     log = logging.getLogger("client.RTCClient")
 
-    def __init__(self, baseurl, username, password):
+    def __init__(self, url, username, password):
         self.username = username
         self.password = password
-        RTCBase.__init__(self, baseurl)
+        RTCBase.__init__(self, url)
         self.headers = self._get_headers()
 
     def __str__(self):
-        return "RTC Server at %s" % self.baseurl
+        return "RTC Server at %s" % self.url
 
     def get_rtc_obj(self):
         return self
@@ -34,7 +34,7 @@ class RTCClient(RTCBase):
         TODO
         """
         _headers = {'Content-type': RTCBase.CONTENT_XML}
-        resp = requests.get(self.baseurl + "/authenticated/identity",
+        resp = requests.get(self.url + "/authenticated/identity",
                             verify=False,
                             headers=_headers,
                             timeout=60)
@@ -44,12 +44,12 @@ class RTCClient(RTCBase):
         credentials = urlencode({'j_username': self.username,
                                  'j_password': self.password})
 
-        resp = requests.post(self.baseurl+'/authenticated/j_security_check',
+        resp = requests.post(self.url+'/authenticated/j_security_check',
                              data=credentials,
                              verify=False,
                              headers=_headers)
 
-        resp = requests.get(self.baseurl + "/authenticated/identity",
+        resp = requests.get(self.url + "/authenticated/identity",
                             verify=False,
                             headers=_headers,
                             timeout=60)
@@ -62,7 +62,7 @@ class RTCClient(RTCBase):
         """
         :return: Get all the project areas
         """
-        proj_areas_url = "".join([self.baseurl,
+        proj_areas_url = "".join([self.url,
                                   "/process/project-areas"])
         resp = requests.get(proj_areas_url,
                             verify=False,
@@ -72,7 +72,7 @@ class RTCClient(RTCBase):
         raw_data = xmltodict.parse(resp.content)
         proj_areas_raw = raw_data['jp06:project-areas']['jp06:project-area']
         if not proj_areas_raw:
-            self.log.info("No projects found in this RTC:<%s>" % self.baseurl)
+            self.log.info("No projects found in this RTC:<%s>" % self.url)
             return None
         for proj_area_raw in proj_areas_raw:
             proj_area = ProjectArea(proj_area_raw.get("jp06:url"), self)
@@ -128,7 +128,7 @@ class RTCClient(RTCBase):
         :return: the url for query
         """
         projectarea_id = self.getProjectAreaID(projectarea_name)
-        url = "".join([self.baseurl,
+        url = "".join([self.url,
                        "/oslc/contexts/%s" % projectarea_id,
                        "/workitems?oslc_cm.query=%s" % urlquote(query_str)])
         return url

@@ -2,10 +2,10 @@ from rtcclient.base import RTCBase
 
 
 class Workitem(RTCBase):
-    def __init__(self, baseurl, rtc_obj, workitem_id=None):
+    def __init__(self, url, rtc_obj, workitem_id=None):
         self.id = workitem_id
         self.rtc_obj = rtc_obj
-        RTCBase.__init__(self, baseurl)
+        RTCBase.__init__(self, url)
 
     def __str__(self):
         return self.id
