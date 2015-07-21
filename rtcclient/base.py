@@ -68,5 +68,7 @@ class RTCBase(object):
 
     def _initialize(self, data):
         for (key, value) in data.iteritems():
+            if key.startswith("@"):
+                continue
             attr = key.split(":")[-1].replace("-", "_")
             self.setattr(attr, value)
