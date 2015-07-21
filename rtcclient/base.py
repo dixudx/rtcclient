@@ -38,9 +38,6 @@ class RTCBase(object):
         except:
             return None
 
-    def setattr(self, attr, value):
-        self.__setattr__(attr, value)
-
     @abc.abstractmethod
     def get_rtc_obj(self):
         pass
@@ -66,9 +63,27 @@ class RTCBase(object):
             url = url[:-1]
         return url
 
+
+class FieldBase(object):
+    log = logging.getLogger("base.FieldBase")
+
+    def initialize(self, data):
+        """
+        initialize the object from the response xml data
+        :param data: xml data
+        :return:
+        """
+        self.log.debug("Start initializing data from %s" % self.url)
+        self._initialize(data)
+        self.log.info("Finish the initialization for <%s %s>",
+                      self.__class__.__name__, self)
+
     def _initialize(self, data):
         for (key, value) in data.iteritems():
             if key.startswith("@"):
                 continue
             attr = key.split(":")[-1].replace("-", "_")
             self.setattr(attr, value)
+
+    def setattr(self, attr, value):
+        self.__setattr__(attr, value)

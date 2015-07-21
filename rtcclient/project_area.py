@@ -1,4 +1,4 @@
-from rtcclient.base import RTCBase
+from rtcclient.base import RTCBase, FieldBase
 import xmltodict
 import requests
 try:
@@ -10,7 +10,7 @@ except ImportError:
 import logging
 
 
-class ProjectArea(RTCBase):
+class ProjectArea(RTCBase, FieldBase):
     log = logging.getLogger("project_area: ProjectArea")
 
     def __init__(self, url, rtc_obj, name=None):
@@ -25,11 +25,6 @@ class ProjectArea(RTCBase):
         return self.rtc_obj
 
     def initialize(self, data):
-        """
-        initialize the object from the response xml data
-        :param data: xml data
-        :return:
-        """
         self.log.debug("Start initializing data from %s",
                        self.url)
         self._initialize(data)
@@ -120,7 +115,7 @@ class ProjectArea(RTCBase):
             return None
 
 
-class Role(RTCBase):
+class Role(RTCBase, FieldBase):
     log = logging.getLogger("project_area: Role")
 
     def __init__(self, url, rtc_obj):
@@ -133,13 +128,8 @@ class Role(RTCBase):
     def get_rtc_obj(self):
         return self.rtc_obj
 
-    def initialize(self, data):
-        self.log.debug("Start initializing data from %s" % self.url)
-        self._initialize(data)
-        self.log.info("Finish the initialization for <Role %s>", self)
 
-
-class Member(RTCBase):
+class Member(RTCBase, FieldBase):
     log = logging.getLogger("project_area: Member")
 
     def __init__(self, url, rtc_obj):
