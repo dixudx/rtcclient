@@ -24,7 +24,18 @@ class Workitem(RTCBase, FieldBase):
 
         pass
 
-    def updateWorkitem(self):
+    def updateWorkitem(self, new_workitem, state=None):
+        """
+        TODO
+        """
+
+        if state:
+            action = self.getAction(projectarea_id, action_name)
+            update_url = "".join([self.url,
+                                  "?_action=%s" % action.title])
+        else:
+            update_url = self.url
+
         pass
 
     def updateField(self, field):
