@@ -114,3 +114,25 @@ class State(RTCBase, FieldBase):
 
     def get_rtc_obj(self):
         return self.rtc_obj
+
+
+class ItemScheme(RTCBase):
+    log = logging.getLogger("workitem:ItemScheme")
+
+    def __init__(self, url, rtc_obj):
+        self.rtc_obj = rtc_obj
+        RTCBase.__init__(self, url)
+        FieldBase.__init__()
+
+    def __str__(self):
+        return self.title
+
+    def get_rtc_obj(self):
+        return self.rtc_obj
+
+    def getScheme(self):
+        """TODO
+
+        :return:
+        """
+        pass

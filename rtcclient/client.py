@@ -138,6 +138,53 @@ class RTCClient(RTCBase):
 
         pass
 
+    def createWorkitem(self, item_type, projectarea_name=None,
+                       projectarea_id=None, **kwargs):
+        """Create a workitem
+
+        :param item_type: the type of the workitem (e.g. task/defect/issue)
+        :param projectarea_name: the project area name
+        :param projectarea_id: the project area id
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :return: :class:`Workitem <Workitem>` object
+        :rtype: workitem.Workitem
+        """
+
+        if not self.checkType(item_type):
+            self.log.error("<%s> is not a supported workitem type in %s",
+                           item_type.capitalize(), self)
+            return None
+
+        pass
+        self.log.info("Start to create a %s",
+                      item_type)
+
+    def checkType(self, item_type):
+        """Check the validity of workitem type
+
+        :param item_type: the type of the workitem (e.g. task/defect/issue)
+        :return: True or False
+        :rtype: bool
+        """
+
+        self.log.debug("Checking the validity of workitem type: %s",
+                       item_type)
+        pass
+
+    def getScheme(self, item_type):
+        """Get the scheme for the certain workitem type, including some
+        optional and mandatory fields/parameters
+
+        TODO
+        :param item_type: the type of the workitem (e.g. task/defect/issue)
+        :return: :class:`ItemScheme <ItemScheme>` object
+        :rtype: workitem.ItemScheme
+        """
+
+        self.log.debug("Get the scheme for workitem %s",
+                       item_type)
+        pass
+
     def get_query_url(self, projectarea_name, query_str=""):
         """Format the query url with the query combination string
 
