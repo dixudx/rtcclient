@@ -1,9 +1,12 @@
 import abc
 import logging
+import requests
+requests.packages.urllib3.disable_warnings()
 
 
 class RTCBase(object):
     __metaclass__ = abc.ABCMeta
+    log = logging.getLogger("base:RTCBase")
 
     CONTENT_XML = "text/xml"
     CONTENT_JSON = "application/json"
@@ -26,6 +29,7 @@ class RTCBase(object):
         """
         identify whether the other one represents a connection to the server
         """
+
         if not isinstance(other, self.__class__):
             return False
         if not other.url == self.url:
@@ -42,22 +46,101 @@ class RTCBase(object):
     def get_rtc_obj(self):
         pass
 
-    def get_response(self, req_url, ssl_verify=False, params=None):
-        requester = self.get_rtc_obj().requester
-        response = requester.get_url(req_url, ssl_verify, params)
+    def get(self, url,
+            verify=False, headers=None,
+            timeout=60, **kwargs):
+        """Sends a GET request. Refactor from requests module
+
+        :param url: URL for the new :class:`Request` object.
+        :param verify: (optional) if ``True``, the SSL cert will be verified.
+            A CA_BUNDLE path can also be provided.
+        :param headers: (optional) Dictionary of HTTP Headers to send with
+            the :class:`Request`.
+        :type timeout: float or tuple
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :return: :class:`Response <Response>` object
+        :rtype: requests.Response
+        """
+
+        self.log.debug("Get response from %s", url)
+        response = requests.get(url, verify=verify, headers=headers,
+                                timeout=timeout, **kwargs)
         if response.status_code != 200:
-            logging.error('Failed request at <%s> with params: %s and ssl %s',
-                          req_url,
-                          params,
-                          "enabled" if ssl_verify else "disabled")
+            self.log.error('Failed GET request at <%s> with ssl %s',
+                           url,
+                           "enabled" if verify else "disabled")
+            response.raise_for_status()
+        return response
+
+    def post(self, url, data=None, json=None,
+             verify=False, headers=None, timeout=60, **kwargs):
+        """Sends a POST request. Refactor from requests module
+
+        :param url: URL for the new :class:`Request` object.
+        :param data: (optional) Dictionary, bytes, or file-like object to
+            send in the body of the :class:`Request`.
+        :param json: (optional) json data to send in the body of
+            the :class:`Request`.
+        :param verify: (optional) if ``True``, the SSL cert will be verified.
+            A CA_BUNDLE path can also be provided.
+        :param headers: (optional) Dictionary of HTTP Headers to send with
+            the :class:`Request`.
+        :type timeout: float or tuple
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :return: :class:`Response <Response>` object
+        :rtype: requests.Response
+        """
+
+        self.log.debug("Post a request to %s with data: %s and json: %s",
+                       url, data, json)
+        response = requests.post(url, data=data, json=json,
+                                 verify=verify, headers=headers,
+                                 timeout=timeout, **kwargs)
+        if response.status_code != 200 or response.status_code != 201:
+            self.log.error('Failed POST request at <%s> with ssl %s',
+                           url,
+                           "enabled" if verify else "disabled")
+            response.raise_for_status()
+        return response
+
+    def put(self, url, data=None, verify=False,
+            headers=None, timeout=60, **kwargs):
+        """Sends a PUT request. Refactor from requests module
+
+        :param url: URL for the new :class:`Request` object.
+        :param data: (optional) Dictionary, bytes, or file-like object to
+            send in the body of the :class:`Request`.
+        :param verify: (optional) if ``True``, the SSL cert will be verified.
+            A CA_BUNDLE path can also be provided.
+        :param headers: (optional) Dictionary of HTTP Headers to send with
+            the :class:`Request`.
+        :type timeout: float or tuple
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :return: :class:`Response <Response>` object
+        :rtype: requests.Response
+        """
+
+        self.log.debug("Put a request to %s with data: %s",
+                       url, data)
+        response = requests.post(url, data=data,
+                                 verify=verify, headers=headers,
+                                 timeout=timeout, **kwargs)
+        if response.status_code != 200 or response.status_code != 201:
+            self.log.error('Failed PUT request at <%s> with ssl %s',
+                           url,
+                           "enabled" if verify else "disabled")
             response.raise_for_status()
         return response
 
     @classmethod
     def validate_url(cls, url):
+        """Strip and trailing slash to validate a url
+
+        :param url: the url address
+        :return: the valid url address
+        :rtype: string
         """
-        strip and trailing slash to validate a url
-        """
+
         url = url.strip()
         while url.endswith('/'):
             url = url[:-1]
@@ -68,12 +151,13 @@ class FieldBase(object):
     log = logging.getLogger("base.FieldBase")
 
     def initialize(self, data):
+        """Initialize the object from the response xml data
+
+        :param data: xml data for initialization
         """
-        initialize the object from the response xml data
-        :param data: xml data
-        :return:
-        """
-        self.log.debug("Start initializing data from %s" % self.url)
+
+        self.log.debug("Start initializing data from %s",
+                       self.url)
         self._initialize(data)
         self.log.info("Finish the initialization for <%s %s>",
                       self.__class__.__name__, self)

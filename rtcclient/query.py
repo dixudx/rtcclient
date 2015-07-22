@@ -1,6 +1,5 @@
 import xmltodict
 from rtcclient.workitem import Workitem
-import requests
 from rtcclient.base import RTCBase
 import logging
 
@@ -17,12 +16,13 @@ class Query(RTCBase):
     log = logging.getLogger("query:Query")
 
     def __init__(self, baseurl, rtc_obj, query_str):
-        """
+        """Initialize <Query> object
+
         :param baseurl: base url for querying
         :param rtc_obj: a ref to the rtc object
         :param query_str: a valid query string
-        :return: Query obj
         """
+
         self.rtc_obj = rtc_obj
         self.query_str = query_str
         RTCBase.__init__(self, baseurl)
@@ -34,18 +34,21 @@ class Query(RTCBase):
         return self.rtc_obj
 
     def queryWorkitems(self, projectarea_id):
-        """
+        """Query workitems with the query string
+
         :param projectarea_id: the project area id
-        :return: workitems list
+        :return: a list contains all <Response> objects
+        :rtype: list
         """
+
         query_str = urlquote(self.query_str)
         query_url = "/".join([self.url,
                               "oslc/contexts",
                               projectarea_id,
                               "workitems?oslc_cm.query=%s" % query_str])
-        resp = requests.get(query_url,
-                            verify=False,
-                            headers=self.rtc_obj.headers)
+        resp = self.get(query_url,
+                        verify=False,
+                        headers=self.rtc_obj.headers)
         workitems_raw_info = xmltodict.parse(resp.content)
 
         totalCount = int(workitems_raw_info.get("oslc_cm:Collection")

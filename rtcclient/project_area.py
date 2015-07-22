@@ -1,6 +1,5 @@
 from rtcclient.base import RTCBase, FieldBase
 import xmltodict
-import requests
 try:
     from urllib import unquote as urlunquote
 except ImportError:
@@ -17,6 +16,7 @@ class ProjectArea(RTCBase, FieldBase):
         self.name = name
         self.rtc_obj = rtc_obj
         RTCBase.__init__(self, url)
+        FieldBase.__init__()
 
     def __str__(self):
         return self.name
@@ -33,15 +33,17 @@ class ProjectArea(RTCBase, FieldBase):
                       self)
 
     def getRoles(self):
+        """Get all roles in this project area
+
+        :return: a list contains all `Role <Role>` objects
+        :rtype: list
         """
-        get all roles in this project area
-        :return: Roles object list
-        """
+
         self.log.info("Get all the roles in <ProjectArea %s>",
                       self)
-        resp = requests.get(self.roles_url,
-                            verify=False,
-                            headers=self.rtc_obj.headers)
+        resp = self.get(self.roles_url,
+                        verify=False,
+                        headers=self.rtc_obj.headers)
 
         roles_list = list()
         raw_data = xmltodict.parse(resp.content)
@@ -57,32 +59,35 @@ class ProjectArea(RTCBase, FieldBase):
         return roles_list
 
     def getRole(self, label):
-        """
-        get the role object by the label name
+        """Get the role object by the label name
+
         :param label: the role label name
-        :return: Role object
+        :return: :class:`Role <Role>` object
+        :rtype: project_area.Role
         """
+
         roles = self.getRoles()
         for role in roles:
             if role.label == label:
                 self.log.info("Get <Role %s> in this <ProjectArea %s>",
                               role, self)
                 return role
-        else:
-            self.log.error("No role's label is %s in this <ProjectArea %s>",
-                           role, self)
-            return None
+        self.log.error("No role's label is %s in this <ProjectArea %s>",
+                       label, self)
+        return None
 
     def getMembers(self):
+        """Get all the members in this project area
+
+        :return: a list contains all `Member <Member>` objects
+        :rtype: list
         """
-        get all the members in this project area
-        :return: Members object list
-        """
+
         self.log.info("Get all the members in <ProjectArea %s>",
                       self)
-        resp = requests.get(self.members_url,
-                            verify=False,
-                            headers=self.rtc_obj.headers)
+        resp = self.get(self.members_url,
+                        verify=False,
+                        headers=self.rtc_obj.headers)
 
         members_list = list()
         raw_data = xmltodict.parse(resp.content)
@@ -98,21 +103,22 @@ class ProjectArea(RTCBase, FieldBase):
         return members_list
 
     def getMember(self, email):
-        """
-        get the member object by the email address
+        """Get the member object by the email address
+
         :param email: the email addr (e.g. somebody@gmail.com)
-        :return: the member object
+        :return: :class:`Member <Member>` object
+        :rtype: project_area.Member
         """
+
         members = self.getMembers()
         for member in members:
             if member.email == email:
                 self.log.info("Get <Member %s> in this <ProjectArea %s>",
                               member, self)
                 return member
-        else:
-            self.log.error("No member's email is %s in this <ProjectArea %s>",
-                           member, self)
-            return None
+        self.log.error("No member's email is %s in this <ProjectArea %s>",
+                       email, self)
+        return None
 
 
 class Role(RTCBase, FieldBase):
@@ -120,6 +126,7 @@ class Role(RTCBase, FieldBase):
 
     def __init__(self, url, rtc_obj):
         RTCBase.__init__(self, url)
+        FieldBase.__init__()
         self.rtc_obj = rtc_obj
 
     def __str__(self):
@@ -134,6 +141,7 @@ class Member(RTCBase, FieldBase):
 
     def __init__(self, url, rtc_obj):
         RTCBase.__init__(self, url)
+        FieldBase.__init__()
         self.rtc_obj = rtc_obj
 
     def __str__(self):

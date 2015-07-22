@@ -1,6 +1,5 @@
 from rtcclient.base import RTCBase, FieldBase
 import logging
-import requests
 import xmltodict
 
 
@@ -11,6 +10,7 @@ class Workitem(RTCBase, FieldBase):
         self.id = workitem_id
         self.rtc_obj = rtc_obj
         RTCBase.__init__(self, url)
+        FieldBase.__init__()
 
     def __str__(self):
         return self.id
@@ -19,9 +19,9 @@ class Workitem(RTCBase, FieldBase):
         return self.rtc_obj
 
     def getState(self):
+        """Get the workitem state
         """
-        Get the workitem state
-        """
+
         pass
 
     def updateWorkitem(self):
@@ -34,20 +34,24 @@ class Workitem(RTCBase, FieldBase):
         pass
 
     def getActions(self, projectarea_id, type):
-        """
-        todo type
+        """Get all the actions of this workitem
+
+        TODO: type
         :param projectarea_id: project area id
         :param type: workitem type
+        :return: a list contains all the `Action <Action>` objects
+        :rtype: list
         """
+
         self.log.info("Get all the actions")
         baseurl = self.rtc_obj.url
         actions_url = "/".join([baseurl,
                                 "oslc/workflows",
                                 projectarea_id,
                                 "actions/%s" % type])
-        resp = requests.get(actions_url,
-                            verify=False,
-                            headers=self.headers)
+        resp = self.get(actions_url,
+                        verify=False,
+                        headers=self.rtc_obj.headers)
         collects = xmltodict.parse(resp.content).get("oslc_cm:Collection")
         totalCount = int(collects.get("@oslc_cm:totalCount"))
         if totalCount == 0:
@@ -56,15 +60,20 @@ class Workitem(RTCBase, FieldBase):
         actions_raw = collects.get("rtc_cm:Action")
         actions_list = list()
         for action_raw in actions_raw:
-            action = Action(action_raw.get("@rdf:about"))
+            action = Action(action_raw.get("@rdf:about"), self.rtc_obj)
             action.initialize(action_raw)
             actions_list.append(action)
         return actions_list
 
     def getAction(self, projectarea_id, action_name):
+        """Get <Action> object by its name
+
+        TODO: projectarea_id, workitem type
+        :param projectarea_id, project area id
+        :return: :class:`Action <Action>` object
+        :rtype: workitem.Action
         """
-        @param projectarea_id: project area id
-        """
+
         actions = self.getActions(projectarea_id)
         self.log.info("Get an action whose name is %s",
                       action_name)
@@ -72,10 +81,9 @@ class Workitem(RTCBase, FieldBase):
             for action in actions:
                 if action.title == action_name:
                     return action
-            else:
-                self.log.warning("No action's name is %s",
-                                 action_name)
-                return None
+            self.log.warning("No action's name is %s",
+                             action_name)
+            return None
 
 
 class Action(RTCBase, FieldBase):
@@ -84,6 +92,7 @@ class Action(RTCBase, FieldBase):
     def __init__(self, url, rtc_obj):
         self.rtc_obj = rtc_obj
         RTCBase.__init__(self, url)
+        FieldBase.__init__()
 
     def __str__(self):
         return self.title
@@ -98,6 +107,7 @@ class State(RTCBase, FieldBase):
     def __init__(self, url, rtc_obj):
         self.rtc_obj = rtc_obj
         RTCBase.__init__(self, url)
+        FieldBase.__init__()
 
     def __str__(self):
         return self.title
