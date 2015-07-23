@@ -4,7 +4,7 @@ import xmltodict
 
 
 class Workitem(RTCBase, FieldBase):
-    log = logging.getLogger("workitem:Workitem")
+    log = logging.getLogger("workitem: Workitem")
 
     def __init__(self, url, rtc_obj, workitem_id=None):
         self.id = workitem_id
@@ -64,8 +64,8 @@ class Workitem(RTCBase, FieldBase):
                         verify=False,
                         headers=self.rtc_obj.headers)
         collects = xmltodict.parse(resp.content).get("oslc_cm:Collection")
-        totalCount = int(collects.get("@oslc_cm:totalCount"))
-        if totalCount == 0:
+        total_cnt = int(collects.get("@oslc_cm:totalCount", 0))
+        if total_cnt == 0:
             self.log.warning("No actions are found")
             return None
         actions_raw = collects.get("rtc_cm:Action")
@@ -98,7 +98,7 @@ class Workitem(RTCBase, FieldBase):
 
 
 class Action(RTCBase, FieldBase):
-    log = logging.getLogger("workitem:Action")
+    log = logging.getLogger("workitem: Action")
 
     def __init__(self, url, rtc_obj):
         self.rtc_obj = rtc_obj
@@ -113,7 +113,7 @@ class Action(RTCBase, FieldBase):
 
 
 class State(RTCBase, FieldBase):
-    log = logging.getLogger("workitem:State")
+    log = logging.getLogger("workitem: State")
 
     def __init__(self, url, rtc_obj):
         self.rtc_obj = rtc_obj
@@ -128,7 +128,7 @@ class State(RTCBase, FieldBase):
 
 
 class ItemScheme(RTCBase):
-    log = logging.getLogger("workitem:ItemScheme")
+    log = logging.getLogger("workitem: ItemScheme")
 
     def __init__(self, url, rtc_obj):
         self.rtc_obj = rtc_obj
