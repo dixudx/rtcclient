@@ -8,3 +8,7 @@ class RTCException(Exception):
 
 class BadValue(RTCException):
     pass
+
+
+class NotFound(RTCException):
+    pass

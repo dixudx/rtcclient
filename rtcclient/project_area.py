@@ -1,11 +1,6 @@
 from rtcclient.base import RTCBase, FieldBase
 import xmltodict
-try:
-    from urllib import unquote as urlunquote
-except ImportError:
-    # Python3
-    from urllib.parse import unquote as urlunquote
-
+from rtcclient import urlunquote
 import logging
 
 
@@ -49,8 +44,8 @@ class ProjectArea(RTCBase, FieldBase):
         raw_data = xmltodict.parse(resp.content)
         roles_raw = raw_data['jp06:roles']['jp06:role']
         if not roles_raw:
-            self.log.warning("There are no roles in <ProjectArea %s>",
-                             self)
+            self.log.error("There are no roles in <ProjectArea %s>",
+                           self)
             return None
         for role_raw in roles_raw:
             role = Role(role_raw.get("jp06:url"), self.rtc_obj)
@@ -89,13 +84,14 @@ class ProjectArea(RTCBase, FieldBase):
                         verify=False,
                         headers=self.rtc_obj.headers)
 
-        members_list = list()
         raw_data = xmltodict.parse(resp.content)
         members_raw = raw_data['jp06:members']['jp06:member']
         if not members_raw:
-            self.log.warning("There are no members in ProjectArea:<%s>",
-                             self.name)
+            self.log.error("There are no members in <ProjectArea %s>",
+                           self)
             return None
+
+        members_list = list()
         for member_raw in members_raw:
             member = Member(member_raw.get("jp06:url"), self.rtc_obj)
             member.initialize(member_raw)
@@ -116,6 +112,7 @@ class ProjectArea(RTCBase, FieldBase):
                 self.log.info("Get <Member %s> in <ProjectArea %s>",
                               member, self)
                 return member
+
         self.log.error("No member's email is %s in <ProjectArea %s>",
                        email, self)
         return None
@@ -141,9 +138,10 @@ class ProjectArea(RTCBase, FieldBase):
         raw_data = xmltodict.parse(resp.content)
         itemtypes_raw = raw_data["oslc_cm:Collection"]["rtc_cm:Type"]
         if not itemtypes_raw:
-            self.log.warning("There are no workitem types in ProjectArea:<%s>",
-                             self.name)
+            self.log.warning("There are no workitem types in <ProjectArea %s>",
+                             self)
             return None
+
         for itemtype_raw in itemtypes_raw:
             itemtype = ItemType(itemtype_raw.get("@rdf:resource"),
                                 self.rtc_obj)
@@ -165,6 +163,7 @@ class ProjectArea(RTCBase, FieldBase):
                 self.log.info("Get <ItemType %s> in <ProjectArea %s>",
                               itemtype, self)
                 return itemtype
+
         self.log.error("No itemtype's title is %s in <ProjectArea %s>",
                        title, self)
         return None
@@ -175,6 +174,7 @@ class ProjectArea(RTCBase, FieldBase):
         :return: a list contains all `Admin <Admin>` objects
         :rtype: list
         """
+
         self.log.info("Get all the admins in <ProjectArea %s>",
                       self)
 
@@ -182,18 +182,21 @@ class ProjectArea(RTCBase, FieldBase):
                         verify=False,
                         headers=self.rtc_obj.headers)
 
-        admins_list = list()
         raw_data = xmltodict.parse(resp.content)
         admins_raw = raw_data["jp:admins"]["jp:admin"]
+
         if not admins_raw:
-            self.log.warning("There are no admins in ProjectArea:<%s>",
-                             self.name)
+            self.log.error("There are no admins in <ProjectArea %s>",
+                           self)
             return None
+
+        admins_list = list()
         for admin_raw in admins_raw:
             admin = Admin(admin_raw.get("jp:url"),
                           self.rtc_obj)
             admin.initialize(admin_raw)
             admins_list.append(admin)
+
         return admins_list
 
     def getAdmin(self, email):
@@ -210,6 +213,7 @@ class ProjectArea(RTCBase, FieldBase):
                 self.log.info("Get <Admin %s> in <ProjectArea %s>",
                               admin, self)
                 return admin
+
         self.log.error("No admin's title is %s in <ProjectArea %s>",
                        email, self)
         return None

@@ -2,14 +2,7 @@ import xmltodict
 from rtcclient.workitem import Workitem
 from rtcclient.base import RTCBase
 import logging
-
-try:
-    import urlparse
-    from urllib import quote as urlquote, urlencode
-except ImportError:
-    # Python3
-    import urllib.parse as urlparse
-    from urllib.parse import quote as urlquote, urlencode
+from rtcclient import urlquote
 
 
 class Query(RTCBase):

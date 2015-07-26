@@ -1,6 +1,7 @@
 from rtcclient.base import RTCBase, FieldBase
 import logging
 import xmltodict
+from rtcclient import urlunquote
 
 
 class Workitem(RTCBase, FieldBase):
@@ -24,10 +25,20 @@ class Workitem(RTCBase, FieldBase):
 
         pass
 
-    def updateWorkitem(self, new_workitem, state=None):
-        """
-        TODO
-        """
+    def initialize(self, data):
+        self.log.debug("Start initializing data from %s" % self.url)
+        self._initialize(data)
+        self.setattr("id", self.identifier)
+        self.log.info("Finish the initialization for <Workitem %s>",
+                      self)
+
+    def create(self, new_workitem):
+        # TODO
+        pass
+
+    def update(self, new_workitem, state=None):
+
+        # TODO
 
         if state:
             action = self.getAction(projectarea_id, action_name)
@@ -38,21 +49,36 @@ class Workitem(RTCBase, FieldBase):
 
         pass
 
+    def addComment(self, msg):
+        """Add comment for this workitem
+
+        :param msg: comment message
+        :return: True or False
+        :rtype: bool
+        """
+
+        pass
+
     def updateField(self, field):
         pass
 
     def getFields(self):
         pass
 
-    def getActions(self, projectarea_id, type):
+    def getActions(self, type, projectarea_id=None,
+                   projectarea_name=None):
         """Get all the actions of this workitem
 
         TODO: type
-        :param projectarea_id: project area id
         :param type: workitem type
+        :param projectarea_id: project area id
+        :param projectarea_name: project area name
         :return: a list contains all the `Action <Action>` objects
         :rtype: list
         """
+
+        if not projectarea_id:
+            projectarea_id = self.rtc_obj.getProjectAreaID(projectarea_name)
 
         self.log.info("Get all the actions")
         baseurl = self.rtc_obj.url

@@ -1,7 +1,6 @@
 import abc
 import logging
-import requests
-requests.packages.urllib3.disable_warnings()
+from rtcclient import requests
 
 
 class RTCBase(object):
