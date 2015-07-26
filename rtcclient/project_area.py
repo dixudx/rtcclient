@@ -2,6 +2,7 @@ from rtcclient.base import RTCBase, FieldBase
 import xmltodict
 from rtcclient import urlunquote
 import logging
+from rtcclient import exception
 
 
 class ProjectArea(RTCBase, FieldBase):
@@ -44,9 +45,10 @@ class ProjectArea(RTCBase, FieldBase):
         raw_data = xmltodict.parse(resp.content)
         roles_raw = raw_data['jp06:roles']['jp06:role']
         if not roles_raw:
-            self.log.error("There are no roles in <ProjectArea %s>",
-                           self)
+            self.log.warning("There are no roles in <ProjectArea %s>",
+                             self)
             return None
+
         for role_raw in roles_raw:
             role = Role(role_raw.get("jp06:url"), self.rtc_obj)
             role.initialize(role_raw)
@@ -62,14 +64,17 @@ class ProjectArea(RTCBase, FieldBase):
         """
 
         roles = self.getRoles()
-        for role in roles:
-            if role.label == label:
-                self.log.info("Get <Role %s> in <ProjectArea %s>",
-                              role, self)
-                return role
-        self.log.error("No role's label is %s in <ProjectArea %s>",
-                       label, self)
-        return None
+        if roles is not None:
+            for role in roles:
+                if role.label == label:
+                    self.log.info("Get <Role %s> in <ProjectArea %s>",
+                                  role, self)
+                    return role
+
+        excp_msg = "No role's label is %s in <ProjectArea %s>" % (label,
+                                                                  self)
+        self.log.error(excp_msg)
+        raise exception.NotFound(excp_msg)
 
     def getMembers(self):
         """Get all the Member objects in this project area
@@ -87,8 +92,8 @@ class ProjectArea(RTCBase, FieldBase):
         raw_data = xmltodict.parse(resp.content)
         members_raw = raw_data['jp06:members']['jp06:member']
         if not members_raw:
-            self.log.error("There are no members in <ProjectArea %s>",
-                           self)
+            self.log.warning("There are no members in <ProjectArea %s>",
+                             self)
             return None
 
         members_list = list()
@@ -107,15 +112,17 @@ class ProjectArea(RTCBase, FieldBase):
         """
 
         members = self.getMembers()
-        for member in members:
-            if member.email == email:
-                self.log.info("Get <Member %s> in <ProjectArea %s>",
-                              member, self)
-                return member
+        if members is not None:
+            for member in members:
+                if member.email == email:
+                    self.log.info("Get <Member %s> in <ProjectArea %s>",
+                                  member, self)
+                    return member
 
-        self.log.error("No member's email is %s in <ProjectArea %s>",
-                       email, self)
-        return None
+        excp_msg = "No member's email is %s in <ProjectArea %s>" % (email,
+                                                                    self)
+        self.log.error(excp_msg)
+        raise exception.NotFound(excp_msg)
 
     def getItemTypes(self):
         """Get all the ItemType objects in this project area
@@ -158,15 +165,17 @@ class ProjectArea(RTCBase, FieldBase):
         """
 
         itemtypes = self.getItemTypes()
-        for itemtype in itemtypes:
-            if itemtype.title == title:
-                self.log.info("Get <ItemType %s> in <ProjectArea %s>",
-                              itemtype, self)
-                return itemtype
+        if itemtypes is not None:
+            for itemtype in itemtypes:
+                if itemtype.title == title:
+                    self.log.info("Get <ItemType %s> in <ProjectArea %s>",
+                                  itemtype, self)
+                    return itemtype
 
-        self.log.error("No itemtype's title is %s in <ProjectArea %s>",
-                       title, self)
-        return None
+        excp_msg = "No itemtype's title is %s in <ProjectArea %s>" % (title,
+                                                                      self)
+        self.log.error(excp_msg)
+        raise exception.NotFound(excp_msg)
 
     def getAdmins(self):
         """Get all the Admin objects in this project area
@@ -186,8 +195,8 @@ class ProjectArea(RTCBase, FieldBase):
         admins_raw = raw_data["jp:admins"]["jp:admin"]
 
         if not admins_raw:
-            self.log.error("There are no admins in <ProjectArea %s>",
-                           self)
+            self.log.warning("There are no admins in <ProjectArea %s>",
+                             self)
             return None
 
         admins_list = list()
@@ -208,15 +217,17 @@ class ProjectArea(RTCBase, FieldBase):
         """
 
         admins = self.getAdmins()
-        for admin in admins:
-            if admin.email == email:
-                self.log.info("Get <Admin %s> in <ProjectArea %s>",
-                              admin, self)
-                return admin
+        if admins is not None:
+            for admin in admins:
+                if admin.email == email:
+                    self.log.info("Get <Admin %s> in <ProjectArea %s>",
+                                  admin, self)
+                    return admin
 
-        self.log.error("No admin's title is %s in <ProjectArea %s>",
-                       email, self)
-        return None
+        excp_msg = "No admin's title is %s in <ProjectArea %s>" % (email,
+                                                                   self)
+        self.log.error(excp_msg)
+        raise exception.NotFound(excp_msg)
 
 
 class Role(RTCBase, FieldBase):

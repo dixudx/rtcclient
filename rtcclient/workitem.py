@@ -94,6 +94,7 @@ class Workitem(RTCBase, FieldBase):
         if total_cnt == 0:
             self.log.warning("No actions are found")
             return None
+
         actions_raw = collects.get("rtc_cm:Action")
         actions_list = list()
         for action_raw in actions_raw:
@@ -112,14 +113,15 @@ class Workitem(RTCBase, FieldBase):
         """
 
         actions = self.getActions(projectarea_id)
-        self.log.info("Get an action whose name is %s",
-                      action_name)
-        if actions:
+
+        if actions is not None:
             for action in actions:
                 if action.title == action_name:
+                    self.log.info("Get an action whose name is %s",
+                                  action_name)
                     return action
-            self.log.warning("No action's name is %s",
-                             action_name)
+            self.log.error("No action's name is %s",
+                           action_name)
             return None
 
 

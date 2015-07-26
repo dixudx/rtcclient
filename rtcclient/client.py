@@ -68,7 +68,7 @@ class RTCClient(RTCBase):
         raw_data = xmltodict.parse(resp.content)
         proj_areas_raw = raw_data['jp06:project-areas']['jp06:project-area']
         if not proj_areas_raw:
-            self.log.error("No project areas found in <%s>", self)
+            self.log.warning("No project areas are found in <%s>", self)
             return None
 
         for proj_area_raw in proj_areas_raw:
@@ -92,10 +92,11 @@ class RTCClient(RTCBase):
             raise exception.BadValue(excp_msg)
 
         proj_areas = self.getProjectAreas()
-        for proj_area in proj_areas:
-            if proj_area.name == projectarea_name:
-                self.log.info("Find <ProjectArea %s>", proj_area)
-                return proj_area
+        if proj_areas is not None:
+            for proj_area in proj_areas:
+                if proj_area.name == projectarea_name:
+                    self.log.info("Find <ProjectArea %s>", proj_area)
+                    return proj_area
 
         self.log.error("No Project Area named %s", projectarea_name)
         raise exception.NotFound("No Project Area named %s" % projectarea_name)
@@ -127,12 +128,13 @@ class RTCClient(RTCBase):
                        projectarea_id)
 
         proj_areas = self.getProjectAreas()
-        for proj_area in proj_areas:
-            if proj_area.id == projectarea_id:
-                self.log.info("Find <ProjectArea %s> whose id is: %s",
-                              proj_area,
-                              projectarea_id)
-                return True
+        if proj_areas is not None:
+            for proj_area in proj_areas:
+                if proj_area.id == projectarea_id:
+                    self.log.info("Find <ProjectArea %s> whose id is: %s",
+                                  proj_area,
+                                  projectarea_id)
+                    return True
 
         self.log.error("No Project Area whose id is: %s",
                        projectarea_id)
@@ -190,8 +192,9 @@ class RTCClient(RTCBase):
         workitems_raw = raw_data
 
         if not workitems_raw:
-            self.log.warning("There are no workitems in ProjectArea:<%s>",
-                             self.name)
+            self.log.warning("There are no workitems in the project area "
+                             "whose id is: %s",
+                             projectarea_id)
             return None
 
         workitems_list = list()
