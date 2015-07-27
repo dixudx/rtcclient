@@ -66,9 +66,9 @@ class RTCBase(object):
         response = requests.get(url, verify=verify, headers=headers,
                                 timeout=timeout, **kwargs)
         if response.status_code != 200:
-            self.log.error('Failed GET request at <%s> with ssl %s',
+            self.log.error('Failed GET request at <%s> with response: %s',
                            url,
-                           "enabled" if verify else "disabled")
+                           response.content)
             response.raise_for_status()
         return response
 
@@ -96,10 +96,14 @@ class RTCBase(object):
         response = requests.post(url, data=data, json=json,
                                  verify=verify, headers=headers,
                                  timeout=timeout, **kwargs)
-        if response.status_code != 200 or response.status_code != 201:
-            self.log.error('Failed POST request at <%s> with ssl %s',
+        self.log.info(type(response.status_code))
+        self.log.info(response.status_code)
+
+        if response.status_code not in [200, 201]:
+            self.log.error('Failed POST request at <%s> with response: %s',
                            url,
-                           "enabled" if verify else "disabled")
+                           response.content)
+            self.log.info(response.status_code)
             response.raise_for_status()
         return response
 
@@ -125,10 +129,10 @@ class RTCBase(object):
         response = requests.post(url, data=data,
                                  verify=verify, headers=headers,
                                  timeout=timeout, **kwargs)
-        if response.status_code != 200 or response.status_code != 201:
-            self.log.error('Failed PUT request at <%s> with ssl %s',
+        if response.status_code not in [200, 201]:
+            self.log.error('Failed PUT request at <%s> with response: %s',
                            url,
-                           "enabled" if verify else "disabled")
+                           response.content)
             response.raise_for_status()
         return response
 
