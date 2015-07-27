@@ -50,6 +50,8 @@ class Workitem(RTCBase, FieldBase):
         """Add comment for this workitem
 
         :param msg: comment message
+        :return: :class:`Comment <Comment>` object
+        :rtype: workitem.Comment
         """
 
         origin_comment = '''
@@ -95,6 +97,11 @@ class Workitem(RTCBase, FieldBase):
         self.log.info("Successfully add comment: %s for <Workitem %s>",
                       msg, self)
 
+        # TODO: resp.content
+        return Comment(comment_url,
+                       self.rtc_obj,
+                       raw_data=resp.content)
+
     def getComment(self, url):
         headers = copy.deepcopy(self.rtc_obj.headers)
 #         headers['Content-type'] = 'application/rdf+xml'
@@ -107,7 +114,6 @@ class Workitem(RTCBase, FieldBase):
 #         raw_data = xmltodict.parse(resp.content).get("oslc_cm:Collection")
 #         return Comment()
 #         url, rtc_obj, raw_data=None
-
 
     def addSubscribers(self, subscribers):
         """Add subscribers for this workitem
@@ -244,6 +250,7 @@ class Comment(RTCBase, FieldBase):
         FieldBase.__init__(self, data=raw_data)
 
     def __str__(self):
+        # TODO
         return "comment"
 
     def get_rtc_obj(self):
