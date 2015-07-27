@@ -156,13 +156,13 @@ class RTCClient(RTCBase):
                                 verify=False,
                                 headers=self.headers)
                 raw_data = xmltodict.parse(resp.content)
-                # TODO
-                workitem_raw = raw_data
+                workitem_raw = raw_data["oslc_cm:ChangeRequest"]
 
-                workitem = Workitem(workitem_url,
-                                    self,
-                                    workitem_id)
-                workitem.initialize(workitem_raw)
+                return Workitem(workitem_url,
+                                self,
+                                workitem_id=workitem_id,
+                                raw_data=workitem_raw)
+
         except ValueError:
             excp_msg = "Please input a valid workitem id"
             self.log.error(excp_msg)

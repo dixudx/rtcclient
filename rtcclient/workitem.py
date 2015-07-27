@@ -7,14 +7,14 @@ from rtcclient import urlunquote
 class Workitem(RTCBase, FieldBase):
     log = logging.getLogger("workitem: Workitem")
 
-    def __init__(self, url, rtc_obj, workitem_id=None):
-        self.id = workitem_id
+    def __init__(self, url, rtc_obj, workitem_id=None, raw_data=None):
+        self.identifier = workitem_id
         self.rtc_obj = rtc_obj
         RTCBase.__init__(self, url)
-        FieldBase.__init__()
+        FieldBase.__init__(self, data=raw_data)
 
     def __str__(self):
-        return self.id
+        return self.identifier
 
     def get_rtc_obj(self):
         return self.rtc_obj
@@ -25,13 +25,6 @@ class Workitem(RTCBase, FieldBase):
 
         pass
 
-    def initialize(self, data):
-        self.log.debug("Start initializing data from %s" % self.url)
-        self._initialize(data)
-        self.setattr("id", self.identifier)
-        self.log.info("Finish the initialization for <Workitem %s>",
-                      self)
-
     def create(self, new_workitem):
         # TODO
         pass
@@ -41,7 +34,7 @@ class Workitem(RTCBase, FieldBase):
         # TODO
 
         if state:
-            action = self.getAction(projectarea_id, action_name)
+            action = self.getAction(self.contextId, action_name)
             update_url = "".join([self.url,
                                   "?_action=%s" % action.title])
         else:
@@ -57,6 +50,16 @@ class Workitem(RTCBase, FieldBase):
         :rtype: bool
         """
 
+        pass
+
+
+    def addSubscribers(self, subscribers):
+        """Add subscribers for this workitem
+
+        :param subscribers: subscribers list
+        :return: True or False
+        :rtype: bool
+        """
         pass
 
     def updateField(self, field):

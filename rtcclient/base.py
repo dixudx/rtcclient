@@ -1,6 +1,7 @@
 import abc
 import logging
 from rtcclient import requests
+from collections import OrderedDict
 
 
 class RTCBase(object):
@@ -149,6 +150,11 @@ class RTCBase(object):
 class FieldBase(object):
     log = logging.getLogger("base.FieldBase")
 
+    def __init__(self, data=None):
+        self.field_alias = dict()
+        if data:
+            self.initialize(data)
+
     def initialize(self, data):
         """Initialize the object from the response xml data
 
@@ -165,7 +171,18 @@ class FieldBase(object):
         for (key, value) in data.iteritems():
             if key.startswith("@"):
                 continue
+
             attr = key.split(":")[-1].replace("-", "_")
+            attr_list = attr.split(".")
+            if len(attr_list) > 1:
+                attr = "_".join([attr_list[-2],
+                                 attr_list[-1]])
+
+            self.field_alias[attr] = key
+
+            # TODO: object not url
+            if isinstance(value, OrderedDict):
+                value = value.values()[0]
             self.setattr(attr, value)
 
     def setattr(self, attr, value):
