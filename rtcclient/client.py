@@ -24,7 +24,8 @@ class RTCClient(RTCBase):
 
     def _get_headers(self):
         """
-        TODO
+        TODO: for invalid username or password,
+            rtc cannot return the right code
         """
         _headers = {'Content-type': RTCBase.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
@@ -54,12 +55,13 @@ class RTCClient(RTCBase):
 
         :return: A list contains all the <ProjectArea> objects
         :rtype: list
+        pass
         """
 
-        self.log.info("Get all the project areas")
+        self.log.info("Get all the Project Areas")
 
-        proj_areas_url = "".join([self.url,
-                                  "/process/project-areas"])
+        proj_areas_url = "/".join([self.url,
+                                   "process/project-areas"])
         resp = self.get(proj_areas_url,
                         verify=False,
                         headers=self.headers)
@@ -72,8 +74,10 @@ class RTCClient(RTCBase):
             return None
 
         for proj_area_raw in proj_areas_raw:
-            proj_area = ProjectArea(proj_area_raw.get("jp06:url"), self)
-            proj_area.initialize(proj_area_raw)
+            proj_area = ProjectArea(url=proj_area_raw.get("jp06:url"),
+                                    rtc_obj=self,
+                                    raw_data=proj_area_raw,
+                                    name=proj_area_raw.get("@jp06:name"))
             proj_areas_list.append(proj_area)
         return proj_areas_list
 
@@ -83,6 +87,7 @@ class RTCClient(RTCBase):
         :param projectarea_name: the project area name
         :return: :class:`ProjectArea <ProjectArea>` object
         :rtype: project_area.ProjectArea
+        pass
         """
 
         self.log.debug("Try to get <ProjectArea %s>", projectarea_name)
@@ -107,6 +112,7 @@ class RTCClient(RTCBase):
         :param projectarea_name: the project area name
         :return :class `string` object
         :rtype: string
+        pass
         """
 
         self.log.debug("Get the project area id by its name: %s",
@@ -167,6 +173,8 @@ class RTCClient(RTCBase):
             excp_msg = "Please input a valid workitem id"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
+        except Exception, excp:
+            self.log.error(excp)
 
     def getWorkitems(self, projectarea_id=None, projectarea_name=None):
         """Get all <Workitem> objects in some certain projectarea name

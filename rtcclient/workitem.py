@@ -1,24 +1,28 @@
-from rtcclient.base import RTCBase, FieldBase
+from rtcclient.base import FieldBase
 import logging
 import xmltodict
 from rtcclient import urlunquote
 import copy
 
 
-class Workitem(RTCBase, FieldBase):
+class Workitem(FieldBase):
     log = logging.getLogger("workitem: Workitem")
 
     def __init__(self, url, rtc_obj, workitem_id=None, raw_data=None):
+        FieldBase.__init__(self, url, rtc_obj, raw_data)
         self.identifier = workitem_id
-        self.rtc_obj = rtc_obj
-        RTCBase.__init__(self, url)
-        FieldBase.__init__(self, data=raw_data)
 
     def __str__(self):
-        return self.identifier
+        return str(self.identifier)
 
     def get_rtc_obj(self):
         return self.rtc_obj
+
+    def __initialize(self):
+        """Request to get response
+
+        """
+        pass
 
     def getState(self):
         """Get the workitem state
@@ -189,43 +193,40 @@ class Workitem(RTCBase, FieldBase):
             return None
 
 
-class Action(RTCBase, FieldBase):
+class Action(FieldBase):
     log = logging.getLogger("workitem: Action")
 
-    def __init__(self, url, rtc_obj, raw_data=None):
-        self.rtc_obj = rtc_obj
-        RTCBase.__init__(self, url)
-        FieldBase.__init__(self, data=raw_data)
-
     def __str__(self):
         return self.title
 
     def get_rtc_obj(self):
         return self.rtc_obj
 
+    def __initialize(self):
+        """Request to get response
 
-class State(RTCBase, FieldBase):
+        """
+        pass
+
+
+class State(FieldBase):
     log = logging.getLogger("workitem: State")
 
-    def __init__(self, url, rtc_obj, raw_data=None):
-        self.rtc_obj = rtc_obj
-        RTCBase.__init__(self, url)
-        FieldBase.__init__(self, data=raw_data)
-
     def __str__(self):
         return self.title
 
     def get_rtc_obj(self):
         return self.rtc_obj
 
+    def __initialize(self):
+        """Request to get response
 
-class ItemScheme(RTCBase):
+        """
+        pass
+
+
+class ItemScheme(FieldBase):
     log = logging.getLogger("workitem: ItemScheme")
-
-    def __init__(self, url, rtc_obj, raw_data=None):
-        self.rtc_obj = rtc_obj
-        RTCBase.__init__(self, url)
-        FieldBase.__init__(self, data=raw_data)
 
     def __str__(self):
         return self.title
@@ -240,14 +241,15 @@ class ItemScheme(RTCBase):
         """
         pass
 
+    def __initialize(self):
+        """Request to get response
 
-class Comment(RTCBase, FieldBase):
+        """
+        pass
+
+
+class Comment(FieldBase):
     log = logging.getLogger("workitem: Comment")
-
-    def __init__(self, url, rtc_obj, raw_data=None):
-        self.rtc_obj = rtc_obj
-        RTCBase.__init__(self, url)
-        FieldBase.__init__(self, data=raw_data)
 
     def __str__(self):
         # TODO
@@ -255,3 +257,9 @@ class Comment(RTCBase, FieldBase):
 
     def get_rtc_obj(self):
         return self.rtc_obj
+
+    def __initialize(self):
+        """Request to get response
+
+        """
+        pass

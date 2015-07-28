@@ -1,18 +1,18 @@
-from rtcclient.base import RTCBase, FieldBase
+from rtcclient.base import FieldBase
 import xmltodict
 from rtcclient import urlunquote
 import logging
 from rtcclient import exception
 
 
-class ProjectArea(RTCBase, FieldBase):
+class ProjectArea(FieldBase):
     log = logging.getLogger("project_area: ProjectArea")
 
-    def __init__(self, url, rtc_obj, name=None):
+    def __init__(self, url, rtc_obj, raw_data=None, name=None):
+        FieldBase.__init__(self, url, rtc_obj, raw_data)
         self.name = name
-        self.rtc_obj = rtc_obj
-        RTCBase.__init__(self, url)
-        FieldBase.__init__()
+        # TODO: for new projectarea obj, self.url may be None
+        self.id = self.url.split("/")[-1]
 
     def __str__(self):
         return self.name
@@ -20,19 +20,20 @@ class ProjectArea(RTCBase, FieldBase):
     def get_rtc_obj(self):
         return self.rtc_obj
 
-    def initialize(self, data):
-        self.log.debug("Start initializing data from %s",
-                       self.url)
-        self._initialize(data)
-        self.setattr("id", self.url.split("/")[-1])
-        self.log.info("Finish the initialzation for <ProjectArea %s>",
-                      self)
+    def __initialize(self):
+        """Request to get response
+
+        """
+
+        headers = self.rtc_obj.headers
+        # TODO
 
     def getRoles(self):
         """Get all Role objects in this project area
 
         :return: a list contains all `Role <Role>` objects
         :rtype: list
+        pass
         """
 
         self.log.info("Get all the roles in <ProjectArea %s>",
@@ -50,8 +51,9 @@ class ProjectArea(RTCBase, FieldBase):
             return None
 
         for role_raw in roles_raw:
-            role = Role(role_raw.get("jp06:url"), self.rtc_obj)
-            role.initialize(role_raw)
+            role = Role(role_raw.get("jp06:url"),
+                        self.rtc_obj,
+                        raw_data=role_raw)
             roles_list.append(role)
         return roles_list
 
@@ -61,6 +63,7 @@ class ProjectArea(RTCBase, FieldBase):
         :param label: the role label name
         :return: :class:`Role <Role>` object
         :rtype: project_area.Role
+        pass
         """
 
         roles = self.getRoles()
@@ -98,8 +101,9 @@ class ProjectArea(RTCBase, FieldBase):
 
         members_list = list()
         for member_raw in members_raw:
-            member = Member(member_raw.get("jp06:url"), self.rtc_obj)
-            member.initialize(member_raw)
+            member = Member(member_raw.get("jp06:url"),
+                            self.rtc_obj,
+                            raw_data=member_raw)
             members_list.append(member)
         return members_list
 
@@ -151,8 +155,8 @@ class ProjectArea(RTCBase, FieldBase):
 
         for itemtype_raw in itemtypes_raw:
             itemtype = ItemType(itemtype_raw.get("@rdf:resource"),
-                                self.rtc_obj)
-            itemtype.initialize(itemtype_raw)
+                                self.rtc_obj,
+                                raw_data=itemtype_raw)
             itemtypes_list.append(itemtype)
         return itemtypes_list
 
@@ -202,8 +206,8 @@ class ProjectArea(RTCBase, FieldBase):
         admins_list = list()
         for admin_raw in admins_raw:
             admin = Admin(admin_raw.get("jp:url"),
-                          self.rtc_obj)
-            admin.initialize(admin_raw)
+                          self.rtc_obj,
+                          raw_data=admin_raw)
             admins_list.append(admin)
 
         return admins_list
@@ -230,13 +234,8 @@ class ProjectArea(RTCBase, FieldBase):
         raise exception.NotFound(excp_msg)
 
 
-class Role(RTCBase, FieldBase):
+class Role(FieldBase):
     log = logging.getLogger("project_area: Role")
-
-    def __init__(self, url, rtc_obj):
-        RTCBase.__init__(self, url)
-        FieldBase.__init__()
-        self.rtc_obj = rtc_obj
 
     def __str__(self):
         return self.label
@@ -244,14 +243,20 @@ class Role(RTCBase, FieldBase):
     def get_rtc_obj(self):
         return self.rtc_obj
 
+    def __initialize(self):
+        """Request to get response
 
-class Member(RTCBase, FieldBase):
+        """
+        # TODO
+        pass
+
+
+class Member(FieldBase):
     log = logging.getLogger("project_area: Member")
 
-    def __init__(self, url, rtc_obj):
-        RTCBase.__init__(self, url)
-        FieldBase.__init__()
-        self.rtc_obj = rtc_obj
+    def __init__(self, url, rtc_obj, raw_data=None):
+        FieldBase.__init__(self, url, rtc_obj, raw_data=raw_data)
+        self.email = urlunquote(self.url.split("/")[-1])
 
     def __str__(self):
         return self.email
@@ -259,36 +264,24 @@ class Member(RTCBase, FieldBase):
     def get_rtc_obj(self):
         return self.rtc_obj
 
-    def initialize(self, data):
-        self.log.debug("Start initializing data from %s" % self.url)
-        self._initialize(data)
-        self.setattr("email", urlunquote(self.url.split("/")[-1]))
-        self.log.info("Finish the initialization for <%s %s>",
-                      self.__class__.__name__,
-                      self)
+    def __initialize(self):
+        """Request to get response
+
+        """
+        # TODO
+        pass
 
 
 class Admin(Member):
     log = logging.getLogger("project_area: Admin")
 
-    def __init__(self, url, rtc_obj):
-        Member.__init__(self, url)
-
 
 class ProjectAdmin(Member):
     log = logging.getLogger("project_area: ProjectAdmin")
 
-    def __init__(self, url, rtc_obj):
-        Member.__init__(self, url)
 
-
-class ItemType(RTCBase, FieldBase):
+class ItemType(FieldBase):
     log = logging.getLogger("project_area: ItemType")
-
-    def __init__(self, url, rtc_obj):
-        RTCBase.__init__(self, url)
-        FieldBase.__init__()
-        self.rtc_obj = rtc_obj
 
     def __str__(self):
         return self.title
@@ -296,3 +289,9 @@ class ItemType(RTCBase, FieldBase):
     def get_rtc_obj(self):
         return self.rtc_obj
 
+    def __initialize(self):
+        """Request to get response
+
+        """
+        # TODO
+        pass

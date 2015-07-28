@@ -96,8 +96,6 @@ class RTCBase(object):
         response = requests.post(url, data=data, json=json,
                                  verify=verify, headers=headers,
                                  timeout=timeout, **kwargs)
-        self.log.info(type(response.status_code))
-        self.log.info(response.status_code)
 
         if response.status_code not in [200, 201]:
             self.log.error('Failed POST request at <%s> with response: %s',
@@ -154,15 +152,29 @@ class RTCBase(object):
         return url
 
 
-class FieldBase(object):
+class FieldBase(RTCBase):
+    __metaclass__ = abc.ABCMeta
     log = logging.getLogger("base.FieldBase")
 
-    def __init__(self, data=None):
+    def __init__(self, url, rtc_obj, raw_data=None):
+        RTCBase.__init__(self, url)
         self.field_alias = dict()
-        if data:
-            self.initialize(data)
+        self.rtc_obj = rtc_obj
+        self.raw_data = raw_data
+        if raw_data:
+            self.__initializeFromRaw()
+        elif self.url:
+            self._initialize()
 
-    def initialize(self, data):
+    @abc.abstractmethod
+    def __str__(self):
+        pass
+
+    @abc.abstractmethod
+    def get_rtc_obj(self):
+        pass
+
+    def _initialize(self):
         """Initialize the object from the response xml data
 
         :param data: xml data for initialization
@@ -170,12 +182,22 @@ class FieldBase(object):
 
         self.log.debug("Start initializing data from %s",
                        self.url)
-        self._initialize(data)
+        self.__initialize()
         self.log.info("Finish the initialization for <%s %s>",
                       self.__class__.__name__, self)
 
-    def _initialize(self, data):
-        for (key, value) in data.iteritems():
+#     @abc.abstractmethod
+    def __initialize(self):
+        """Request to get response
+
+        """
+        pass
+
+    def __initializeFromRaw(self):
+        """Initialze from raw data (OrderedDict)
+
+        """
+        for (key, value) in self.raw_data.iteritems():
             if key.startswith("@"):
                 continue
 
