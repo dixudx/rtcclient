@@ -145,6 +145,9 @@ class RTCBase(object):
         :rtype: string
         """
 
+        if url is None:
+            return None
+
         url = url.strip()
         while url.endswith('/'):
             url = url[:-1]
