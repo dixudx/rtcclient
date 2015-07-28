@@ -12,3 +12,7 @@ class BadValue(RTCException):
 
 class NotFound(RTCException):
     pass
+
+
+class EmptyAttrib(RTCException):
+    pass

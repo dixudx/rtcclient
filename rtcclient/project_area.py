@@ -25,8 +25,8 @@ class ProjectArea(FieldBase):
 
         """
 
-        headers = self.rtc_obj.headers
-        # TODO
+        self.log.error("For ProjectArea, raw_data is mandatory")
+        raise exception.EmptyAttrib("Please input raw_data")
 
     def getRoles(self):
         """Get all Role objects in this project area
