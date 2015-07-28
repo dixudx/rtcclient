@@ -6,7 +6,7 @@ from rtcclient import exception
 
 
 class ProjectArea(FieldBase):
-    log = logging.getLogger("project_area: ProjectArea")
+    log = logging.getLogger("project_area.ProjectArea")
 
     def __init__(self, url, rtc_obj, raw_data=None, name=None):
         FieldBase.__init__(self, url, rtc_obj, raw_data)
@@ -235,7 +235,7 @@ class ProjectArea(FieldBase):
 
 
 class Role(FieldBase):
-    log = logging.getLogger("project_area: Role")
+    log = logging.getLogger("project_area.Role")
 
     def __str__(self):
         return self.label
@@ -252,7 +252,7 @@ class Role(FieldBase):
 
 
 class Member(FieldBase):
-    log = logging.getLogger("project_area: Member")
+    log = logging.getLogger("project_area.Member")
 
     def __init__(self, url, rtc_obj, raw_data=None):
         FieldBase.__init__(self, url, rtc_obj, raw_data=raw_data)
@@ -273,15 +273,15 @@ class Member(FieldBase):
 
 
 class Admin(Member):
-    log = logging.getLogger("project_area: Admin")
+    log = logging.getLogger("project_area.Admin")
 
 
 class ProjectAdmin(Member):
-    log = logging.getLogger("project_area: ProjectAdmin")
+    log = logging.getLogger("project_area.ProjectAdmin")
 
 
 class ItemType(FieldBase):
-    log = logging.getLogger("project_area: ItemType")
+    log = logging.getLogger("project_area.ItemType")
 
     def __str__(self):
         return self.title

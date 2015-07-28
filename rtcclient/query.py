@@ -44,9 +44,9 @@ class Query(RTCBase):
                         headers=self.rtc_obj.headers)
         workitems_raw_info = xmltodict.parse(resp.content)
 
-        totalCount = int(workitems_raw_info.get("oslc_cm:Collection")
+        total_count = int(workitems_raw_info.get("oslc_cm:Collection")
                                            .get("@oslc_cm:totalCount"))
-        if totalCount == 0:
+        if total_count == 0:
             self.log.warning("No workitems matched query string: %s",
                              self)
             return None

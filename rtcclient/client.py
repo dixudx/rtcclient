@@ -70,7 +70,7 @@ class RTCClient(RTCBase):
         raw_data = xmltodict.parse(resp.content)
         proj_areas_raw = raw_data['jp06:project-areas']['jp06:project-area']
         if not proj_areas_raw:
-            self.log.warning("No project areas are found in <%s>", self)
+            self.log.warning("No ProjectAreas are found in <%s>", self)
             return None
 
         for proj_area_raw in proj_areas_raw:

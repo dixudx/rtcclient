@@ -1,8 +1,7 @@
-
 class RTCException(Exception):
+    """Base exception class for all errors
     """
-    Base exception class for all errors
-    """
+
     pass
 
 

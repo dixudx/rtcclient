@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 class RTCBase(object):
     __metaclass__ = abc.ABCMeta
-    log = logging.getLogger("base:RTCBase")
+    log = logging.getLogger("base.RTCBase")
 
     CONTENT_XML = "text/xml"
     CONTENT_JSON = "application/json"

@@ -6,7 +6,7 @@ import copy
 
 
 class Workitem(FieldBase):
-    log = logging.getLogger("workitem: Workitem")
+    log = logging.getLogger("workitem.Workitem")
 
     def __init__(self, url, rtc_obj, workitem_id=None, raw_data=None):
         FieldBase.__init__(self, url, rtc_obj, raw_data)
@@ -194,7 +194,7 @@ class Workitem(FieldBase):
 
 
 class Action(FieldBase):
-    log = logging.getLogger("workitem: Action")
+    log = logging.getLogger("workitem.Action")
 
     def __str__(self):
         return self.title
@@ -210,7 +210,7 @@ class Action(FieldBase):
 
 
 class State(FieldBase):
-    log = logging.getLogger("workitem: State")
+    log = logging.getLogger("workitem.State")
 
     def __str__(self):
         return self.title
@@ -226,7 +226,7 @@ class State(FieldBase):
 
 
 class ItemScheme(FieldBase):
-    log = logging.getLogger("workitem: ItemScheme")
+    log = logging.getLogger("workitem.ItemScheme")
 
     def __str__(self):
         return self.title
@@ -249,7 +249,7 @@ class ItemScheme(FieldBase):
 
 
 class Comment(FieldBase):
-    log = logging.getLogger("workitem: Comment")
+    log = logging.getLogger("workitem.Comment")
 
     def __str__(self):
         # TODO
