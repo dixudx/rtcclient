@@ -5,6 +5,7 @@ from rtcclient.project_area import ProjectArea
 from rtcclient.workitem import Workitem
 import logging
 from rtcclient import urlquote, urlencode
+from collections import OrderedDict
 
 
 class RTCClient(RTCBase):
@@ -58,7 +59,7 @@ class RTCClient(RTCBase):
         pass
         """
 
-        self.log.info("Get all the Project Areas")
+        self.log.info("Get all the ProjectAreas")
 
         proj_areas_url = "/".join([self.url,
                                    "process/project-areas"])
@@ -92,7 +93,7 @@ class RTCClient(RTCBase):
 
         self.log.debug("Try to get <ProjectArea %s>", projectarea_name)
         if not projectarea_name:
-            excp_msg = "Please specify a valid project area name"
+            excp_msg = "Please specify a valid ProjectArea name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
@@ -103,8 +104,8 @@ class RTCClient(RTCBase):
                     self.log.info("Find <ProjectArea %s>", proj_area)
                     return proj_area
 
-        self.log.error("No Project Area named %s", projectarea_name)
-        raise exception.NotFound("No Project Area named %s" % projectarea_name)
+        self.log.error("No ProjectArea named %s", projectarea_name)
+        raise exception.NotFound("No ProjectArea named %s" % projectarea_name)
 
     def getProjectAreaID(self, projectarea_name):
         """Get <ProjectArea> id by projectarea name
@@ -115,7 +116,7 @@ class RTCClient(RTCBase):
         pass
         """
 
-        self.log.debug("Get the project area id by its name: %s",
+        self.log.debug("Get the ProjectArea id by its name: %s",
                        projectarea_name)
         proj_area = self.getProjectArea(projectarea_name)
         if proj_area:
@@ -130,7 +131,7 @@ class RTCClient(RTCBase):
         :rtype: bool
         """
 
-        self.log.debug("Check the validity of the project area id: %s",
+        self.log.debug("Check the validity of the ProjectArea id: %s",
                        projectarea_id)
 
         proj_areas = self.getProjectAreas()
@@ -142,7 +143,7 @@ class RTCClient(RTCBase):
                                   projectarea_id)
                     return True
 
-        self.log.error("No Project Area whose id is: %s",
+        self.log.error("No ProjectArea whose id is: %s",
                        projectarea_id)
         return False
 
@@ -174,45 +175,43 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
         except Exception, excp:
+            # TODO: invalid token for all get resp
             self.log.error(excp)
 
     def getWorkitems(self, projectarea_id=None, projectarea_name=None):
         """Get all <Workitem> objects in some certain projectarea name
 
+        If both projectarea_id and projectarea_name are None, all the workitems
+        in all ProjectAreas will be returned.
+
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
         :return: a list contains all the `Workitem <Workitem>` objects
         :rtype: list
+        pass
         """
-        # TODO: multi-thread
-
-        if not projectarea_id:
-            projectarea_id = self.getProjectAreaID(projectarea_name)
-
-        workitems_url = "/".join([self.url,
-                                  "oslc/workitems"])
-        resp = self.get(workitems_url,
-                        verify=False,
-                        headers=self.headers)
-        raw_data = xmltodict.parse(resp.content)
-
-        #TODO: raw data
-        workitems_raw = raw_data
-
-        if not workitems_raw:
-            self.log.warning("There are no workitems in the project area "
-                             "whose id is: %s",
-                             projectarea_id)
-            return None
 
         workitems_list = list()
-        for workitem_raw in workitems_raw:
-            # TODO: url, id
-            workitem = Workitem(workitem_raw.get("jp:url"),
-                                self,
-                                workitem_id=None)
-            workitem.initialize(workitem_raw)
-            workitems_list.append(workitem)
+        projectarea_ids = list()
+        if not projectarea_id:
+            try:
+                projectarea_id = self.getProjectAreaID(projectarea_name)
+                projectarea_ids.append(projectarea_id)
+            except (exception.NotFound, exception.BadValue):
+                self.log.error("Invalid ProjectArea name")
+                self.log.warning("Fetch all workitems in all ProjectAreas")
+                projectareas = self.getProjectAreas()
+                projectarea_ids = [proj_area.id for proj_area in projectareas]
+        else:
+            projectarea_ids.append(projectarea_id)
+
+        self.log.warning("For a single ProjectArea, only latest 1000 "
+                         "workitems can be fetched. "
+                         "This may be a bug of Rational Team Concert")
+
+        for projarea_id in projectarea_ids:
+            workitems_list.extend(self._get_resource_collections("Workitem",
+                                                                 projarea_id))
 
         return workitems_list
 
@@ -288,3 +287,80 @@ class RTCClient(RTCBase):
                         "oslc/contexts/%s" % projectarea_id,
                         "workitems?oslc_cm.query=%s" % urlquote(query_str)])
         return url
+
+    def _get_resource_collections(self, resource_name, projectarea_id,
+                                  page_size='100'):
+
+        # TODO: multi-thread
+
+        if not projectarea_id:
+            self.log.error("No ProjectArea ID is specified")
+            raise exception.EmptyAttrib("No ProjectArea ID")
+
+        # TODO: for category/deliverable/iteration object
+        resource_map = {"Category": "categories",
+                        "Deliverable": "deliverables",
+                        "Iteration": "iterations",
+                        "Workitem": "contexts/%s/workitems" % projectarea_id}
+
+        if resource_name not in resource_map:
+            self.log.error("Unsupported resource name")
+            return None
+
+        resource_url = "".join([self.url,
+                                "/oslc/{0}?oslc_cm.pageSize={1}",
+                                "&_startIndex=0"])
+        resource_url = resource_url.format(resource_map[resource_name],
+                                           page_size)
+
+        resp = self.get(resource_url,
+                        verify=False,
+                        headers=self.headers)
+        raw_data = xmltodict.parse(resp.content)
+
+        resources_list = []
+
+        while True:
+            if resource_name == "Workitem":
+                entries = (raw_data.get("oslc_cm:Collection")
+                                   .get("oslc_cm:ChangeRequest"))
+            else:
+                entries = (raw_data.get("oslc_cm:Collection")
+                                   .get("rtc_cm:%s" % resource_name))
+
+            # for the last single entry
+            if isinstance(entries, OrderedDict):
+                resource = self._handle_resource_entry(resource_name, entries)
+                resources_list.append(resource)
+                break
+
+            for entry in entries:
+                resource = self._handle_resource_entry(resource_name, entry)
+                resources_list.append(resource)
+
+            url_next = raw_data.get('oslc_cm:Collection').get('@oslc_cm:next')
+
+            if url_next:
+                resp = self.get(url_next,
+                                verify=False,
+                                headers=self.headers)
+                raw_data = xmltodict.parse(resp.content)
+            else:
+                break
+
+        return resources_list
+
+    def _handle_resource_entry(self, resource_name, entry):
+        resource_cls = eval(resource_name)
+        if resource_name == "Workitem":
+            resource_url = entry.get("@rdf:resource")
+            resource_url = "/".join([self.url,
+                                     "oslc/workitems",
+                                     resource_url.split("/")[-1]])
+        else:
+            resource_url = entry.get("@rdf:resource")
+
+        resource = resource_cls(resource_url,
+                                self,
+                                raw_data=entry)
+        return resource

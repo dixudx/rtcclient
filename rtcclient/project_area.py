@@ -133,6 +133,7 @@ class ProjectArea(FieldBase):
 
         :return: a list contains all `ItemType <ItemType>` objects
         :rtype: list
+        pass
         """
 
         self.log.info("Get all the workitem types in <ProjectArea %s>",
@@ -145,7 +146,7 @@ class ProjectArea(FieldBase):
                         verify=False,
                         headers=self.rtc_obj.headers)
 
-        itemtypes_list = list()
+        itemtypes_dict = dict()
         raw_data = xmltodict.parse(resp.content)
         itemtypes_raw = raw_data["oslc_cm:Collection"]["rtc_cm:Type"]
         if not itemtypes_raw:
@@ -157,8 +158,8 @@ class ProjectArea(FieldBase):
             itemtype = ItemType(itemtype_raw.get("@rdf:resource"),
                                 self.rtc_obj,
                                 raw_data=itemtype_raw)
-            itemtypes_list.append(itemtype)
-        return itemtypes_list
+            itemtypes_dict[itemtype.title] = itemtype
+        return itemtypes_dict
 
     def getItemType(self, title):
         """Get the ItemType object by the title
@@ -170,11 +171,11 @@ class ProjectArea(FieldBase):
 
         itemtypes = self.getItemTypes()
         if itemtypes is not None:
-            for itemtype in itemtypes:
-                if itemtype.title == title:
-                    self.log.info("Get <ItemType %s> in <ProjectArea %s>",
-                                  itemtype, self)
-                    return itemtype
+            if title in itemtypes:
+                itemtype = itemtypes[title]
+                self.log.info("Get <ItemType %s> in <ProjectArea %s>",
+                              itemtype, self)
+                return itemtype
 
         excp_msg = "No itemtype's title is %s in <ProjectArea %s>" % (title,
                                                                       self)

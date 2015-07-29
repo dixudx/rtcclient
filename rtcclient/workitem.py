@@ -9,8 +9,8 @@ class Workitem(FieldBase):
     log = logging.getLogger("workitem.Workitem")
 
     def __init__(self, url, rtc_obj, workitem_id=None, raw_data=None):
-        FieldBase.__init__(self, url, rtc_obj, raw_data)
         self.identifier = workitem_id
+        FieldBase.__init__(self, url, rtc_obj, raw_data)
 
     def __str__(self):
         return str(self.identifier)
@@ -18,11 +18,12 @@ class Workitem(FieldBase):
     def get_rtc_obj(self):
         return self.rtc_obj
 
-    def __initialize(self):
-        """Request to get response
+    def __initialize(self, resp):
+        """Initialize from the response"""
 
-        """
-        pass
+        raw_data = xmltodict.parse(resp.content)
+        self.raw_data = raw_data["oslc_cm:ChangeRequest"]
+        self.__initializeFromRaw()
 
     def getState(self):
         """Get the workitem state
