@@ -101,10 +101,10 @@ class Workitem(FieldBase):
         self.log.info("Successfully add comment: %s for <Workitem %s>",
                       msg, self)
 
-        # TODO: resp.content
+        raw_data = xmltodict.parse(resp.content)
         return Comment(comment_url,
                        self.rtc_obj,
-                       raw_data=resp.content)
+                       raw_data=raw_data["rtc_cm:Comment"])
 
     def getComment(self, url):
         headers = copy.deepcopy(self.rtc_obj.headers)
@@ -251,15 +251,20 @@ class ItemScheme(FieldBase):
 class Comment(FieldBase):
     log = logging.getLogger("workitem.Comment")
 
+    def __init__(self, url, rtc_obj, raw_data=None):
+        FieldBase.__init__(self, url, rtc_obj, raw_data)
+        self.id = self.url.split("/")[-1]
+
     def __str__(self):
-        # TODO
-        return "comment"
+        return self.id
 
     def get_rtc_obj(self):
         return self.rtc_obj
 
-    def __initialize(self):
-        """Request to get response
+    def __initialize(self, resp):
+        """Initialize from the response"""
 
-        """
-        pass
+        raw_data = xmltodict.parse(resp.content)
+        self.raw_data = raw_data["rtc_cm:Comment"]
+        self.__initializeFromRaw()
+

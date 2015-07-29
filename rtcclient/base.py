@@ -2,6 +2,7 @@ import abc
 import logging
 from rtcclient import requests
 from collections import OrderedDict
+import xmltodict
 
 
 class RTCBase(object):
@@ -175,22 +176,22 @@ class FieldBase(RTCBase):
         pass
 
     def _initialize(self):
-        """Initialize the object from the response xml data
-
-        :param data: xml data for initialization
-        """
+        """Initialize the object from the request"""
 
         self.log.debug("Start initializing data from %s",
                        self.url)
-        self.__initialize()
+        headers = self.rtc_obj.headers
+        resp = self.get(self.url,
+                        verify=False,
+                        headers=headers)
+        self.__initialize(resp)
         self.log.info("Finish the initialization for <%s %s>",
                       self.__class__.__name__, self)
 
 #     @abc.abstractmethod
-    def __initialize(self):
-        """Request to get response
+    def __initialize(self, resp):
+        """Initialize from the response"""
 
-        """
         pass
 
     def __initializeFromRaw(self):
@@ -203,6 +204,7 @@ class FieldBase(RTCBase):
 
             attr = key.split(":")[-1].replace("-", "_")
             attr_list = attr.split(".")
+            # TODO: long attributes
             if len(attr_list) > 1:
                 attr = "_".join([attr_list[-2],
                                  attr_list[-1]])
