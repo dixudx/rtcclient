@@ -6,7 +6,7 @@ from rtcclient.workitem import Workitem
 import logging
 from rtcclient import urlquote, urlencode
 from collections import OrderedDict
-
+import copy
 
 class RTCClient(RTCBase):
     log = logging.getLogger("client.RTCClient")
@@ -106,6 +106,32 @@ class RTCClient(RTCBase):
 
         self.log.error("No ProjectArea named %s", projectarea_name)
         raise exception.NotFound("No ProjectArea named %s" % projectarea_name)
+
+    def getProjectAreaById(self, projectarea_id):
+        """Get <ProjectArea> object by its id
+
+        :param projectarea_id: the project area id
+        :return: :class:`ProjectArea <ProjectArea>` object
+        :rtype: project_area.ProjectArea
+        pass
+        """
+
+        self.log.debug("Try to get <ProjectArea> by its id: %s",
+                       projectarea_id)
+        if not projectarea_id:
+            excp_msg = "Please specify a valid ProjectArea ID"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
+        proj_areas = self.getProjectAreas()
+        if proj_areas is not None:
+            for proj_area in proj_areas:
+                if proj_area.id == projectarea_id:
+                    self.log.info("Find <ProjectArea %s>", proj_area)
+                    return proj_area
+
+        self.log.error("No ProjectArea's ID is %s", projectarea_id)
+        raise exception.NotFound("No ProjectArea's ID is %s" % projectarea_id)
 
     def getProjectAreaID(self, projectarea_name):
         """Get <ProjectArea> id by projectarea name
@@ -235,24 +261,33 @@ class RTCClient(RTCBase):
         if not self.checkType(item_type):
             self.log.error("<%s> is not a supported workitem type in %s",
                            item_type.capitalize(), self)
+            # TODO
             return None
+        
+        
 
         pass
         self.log.info("Start to create a %s",
                       item_type)
 
-    def checkType(self, item_type):
+    def checkType(self, item_type, projectarea_id):
         """Check the validity of workitem type
 
         :param item_type: the type of the workitem (e.g. task/defect/issue)
+        :param projectarea_id: the project area id
         :return: True or False
         :rtype: bool
         """
 
-        # TODO
         self.log.debug("Checking the validity of workitem type: %s",
                        item_type)
-        pass
+        try:
+            project_area = self.getProjectAreaById(projectarea_id)
+            itemtype = project_area.getItemType(item_type)
+            return True
+        except (exception.NotFound, exception.BadValue):
+            self.log.error("Invalid ProjectArea name")
+            return False
 
     def getScheme(self, item_type):
         """Get the scheme for the certain workitem type, including some
