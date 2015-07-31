@@ -3,7 +3,7 @@ from rtcclient.workitem import Workitem
 from rtcclient.base import RTCBase
 import logging
 from rtcclient import urlquote
-from collections import OrderedDict
+from rtcclient import OrderedDict
 
 
 class Query(RTCBase):

@@ -5,7 +5,7 @@ from rtcclient.project_area import ProjectArea
 from rtcclient.workitem import Workitem
 import logging
 from rtcclient import urlquote, urlencode
-from collections import OrderedDict
+from rtcclient import OrderedDict
 import copy
 
 
