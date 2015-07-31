@@ -5,8 +5,9 @@ from rtcclient.project_area import ProjectArea
 from rtcclient.workitem import Workitem
 import logging
 from rtcclient import urlquote, urlencode
-from collections import OrderedDict
+from rtcclient import OrderedDict
 import copy
+
 
 class RTCClient(RTCBase):
     log = logging.getLogger("client.RTCClient")
@@ -28,12 +29,12 @@ class RTCClient(RTCBase):
         TODO: for invalid username or password,
             rtc cannot return the right code
         """
-        _headers = {'Content-type': RTCBase.CONTENT_XML}
+        _headers = {'Content-Type': RTCBase.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
                         headers=_headers)
 
-        _headers['Content-type'] = RTCBase.CONTENT_URL_ENCODED
+        _headers['Content-Type'] = RTCBase.CONTENT_URL_ENCODED
         _headers['Cookie'] = resp.headers.get('set-cookie')
         credentials = urlencode({'j_username': self.username,
                                  'j_password': self.password})

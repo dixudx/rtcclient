@@ -1,7 +1,7 @@
 import abc
 import logging
 from rtcclient import requests
-from collections import OrderedDict
+from rtcclient import OrderedDict
 import xmltodict
 
 

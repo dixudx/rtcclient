@@ -14,3 +14,11 @@ except ImportError:
     from urllib.parse import quote as urlquote
     from urllib.parse import urlencode
     from urllib.parse import unquote as urlunquote
+
+try:  # pragma no cover
+    from collections import OrderedDict
+except ImportError:  # pragma no cover
+    try:
+        from ordereddict import OrderedDict
+    except ImportError:
+        OrderedDict = dict
