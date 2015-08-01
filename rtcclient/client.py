@@ -7,16 +7,29 @@ import logging
 from rtcclient import urlquote, urlencode
 from rtcclient import OrderedDict
 import copy
+from rtcclient.template import Templater
+from rtcclient import _search_path
 
 
 class RTCClient(RTCBase):
+    """A wrapped class for RTC Client"""
+
     log = logging.getLogger("client.RTCClient")
 
-    def __init__(self, url, username, password):
+    def __init__(self, url, username, password, searchpath=_search_path):
+        """Initialization
+
+        :param url: the rtc url (example: https://your_domain:9443/jazz)
+        :param username: the rtc username
+        :param password: the rtc password
+        :param searchpath: the folder to store your templates
+        """
+
         self.username = username
         self.password = password
         RTCBase.__init__(self, url)
         self.headers = self._get_headers()
+        self.templater = Templater(self, searchpath=searchpath)
 
     def __str__(self):
         return "RTC Server at %s" % self.url
@@ -174,6 +187,51 @@ class RTCClient(RTCBase):
                        projectarea_id)
         return False
 
+    def getTemplate(self, copied_from, template_name=None,
+                    template_folder=None, keep=False, encoding="UTF-8"):
+        """Get template from some to-be-copied workitem
+
+        More detals, please refer to `Templater.getTemplate`
+        """
+
+        return self.templater.getTemplate(copied_from,
+                                          template_name=template_name,
+                                          template_folder=template_folder,
+                                          keep=keep,
+                                          encoding=encoding)
+
+    def getTemplates(self, workitems, template_folder=None,
+                     template_names=None, keep=False, encoding="UTF-8"):
+        """Get templates from a group of to-be-copied workitems and write
+        them to files named after the names in `template_names` respectively.
+
+        More detals, please refer to `Templater.getTemplate`
+        """
+
+        self.templater.getTemplates(workitems,
+                                    template_folder=template_folder,
+                                    template_names=template_names,
+                                    keep=keep,
+                                    encoding=encoding)
+
+    def listFields(self, template):
+        """List all the attributes to be rendered from the template file
+
+        More detals, please refer to `Templater.listFieldsFromWorkitem`
+        """
+
+        return self.templater.listFields(template)
+
+    def listFieldsFromWorkitem(self, copied_from, keep=False):
+        """List all the attributes to be rendered directly from some
+        to-be-copied workitem
+
+        More detals, please refer to `Templater.listFieldsFromWorkitem`
+        """
+
+        return self.templater.listFieldsFromWorkitem(copied_from,
+                                                     keep=keep)
+
     def getWorkitem(self, workitem_id):
         """Get <Workitem> object by its id/number
 
@@ -242,39 +300,168 @@ class RTCClient(RTCBase):
 
         return workitems_list
 
-    def createWorkitem(self, item_type, projectarea_id=None,
-                       projectarea_name=None, **kwargs):
+    def createWorkitem(self, item_type, title, description=None,
+                       projectarea_id=None, projectarea_name=None,
+                       template=None, copied_from=None, keep=False,
+                       **kwargs):
         """Create a workitem
 
         :param item_type: the type of the workitem (e.g. task/defect/issue)
+        :param title: the title of the new created workitem
+        :param description: the description of the new created workitem
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
-        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :param template: The template to render.
+            The template is actually a file, which is usually generated
+            by `Template.getTemplate()` and can also be modified by user
+            accordingly.
+        :param copied_from: the to-be-copied workitem id
+        :param keep: refer to `keep` in `Templater.getTemplate`
+            only works when `template` is not specified
+        :param \*\*kwargs: Optional/mandatory arguments when creating a new
+            workitem. More details, please refer to `kwargs` in
+            `Templater.render`
         :return: :class:`Workitem <Workitem>` object
         :rtype: workitem.Workitem
         """
 
-        # TODO
-
         if not projectarea_id:
-            projectarea_id = self.getProjectAreaID(projectarea_name)
+            projectarea = self.getProjectArea(projectarea_name)
+            projectarea_id = projectarea.id
+        else:
+            projectarea = self.getProjectAreaById(projectarea_id)
 
-        if not self.checkType(item_type):
-            self.log.error("<%s> is not a supported workitem type in %s",
-                           item_type.capitalize(), self)
-            # TODO
-            return None
-        
-        
+        itemtype = projectarea.getItemType(item_type)
 
-        pass
-        self.log.info("Start to create a %s",
-                      item_type)
+        # TODO: kwargs: need to add getKeyWord to retrieve valid info
+        if not template:
+            if not copied_from:
+                self.log.error("Please choose either-or between "
+                               "template or copied_from")
+                raise exception.EmptyAttrib("At least choose either-or "
+                                            "between template or copied_from")
+
+            self._checkMissingParamsFromWorkitem(copied_from, keep=keep,
+                                                **kwargs)
+            wi_raw = self.templater.renderFromWorkitem(copied_from,
+                                                       keep=keep,
+                                                       encoding="UTF-8",
+                                                       title=title,
+                                                       description=description,
+                                                       **kwargs)
+
+        else:
+            self._checkMissingParams(template, **kwargs)
+            wi_raw = self.templater.render(template,
+                                           title=title,
+                                           description=description,
+                                           **kwargs)
+
+        self.log.info("Start to create a new <%s> with raw data: %s",
+                      item_type, wi_raw)
+
+        wi_url_post = "/".join([self.url,
+                                "/oslc/contexts",
+                                projectarea_id,
+                                "workitems/%s" % itemtype.identifier])
+        return self._createWorkitem(wi_url_post, wi_raw)
+
+    def copyWorkitem(self, copied_from, title=None, description=None,
+                     prefix=None):
+        """Create a workitem by copying from an existing one
+
+        :param copied_from: the to-be-copied workitem id
+        :param title: the new workitem title.
+            If None, will copy that from to-be-copied workitem
+        :param description: the new workitem description.
+            If None, will copy that from to-be-copied workitem
+        :param prefix: used to add a prefix to the copied title and
+            description
+        """
+
+        copied_wi = self.getWorkitem(copied_from)
+        if title is None:
+            title = copied_wi.title
+            if prefix is not None:
+                title = prefix + title
+
+        if description is None:
+            description = copied_wi.description
+            if prefix is not None:
+                description = prefix + description
+
+        self.log.info("Start to create a new <Workitem>, copied from ",
+                      "<Workitem %s>", copied_from)
+
+        wi_url_post = "/".join([self.url,
+                                "oslc/contexts/%s" % copied_wi.contextId,
+                                "workitems",
+                                "%s" % copied_wi.type.split("/")[-1]])
+        wi_raw = self.templater.renderFromWorkitem(copied_from,
+                                                   keep=True,
+                                                   encoding="UTF-8",
+                                                   title=title,
+                                                   description=description)
+        return self._createWorkitem(wi_url_post, wi_raw)
+
+    def _createWorkitem(self, url_post, workitem_raw):
+        headers = copy.deepcopy(self.headers)
+        headers['Content-Type'] = RTCClient.OSLC_CR_XML
+
+        resp = self.post(url_post, verify=False,
+                         headers=headers, data=workitem_raw)
+
+        raw_data = xmltodict.parse(resp.content)
+        workitem_raw = raw_data["oslc_cm:ChangeRequest"]
+        workitem_id = workitem_raw["dc:identifier"]
+        workitem_url = "/".join([self.url,
+                                 "oslc/workitems/%s" % workitem_id])
+        new_wi = Workitem(workitem_url,
+                          self,
+                          workitem_id=workitem_id,
+                          raw_data=raw_data["oslc_cm:ChangeRequest"])
+
+        self.log.info("Successfully create <Workitem %s>" % new_wi)
+        return new_wi
+
+    def _checkMissingParams(self, template, **kwargs):
+        """Check the missing parameters for rendering from the template file
+        """
+
+        parameters = self.listFields(template)
+        self._findMissingParams(parameters, **kwargs)
+
+    def _checkMissingParamsFromWorkitem(self, copied_from, keep=False,
+                                        **kwargs):
+        """Check the missing parameters for rendering directly from the
+        copied workitem
+        """
+
+        parameters = self.listFieldsFromWorkitem(copied_from,
+                                                 keep=keep)
+        self._findMissingParams(parameters, **kwargs)
+
+    def _findMissingParams(self, parameters, **kwargs):
+        known_parameters = ["title", "description"]
+        for known_parameter in known_parameters:
+            try:
+                parameters.remove(known_parameter)
+            except KeyError:
+                continue
+
+        input_attributes = set(kwargs.keys())
+        missing_attributes = parameters.difference(input_attributes)
+        if not missing_attributes:
+            error_msg = "Missing Parameters: %s" % list(missing_attributes)
+            self.log.error(error_msg)
+            raise exception.EmptyAttrib(error_msg)
+        else:
+            self.log.debug("No missing parameters")
 
     def checkType(self, item_type, projectarea_id):
         """Check the validity of workitem type
 
-        :param item_type: the type of the workitem (e.g. task/defect/issue)
+        :param item_type: the type of the workitem (e.g. Story/Defect/Epic)
         :param projectarea_id: the project area id
         :return: True or False
         :rtype: bool
