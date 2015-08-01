@@ -4,12 +4,16 @@ import xmltodict
 import os
 import jinja2
 from rtcclient import exception
+from rtcclient import _search_path
 
 
-class Template(RTCBase):
-    log = logging.getLogger("template.Template")
+class Templater(RTCBase):
+    """A wrapped class used to generate and render templates
+    from copied workitems"""
 
-    def __init__(self, rtc_obj, searchpath="./templates"):
+    log = logging.getLogger("template.Templater")
+
+    def __init__(self, rtc_obj, searchpath=_search_path):
         self.rtc_obj = rtc_obj
         RTCBase.__init__(self, self.rtc_obj.url)
         self.searchpath = searchpath
@@ -18,7 +22,7 @@ class Template(RTCBase):
                                               trim_blocks=True)
 
     def __str__(self):
-        return "Template for %s" % self.rtc_obj
+        return "Templater for %s" % self.rtc_obj
 
     def get_rtc_obj(self):
         return self.rtc_obj
@@ -30,88 +34,158 @@ class Template(RTCBase):
             The template is actually a file, which is usually generated
             by `Template.getTemplate()` and can also be modified by user
             accordingly.
-        :param kwargs: The kwargs dict used to fill the template
+        :param kwargs: The kwargs dict used to fill the template.
             These two parameter are mandatory:
-            * description
-            * title
+                * description
+                * title
 
-            below parameters are mandatory if keep (parameter in
+            Some of below parameters (which may not be included in some
+            customized workitem type ) are mandatory if `keep` (parameter in
             `Template.getTemplate`) is set to False; optional for otherwise
-            * teamArea_name (Team Area)
-            * ownedBy (Owned By)
-            * plannedFor(Planned For)
-            * severity(Severity)
-            * priority(Priority)
-            * filedAgainst(Filed Against)
+                * teamArea_name (Team Area)
+                * ownedBy (Owned By)
+                * plannedFor(Planned For)
+                * severity(Severity)
+                * priority(Priority)
+                * filedAgainst(Filed Against)
+
+            Actually all these needed keywords/attributes/fields can be
+            retrieved by `Template.listFields`
+
+        :return: a string object
+        :rtype: string
         """
 
         temp = self.environment.get_template(template)
         return temp.render(**kwargs)
 
-    def renderFromWorkitem(self, workitem_id, keep=False,
+    def renderFromWorkitem(self, copied_from, keep=False,
                            encoding="UTF-8", **kwargs):
-        """Render the template directly from some certain workitem without
-        saving to a file
+        """Render the template directly from some to-be-copied workitem
+        without saving to a file
 
-        :param workitem_id: the copied workitem id
-        :param keep (default is False): If True, below fields will remain
-            unchangeable with the copied workitem.
-                * Team Area
-                * Owned By
-                * Planned For
-                * Severity
-                * Priority
-                * Filed Against
+        :param copied_from: the to-be-copied workitem id
+        :param keep (default is False): If True, some of the below fields
+            will remain unchangeable with the to-be-copied workitem.
             otherwise for False
+                * teamArea_name (Team Area)
+                * ownedBy (Owned By)
+                * plannedFor(Planned For)
+                * severity(Severity)
+                * priority(Priority)
+                * filedAgainst(Filed Against)
         :param encoding (default is "UTF-8"): coding format
         :param kwargs: The kwargs dict used to fill the template
             These two parameter are mandatory:
-            * description
-            * title
+                * description
+                * title
 
-            below parameters are mandatory if keep is set to False; optional
-            for otherwise
-            * teamArea_name (Team Area)
-            * ownedBy (Owned By)
-            * plannedFor(Planned For)
-            * severity(Severity)
-            * priority(Priority)
-            * filedAgainst(Filed Against)
+            Some of below parameters (which may not be included in some
+            customized workitem type ) are mandatory if `keep` is set to
+            False; optional for otherwise
+                * teamArea_name (Team Area)
+                * ownedBy (Owned By)
+                * plannedFor(Planned For)
+                * severity(Severity)
+                * priority(Priority)
+                * filedAgainst(Filed Against)
+
+            Actually all these needed keywords/attributes/fields can be
+            retrieved by `Template.listFieldsFromWorkitem`
+
+        :return: the string
+        :rtype: string
         """
 
-        temp = jinja2.Template(self.getTemplate(workitem_id,
+        temp = jinja2.Template(self.getTemplate(copied_from,
                                                 template_name=None,
                                                 template_folder=None,
                                                 keep=keep,
                                                 encoding=encoding))
         return temp.render(**kwargs)
 
-    def getTemplate(self, workitem_id, template_name=None,
-                    template_folder=None,
-                    keep=False, encoding="UTF-8"):
-        """Get template from some certain workitem
+    def listFields(self, template):
+        """List all the attributes to be rendered from the template file
+
+        :param template: The template to render.
+            The template is actually a file, which is usually generated
+            by `Template.getTemplate()` and can also be modified by user
+            accordingly.
+        :return: a set contains all the needed attributes
+        :rtype: set
+        """
+
+        temp_source = self.environment.loader.get_source(self.environment,
+                                                         template)
+        return self.listFieldsFromSource(temp_source)
+
+    def listFieldsFromWorkitem(self, copied_from, keep=False):
+        """List all the attributes to be rendered directly from some
+        to-be-copied workitem
+
+        :param copied_from: the to-be-copied workitem id
+        :param keep (default is False): If True, some of below parameters
+            (which will not be included in some customized workitem type )
+            will remain unchangeable with the to-be-copied workitem.
+            otherwise for False
+                * teamArea_name (Team Area)
+                * ownedBy (Owned By)
+                * plannedFor(Planned For)
+                * severity(Severity)
+                * priority(Priority)
+                * filedAgainst(Filed Against)
+        :return: a set contains all the needed attributes
+        :rtype: set
+        """
+
+        temp_source = self.getTemplate(copied_from,
+                                       template_name=None,
+                                       template_folder=None,
+                                       keep=keep)
+        return self.listFieldsFromSource(temp_source)
+
+    def listFieldsFromSource(self, template_source):
+        """List all the attributes to be rendered directly from template
+        source
+
+        :param template_source: the template source (usually means the
+            template content in string format)
+        :return: a set contains all the needed attributes
+        :rtype: set
+        """
+
+        ast = self.environment.parse(template_source)
+        return jinja2.meta.find_undeclared_variables(ast)
+
+    def getTemplate(self, copied_from, template_name=None,
+                    template_folder=None, keep=False, encoding="UTF-8"):
+        """Get template from some to-be-copied workitem
 
         The resulting XML document is returned as a string, but if
         `template_name` (a string value) is specified,
         it is written there instead.
 
-        :param workitem_id: the copied workitem id
+        :param copied_from: the to-be-copied workitem id
         :param template_name: the template file name
         :param template_folder: the folder to store template file
-        :param keep (default is False): If True, below fields will remain
-            unchangeable with the copied workitem.
-                * Team Area
-                * Owned By
-                * Planned For
-                * Severity
-                * Priority
-                * Filed Against
+        :param keep (default is False): If True, some of below parameters
+            (which may not be included in some customized workitem type )
+            will remain unchangeable with the to-be-copied workitem.
             otherwise for False
+                * teamArea_name (Team Area)
+                * ownedBy (Owned By)
+                * plannedFor(Planned For)
+                * severity(Severity)
+                * priority(Priority)
+                * filedAgainst(Filed Against)
         :param encoding (default is "UTF-8"): coding format
+        :return:
+            * string object: if `template_name` is not specified
+            * write the template to file `template_name`
         """
 
         self.log.info("Fetch the template from <Workitem %s> with [keep]=%s",
-                      workitem_id, keep)
+                      copied_from, keep)
 
         if template_folder is None:
             template_folder = self.searchpath
@@ -126,7 +200,7 @@ class Template(RTCBase):
             output = None
 
         workitem_url = "/".join([self.url,
-                                 "oslc/workitems/%s" % workitem_id])
+                                 "oslc/workitems/%s" % copied_from])
         resp = self.get(workitem_url,
                         verify=False,
                         headers=self.rtc_obj.headers)
@@ -170,10 +244,11 @@ class Template(RTCBase):
                 self.log.debug("Successfully remove field [%s] from the "
                                "template originated from <Workitem %s>",
                                remove_field,
-                               workitem_id)
+                               copied_from)
             except:
                 self.log.warning("No field named [%s] in this template "
-                                 "from <Workitem %s>", remove_field, workitem_id)
+                                 "from <Workitem %s>", remove_field,
+                                 copied_from)
                 continue
 
         wk_raw_data["dc:description"] = "{{ description }}"
@@ -232,18 +307,18 @@ class Template(RTCBase):
 
     def getTemplates(self, workitems, template_folder=None,
                      template_names=None, keep=False, encoding="UTF-8"):
-        """Get templates from a group of workitems and write them to files
-        named in template_names respectively.
+        """Get templates from a group of to-be-copied workitems and write
+        them to files named after the names in `template_names` respectively.
 
         :param workitems: a list/tuple/set contains the IDs of
-            copied workitems
+            some to-be-copied workitems
         :param template_names: a list/tuple/set contains the template file
             names from copied workitems.
             If None, the file names will be named after the workitem ID with
             ".template" as a postfix
-        :param template_folder: refer to Template.getTemplate
-        :param keep (default is False): refer to Template.getTemplate
-        :param encoding (default is "UTF-8"): refer to Template.getTemplate
+        :param template_folder: refer to `Template.getTemplate`
+        :param keep (default is False): refer to `Template.getTemplate`
+        :param encoding (default is "UTF-8"): refer to `Template.getTemplate`
         """
 
         if template_names is not None:
