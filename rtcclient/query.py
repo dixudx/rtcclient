@@ -70,6 +70,7 @@ class Query(RTCBase):
 
         workitems_list = list()
 
+        # TODO: self.rtc_obj._get_paged_resources
         # for queries with workitems in several pages
         while True:
             workitems = (workitems_raw_info.get("oslc_cm:Collection")

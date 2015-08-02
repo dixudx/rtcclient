@@ -1,14 +1,16 @@
 from rtcclient.base import RTCBase
 import xmltodict
 from rtcclient import exception
-from rtcclient.project_area import ProjectArea
+from rtcclient.project_area import ProjectArea, TeamArea, Member
+from rtcclient.project_area import PlannedFor, FiledAgainst, FoundIn
+from rtcclient.project_area import Severity, Priority
 from rtcclient.workitem import Workitem
 import logging
-from rtcclient import urlquote, urlencode
-from rtcclient import OrderedDict
+from rtcclient import urlparse, urlquote, urlencode, OrderedDict
 import copy
 from rtcclient.template import Templater
 from rtcclient import _search_path
+# import urlparse
 
 
 class RTCClient(RTCBase):
@@ -73,6 +75,8 @@ class RTCClient(RTCBase):
         pass
         """
 
+        # TODO: compare _get_paged_resources: different contents
+        # TODO: oslc/projectareas?oslc_cm.pageSize=50&_startIndex=0
         self.log.info("Get all the ProjectAreas")
 
         proj_areas_url = "/".join([self.url,
@@ -121,7 +125,7 @@ class RTCClient(RTCBase):
         self.log.error("No ProjectArea named %s", projectarea_name)
         raise exception.NotFound("No ProjectArea named %s" % projectarea_name)
 
-    def getProjectAreaById(self, projectarea_id):
+    def getProjectAreaByID(self, projectarea_id):
         """Get <ProjectArea> object by its id
 
         :param projectarea_id: the project area id
@@ -161,7 +165,32 @@ class RTCClient(RTCBase):
         proj_area = self.getProjectArea(projectarea_name)
         if proj_area:
             return proj_area.id
-        return None
+        raise exception.NotFound("No ProjectArea named %s" % projectarea_name)
+
+    def getProjectAreaIDs(self, projectarea_name=None):
+        """Get <ProjectArea> id by projectarea name
+
+        If `projectarea_name` is None, all the ProjectArea IDs
+        will be returned.
+
+        :param projectarea_name: the project area name
+        :return: a list contains all the ProjectArea IDs
+        :rtype: list
+        """
+
+        projectarea_ids = list()
+        if projectarea_name:
+            projectarea_id = self.getProjectAreaID(projectarea_name)
+            projectarea_ids.append(projectarea_id)
+        elif projectarea_name is None:
+            projectareas = self.getProjectAreas()
+            projectarea_ids = [proj_area.id for proj_area in projectareas]
+        else:
+            error_msg = "Invalid ProjectArea name: [%s]" % projectarea_name
+            self.log.error(error_msg)
+            raise exception.BadValue(error_msg)
+
+        return projectarea_ids
 
     def checkProjectAreaID(self, projectarea_id):
         """Check the validity of <ProjectArea> ID
@@ -186,6 +215,314 @@ class RTCClient(RTCBase):
         self.log.error("No ProjectArea whose id is: %s",
                        projectarea_id)
         return False
+
+    def getTeamArea(self, teamarea_name, projectarea_id=None,
+                    projectarea_name=None):
+        """Get <TeamArea> object by TeamArea name
+
+        If both `projectarea_id` and `projectarea_name` are None,
+        all the TeamAreas in all ProjectAreas will be returned.
+
+        :param teamarea_name: the TeamArea name
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: the `TeamArea <TeamArea>` object
+        :rtype: projectarea.TeamArea
+        """
+
+        self.log.debug("Try to get <TeamArea %s>", teamarea_name)
+        if not teamarea_name:
+            excp_msg = "Please specify a valid TeamArea name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
+        teamareas = self.getTeamAreas(projectarea_id=projectarea_id,
+                                      projectarea_name=projectarea_name)
+        for teamarea in teamareas:
+            # TODO: check the title uniqueness
+            if teamarea.title == teamarea_name:
+                self.log.info("Find <TeamArea %s>", teamarea)
+                return teamarea
+
+        self.log.error("No TeamArea named %s", teamarea_name)
+        raise exception.NotFound("No TeamArea named %s" % teamarea_name)
+
+    def getTeamAreas(self, projectarea_id=None, projectarea_name=None):
+        """Get all <TeamArea> objects by projectarea's id or name
+
+        If both `projectarea_id` and `projectarea_name` are None,
+        all the TeamAreas in all ProjectAreas will be returned.
+
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: a list contains all the `TeamArea <TeamArea>` objects
+        :rtype: list
+        """
+
+        projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
+                                             projectarea_name=projectarea_name)
+        return self._get_paged_resources("TeamArea",
+                                         projectarea_id=projarea_id,
+                                         page_size='100')
+
+    def getOwnedBy(self, email, projectarea_id=None,
+                   projectarea_name=None):
+        # TODO: return url -> obj
+        parse_result = urlparse.urlparse(self.url)
+        new_parse_result = urlparse.ParseResult(scheme=parse_result.scheme,
+                                                netloc=parse_result.netloc,
+                                                path=urlquote(email),
+                                                params=parse_result.params,
+                                                query=parse_result.query,
+                                                fragment=parse_result.fragment)
+        return Member(urlparse.urlunparse(new_parse_result),
+                      self)
+
+    def getPlannedFor(self, plannedfor_name, projectarea_id=None,
+                      projectarea_name=None):
+        """Get <PlannedFor> object by PlannedFor name
+
+        If both `projectarea_id` and `projectarea_name` are None,
+        all the PlannedFors in all ProjectAreas will be returned.
+
+        :param plannedfor_name: the PlannedFor name
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: the `PlannedFor <PlannedFor>` object
+        :rtype: projectarea.PlannedFor
+        """
+
+        self.log.debug("Try to get <PlannedFor %s>", plannedfor_name)
+        if not plannedfor_name:
+            excp_msg = "Please specify a valid PlannedFor name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
+        plannedfors = self.getPlannedFors(projectarea_id=projectarea_id,
+                                          projectarea_name=projectarea_name)
+        for plannedfor in plannedfors:
+            if plannedfor.title == plannedfor_name:
+                self.log.info("Find <PlannedFor %s>", plannedfor)
+                return plannedfor
+
+        self.log.error("No PlannedFor named %s", plannedfor_name)
+        raise exception.NotFound("No PlannedFor named %s" % plannedfor_name)
+
+    def getPlannedFors(self, projectarea_id=None, projectarea_name=None):
+        """Get all <PlannedFor> objects by projectarea's id or name
+
+        If both `projectarea_id` and `projectarea_name` are None,
+        all the PlannedFors in all ProjectAreas will be returned.
+
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: a list contains all the `PlannedFor <PlannedFor>` objects
+        :rtype: list
+        """
+
+        projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
+                                             projectarea_name=projectarea_name)
+        return self._get_paged_resources("PlannedFor",
+                                         projectarea_id=projarea_id,
+                                         page_size='100')
+
+    def getSeverity(self, severity_name, projectarea_id=None,
+                    projectarea_name=None):
+        """Get <Severity> object by Severity name
+
+        At least either of `projectarea_id` and `projectarea_name` is given
+
+        :param severity_name: the Severity name
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: the `Severity <Severity>` object
+        :rtype: projectarea.Severity
+        """
+
+        self.log.debug("Try to get <Severity %s>", severity_name)
+        if not severity_name:
+            excp_msg = "Please specify a valid Severity name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
+        severities = self.getSeverities(projectarea_id=projectarea_id,
+                                        projectarea_name=projectarea_name)
+        for severity in severities:
+            if severity.title == severity_name:
+                self.log.info("Find <Severity %s>", severity)
+                return severity
+
+        self.log.error("No Severity named %s", severity_name)
+        raise exception.NotFound("No Severity named %s" % severity_name)
+
+    def getSeverities(self, projectarea_id=None, projectarea_name=None):
+        """Get all <Severity> objects by projectarea's id or name
+
+        At least either of `projectarea_id` and `projectarea_name` is given
+
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: a list contains all the `Severity <Severity>` objects
+        :rtype: list
+        """
+
+        projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
+                                             projectarea_name=projectarea_name)
+        if projarea_id is None:
+            self.log.error("Please input either-or between "
+                           "projectarea_id and projectarea_name")
+            raise exception.EmptyAttrib("At least input either-or between "
+                                        "projectarea_id and projectarea_name")
+        return self._get_paged_resources("Severity",
+                                         projectarea_id=projarea_id,
+                                         page_size='10')
+
+    def getPriority(self, priority_name, projectarea_id=None,
+                    projectarea_name=None):
+        """Get <Priority> object by Priority name
+
+        At least either of `projectarea_id` and `projectarea_name` is given
+
+        :param priority_name: the Priority name
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: the `Priority <Priority>` object
+        :rtype: projectarea.Priority
+        """
+
+        self.log.debug("Try to get <Priority %s>", priority_name)
+        if not priority_name:
+            excp_msg = "Please specify a valid Priority name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
+        priorities = self.getPriorities(projectarea_id=projectarea_id,
+                                        projectarea_name=projectarea_name)
+        for priority in priorities:
+            if priority.title == priority_name:
+                self.log.info("Find <Priority %s>", priority)
+                return priority
+
+        self.log.error("No Priority named %s", priority_name)
+        raise exception.NotFound("No Priority named %s" % priority_name)
+
+    def getPriorities(self, projectarea_id=None, projectarea_name=None):
+        """Get all <Priority> objects by projectarea's id or name
+
+        At least either of `projectarea_id` and `projectarea_name` is given
+
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: a list contains all the `Priority <Priority>` objects
+        :rtype: list
+        """
+
+        projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
+                                             projectarea_name=projectarea_name)
+        if projarea_id is None:
+            self.log.error("Please input either-or between "
+                           "projectarea_id and projectarea_name")
+            raise exception.EmptyAttrib("At least input either-or between "
+                                        "projectarea_id and projectarea_name")
+        return self._get_paged_resources("Priority",
+                                         projectarea_id=projarea_id,
+                                         page_size='10')
+
+    def getFoundIn(self, foundin_name, projectarea_id=None,
+                   projectarea_name=None):
+        """Get <FoundIn> object by FoundIn name
+
+        If both `projectarea_id` and `projectarea_name` are None,
+        all the FoundIns in all ProjectAreas will be returned.
+
+        :param foundin_name: the FoundIn name
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: the `FoundIn <FoundIn>` object
+        :rtype: projectarea.FoundIn
+        """
+
+        self.log.debug("Try to get <FoundIn %s>", foundin_name)
+        if not foundin_name:
+            excp_msg = "Please specify a valid PlannedFor name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
+        foundins = self.getFoundIns(projectarea_id=projectarea_id,
+                                    projectarea_name=projectarea_name)
+        for foundin in foundins:
+            if foundin.title == foundin_name:
+                self.log.info("Find <FoundIn %s>", foundin)
+                return foundin
+
+        self.log.error("No FoundIn named %s", foundin_name)
+        raise exception.NotFound("No FoundIn named %s" % foundin_name)
+
+    def getFoundIns(self, projectarea_id=None, projectarea_name=None):
+        """Get all <FoundIn> objects by projectarea's id or name
+
+        If both `projectarea_id` and `projectarea_name` are None,
+        all the FoundIns in all ProjectAreas will be returned.
+
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: a list contains all the `FoundIn <FoundIn>` objects
+        :rtype: list
+        """
+
+        projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
+                                             projectarea_name=projectarea_name)
+        return self._get_paged_resources("FoundIn",
+                                         projectarea_id=projarea_id,
+                                         page_size='100')
+
+    def getFiledAgainst(self, filedagainst_name, projectarea_id=None,
+                        projectarea_name=None):
+        """Get <FiledAgainst> object by FiledAgainst name
+
+        If both `projectarea_id` and `projectarea_name` are None,
+        all the FiledAgainsts in all ProjectAreas will be returned.
+
+        :param filedagainst_name: the FiledAgainst name
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: the `FiledAgainst <FiledAgainst>` object
+        :rtype: projectarea.FiledAgainst
+        """
+
+        self.log.debug("Try to get <FiledAgainst %s>", filedagainst_name)
+        if not filedagainst_name:
+            excp_msg = "Please specify a valid FiledAgainst name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
+        filedagainsts = self.getFiledAgainsts(projectarea_id=projectarea_id,
+                                              projectarea_name=projectarea_name)
+        for filedggainst in filedagainsts:
+            if filedggainst.title == filedagainst_name:
+                self.log.info("Find <FiledAgainst %s>", filedggainst)
+                return filedggainst
+
+        self.log.error("No FiledAgainst named %s", filedagainst_name)
+        raise exception.NotFound("No FiledAgainst named %s" % filedagainst_name)
+
+    def getFiledAgainsts(self, projectarea_id=None, projectarea_name=None):
+        """Get all <FiledAgainst> objects by projectarea's id or name
+
+        If both `projectarea_id` and `projectarea_name` are None,
+        all the FiledAgainsts in all ProjectAreas will be returned.
+
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :return: a list contains all the `FiledAgainst <FiledAgainst>` objects
+        :rtype: list
+        """
+
+        projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
+                                             projectarea_name=projectarea_name)
+        return self._get_paged_resources("FiledAgainst",
+                                         projectarea_id=projarea_id,
+                                         page_size='100')
 
     def getTemplate(self, copied_from, template_name=None,
                     template_folder=None, keep=False, encoding="UTF-8"):
@@ -264,7 +601,7 @@ class RTCClient(RTCBase):
             self.log.error(excp)
 
     def getWorkitems(self, projectarea_id=None, projectarea_name=None):
-        """Get all <Workitem> objects in some certain projectarea name
+        """Get all <Workitem> objects by projectarea's id or name
 
         If both projectarea_id and projectarea_name are None, all the workitems
         in all ProjectAreas will be returned.
@@ -279,24 +616,22 @@ class RTCClient(RTCBase):
         workitems_list = list()
         projectarea_ids = list()
         if not projectarea_id:
-            try:
-                projectarea_id = self.getProjectAreaID(projectarea_name)
-                projectarea_ids.append(projectarea_id)
-            except (exception.NotFound, exception.BadValue):
-                self.log.error("Invalid ProjectArea name")
-                self.log.warning("Fetch all workitems in all ProjectAreas")
-                projectareas = self.getProjectAreas()
-                projectarea_ids = [proj_area.id for proj_area in projectareas]
+            projectarea_ids.extend(self.getProjectAreaIDs(projectarea_name))
         else:
-            projectarea_ids.append(projectarea_id)
+            if self.checkProjectAreaID(projectarea_id):
+                projectarea_ids.append(projectarea_id)
+            else:
+                raise exception.BadValue("Invalid ProjectAred ID: %s" % projectarea_id)
 
         self.log.warning("For a single ProjectArea, only latest 1000 "
                          "workitems can be fetched. "
                          "This may be a bug of Rational Team Concert")
 
         for projarea_id in projectarea_ids:
-            workitems_list.extend(self._get_resource_collections("Workitem",
-                                                                 projarea_id))
+            workitems = self._get_paged_resources("Workitem",
+                                                  projectarea_id=projarea_id,
+                                                  page_size='100')
+            workitems_list.extend(workitems)
 
         return workitems_list
 
@@ -329,20 +664,30 @@ class RTCClient(RTCBase):
             projectarea = self.getProjectArea(projectarea_name)
             projectarea_id = projectarea.id
         else:
-            projectarea = self.getProjectAreaById(projectarea_id)
+            projectarea = self.getProjectAreaByID(projectarea_id)
 
         itemtype = projectarea.getItemType(item_type)
 
-        # TODO: kwargs: need to add getKeyWord to retrieve valid info
         if not template:
             if not copied_from:
                 self.log.error("Please choose either-or between "
-                               "template or copied_from")
+                               "template and copied_from")
                 raise exception.EmptyAttrib("At least choose either-or "
-                                            "between template or copied_from")
+                                            "between template and copied_from")
 
             self._checkMissingParamsFromWorkitem(copied_from, keep=keep,
-                                                **kwargs)
+                                                 **kwargs)
+
+            # get rdf:resource by keywords
+            for keyword in kwargs.keys():
+                try:
+                    keyword_cls = eval("self.get" + keyword.capitalize())
+                    keyword_obj = keyword_cls(kwargs[keyword],
+                                              projectarea_id=None)
+                    kwargs[keyword] = keyword_obj.url
+                except Exception, excp:
+                    self.log.error(excp)
+
             wi_raw = self.templater.renderFromWorkitem(copied_from,
                                                        keep=keep,
                                                        encoding="UTF-8",
@@ -470,7 +815,7 @@ class RTCClient(RTCBase):
         self.log.debug("Checking the validity of workitem type: %s",
                        item_type)
         try:
-            project_area = self.getProjectAreaById(projectarea_id)
+            project_area = self.getProjectAreaByID(projectarea_id)
             itemtype = project_area.getItemType(item_type)
             return True
         except (exception.NotFound, exception.BadValue):
@@ -511,30 +856,57 @@ class RTCClient(RTCBase):
                         "workitems?oslc_cm.query=%s" % urlquote(query_str)])
         return url
 
-    def _get_resource_collections(self, resource_name, projectarea_id,
-                                  page_size='100'):
+    def _pre_get_resource(self, projectarea_id=None, projectarea_name=None):
+        if projectarea_id is None:
+            if projectarea_name is not None:
+                projectarea_id = self.getProjectAreaID(projectarea_name)
+        else:
+            if not self.checkProjectAreaID(projectarea_id):
+                raise exception.BadValue("Invalid ProjectArea id")
+        return projectarea_id
 
+    def _get_paged_resources(self, resource_name, projectarea_id=None,
+                             page_size='100'):
         # TODO: multi-thread
 
-        if not projectarea_id:
+        if resource_name in ("Workitem",
+                             "Severity",
+                             "Priority") and not projectarea_id:
             self.log.error("No ProjectArea ID is specified")
             raise exception.EmptyAttrib("No ProjectArea ID")
 
         # TODO: for category/deliverable/iteration object
-        resource_map = {"Category": "categories",
-                        "Deliverable": "deliverables",
-                        "Iteration": "iterations",
-                        "Workitem": "contexts/%s/workitems" % projectarea_id}
+        resource_map = {"TeamArea": "teamareas",
+                        "FiledAgainst": "categories",
+                        "FoundIn": "deliverables",
+                        "PlannedFor": "iterations",
+                        "Workitem": "contexts/%s/workitems" % projectarea_id,
+                        "Severity": "enumerations/%s/severity" % projectarea_id,
+                        "Priority": "enumerations/%s/priority" % projectarea_id
+                        }
+
+        entry_map = {"TeamArea": "rtc_cm:Team",
+                     "FiledAgainst": "rtc_cm:Category",
+                     "FoundIn": "rtc_cm:Deliverable",
+                     "PlannedFor": "rtc_cm:Iteration",
+                     "Workitem": "oslc_cm:ChangeRequest",
+                     "Severity": "rtc_cm:Literal",
+                     "Priority": "rtc_cm:Literal"}
 
         if resource_name not in resource_map:
             self.log.error("Unsupported resource name")
-            return None
+            raise exception.BadValue("Unsupported resource name")
 
         resource_url = "".join([self.url,
                                 "/oslc/{0}?oslc_cm.pageSize={1}",
                                 "&_startIndex=0"])
         resource_url = resource_url.format(resource_map[resource_name],
                                            page_size)
+
+        pa_url = ("/".join([self.url,
+                            "oslc/projectareas",
+                            projectarea_id])
+                  if projectarea_id else None)
 
         resp = self.get(resource_url,
                         verify=False,
@@ -544,22 +916,24 @@ class RTCClient(RTCBase):
         resources_list = []
 
         while True:
-            if resource_name == "Workitem":
-                entries = (raw_data.get("oslc_cm:Collection")
-                                   .get("oslc_cm:ChangeRequest"))
-            else:
-                entries = (raw_data.get("oslc_cm:Collection")
-                                   .get("rtc_cm:%s" % resource_name))
+            entries = (raw_data.get("oslc_cm:Collection")
+                               .get(entry_map[resource_name]))
 
             # for the last single entry
             if isinstance(entries, OrderedDict):
-                resource = self._handle_resource_entry(resource_name, entries)
-                resources_list.append(resource)
+                resource = self._handle_resource_entry(resource_name,
+                                                       entries,
+                                                       projectarea_url=pa_url)
+                if resource is not None:
+                    resources_list.append(resource)
                 break
 
             for entry in entries:
-                resource = self._handle_resource_entry(resource_name, entry)
-                resources_list.append(resource)
+                resource = self._handle_resource_entry(resource_name,
+                                                       entry,
+                                                       projectarea_url=pa_url)
+                if resource is not None:
+                    resources_list.append(resource)
 
             url_next = raw_data.get('oslc_cm:Collection').get('@oslc_cm:next')
 
@@ -573,7 +947,13 @@ class RTCClient(RTCBase):
 
         return resources_list
 
-    def _handle_resource_entry(self, resource_name, entry):
+    def _handle_resource_entry(self, resource_name, entry,
+                               projectarea_url=None):
+        if projectarea_url is not None:
+            if (entry.get("rtc_cm:projectArea")
+                     .get("@rdf:resource")) != projectarea_url:
+                return None
+
         resource_cls = eval(resource_name)
         if resource_name == "Workitem":
             resource_url = entry.get("@rdf:resource")
