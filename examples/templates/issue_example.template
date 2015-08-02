@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oslc_cm:ChangeRequest xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:dc="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:calm="http://jazz.net/xmlns/prod/jazz/calm/1.0/" xmlns:rtc_cm="http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/" xmlns:oslc_pl="http://open-services.net/ns/pl#">
+	<rtc_cm:archived>false</rtc_cm:archived>
+	<rtc_cm:filedAgainst rdf:resource="{{ filedAgainst }}"></rtc_cm:filedAgainst>
+	<rtc_cm:correctedEstimate></rtc_cm:correctedEstimate>
+	<dc:description>{{ description }}</dc:description>
+	<rtc_cm:due></rtc_cm:due>
+	<rtc_cm:estimate></rtc_cm:estimate>
+	<rtc_cm:foundIn></rtc_cm:foundIn>
+	<oslc_cm:priority rdf:resource="{{ priority }}"></oslc_cm:priority>
+	<oslc_cm:severity rdf:resource="{{ severity }}"></oslc_cm:severity>
+	<dc:subject></dc:subject>
+	<rtc_cm:ownedBy rdf:resource="{{ ownedBy }}"></rtc_cm:ownedBy>
+	<dc:title>{{ title }}</dc:title>
+	<rtc_cm:plannedFor rdf:resource="{{ plannedFor }}"></rtc_cm:plannedFor>
+	<rtc_cm:teamArea rdf:resource="{{ teamArea }}"></rtc_cm:teamArea>
+</oslc_cm:ChangeRequest>

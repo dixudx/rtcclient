@@ -265,11 +265,10 @@ class Member(FieldBase):
     def get_rtc_obj(self):
         return self.rtc_obj
 
-    def __initialize(self):
-        """Request to get response
+    def _initialize(self):
+        pass
 
-        """
-        # TODO
+    def __initialize(self):
         pass
 
 
@@ -283,6 +282,108 @@ class ProjectAdmin(Member):
 
 class ItemType(FieldBase):
     log = logging.getLogger("project_area.ItemType")
+
+    def __str__(self):
+        return self.title
+
+    def get_rtc_obj(self):
+        return self.rtc_obj
+
+    def __initialize(self):
+        """Request to get response
+
+        """
+        # TODO
+        pass
+
+
+class TeamArea(FieldBase):
+    log = logging.getLogger("project_area.TeamArea")
+
+    def __str__(self):
+        return self.title
+
+    def get_rtc_obj(self):
+        return self.rtc_obj
+
+    def __initialize(self):
+        """Request to get response
+
+        """
+        # TODO
+        pass
+
+
+class PlannedFor(FieldBase):
+    log = logging.getLogger("project_area.PlannedFor")
+
+    def __str__(self):
+        return self.title
+
+    def get_rtc_obj(self):
+        return self.rtc_obj
+
+    def __initialize(self):
+        """Request to get response
+
+        """
+        # TODO
+        pass
+
+
+class FiledAgainst(FieldBase):
+    log = logging.getLogger("project_area.FiledAgainst")
+
+    def __str__(self):
+        return self.title
+
+    def get_rtc_obj(self):
+        return self.rtc_obj
+
+    def __initialize(self):
+        """Request to get response
+
+        """
+        # TODO
+        pass
+
+
+class FoundIn(FieldBase):
+    log = logging.getLogger("project_area.FoundIn")
+
+    def __str__(self):
+        return self.title
+
+    def get_rtc_obj(self):
+        return self.rtc_obj
+
+    def __initialize(self):
+        """Request to get response
+
+        """
+        # TODO
+        pass
+
+
+class Severity(FieldBase):
+    log = logging.getLogger("project_area.Severity")
+
+    def __str__(self):
+        return self.title
+
+    def get_rtc_obj(self):
+        return self.rtc_obj
+
+    def __initialize(self):
+        """Request to get response
+
+        """
+        # TODO
+        pass
+
+
+class Priority(FieldBase):
+    log = logging.getLogger("project_area.Priority")
 
     def __str__(self):
         return self.title

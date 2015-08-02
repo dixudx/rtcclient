@@ -42,7 +42,7 @@ class Templater(RTCBase):
             Some of below parameters (which may not be included in some
             customized workitem type ) are mandatory if `keep` (parameter in
             `Template.getTemplate`) is set to False; optional for otherwise
-                * teamArea_name (Team Area)
+                * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
                 * severity(Severity)
@@ -68,7 +68,7 @@ class Templater(RTCBase):
         :param keep (default is False): If True, some of the below fields
             will remain unchangeable with the to-be-copied workitem.
             otherwise for False
-                * teamArea_name (Team Area)
+                * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
                 * severity(Severity)
@@ -83,7 +83,7 @@ class Templater(RTCBase):
             Some of below parameters (which may not be included in some
             customized workitem type ) are mandatory if `keep` is set to
             False; optional for otherwise
-                * teamArea_name (Team Area)
+                * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
                 * severity(Severity)
@@ -128,7 +128,7 @@ class Templater(RTCBase):
             (which will not be included in some customized workitem type )
             will remain unchangeable with the to-be-copied workitem.
             otherwise for False
-                * teamArea_name (Team Area)
+                * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
                 * severity(Severity)
@@ -172,7 +172,7 @@ class Templater(RTCBase):
             (which may not be included in some customized workitem type )
             will remain unchangeable with the to-be-copied workitem.
             otherwise for False
-                * teamArea_name (Team Area)
+                * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
                 * severity(Severity)
@@ -262,9 +262,10 @@ class Templater(RTCBase):
                                      encoding=encoding,
                                      pretty=True)
 
-        replace_fields = [("rtc_cm:teamArea", "{{ teamArea_name }}"),
+        replace_fields = [("rtc_cm:teamArea", "{{ teamArea }}"),
                           ("rtc_cm:ownedBy", "{{ ownedBy }}"),
                           ("rtc_cm:plannedFor", "{{ plannedFor }}"),
+                          ("rtc_cm:foundIn", "{{ foundIn }}")
                           ("oslc_cm:severity", "{{ severity }}"),
                           ("oslc_cm:priority", "{{ priority }}"),
                           ("rtc_cm:filedAgainst", "{{ filedAgainst }}")]
