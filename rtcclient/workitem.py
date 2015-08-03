@@ -31,10 +31,6 @@ class Workitem(FieldBase):
 
         pass
 
-    def create(self, new_workitem):
-        # TODO
-        pass
-
     def update(self, new_workitem, state=None):
 
         # TODO
@@ -50,6 +46,15 @@ class Workitem(FieldBase):
 
     def getComments(self):
         pass
+
+    def getComment(self, url):
+        resp = self.get(url,
+                        verify=False,
+                        headers=self.rtc_obj.headers)
+        return resp.content
+#         raw_data = xmltodict.parse(resp.content).get("oslc_cm:Collection")
+#         return Comment()
+#         url, rtc_obj, raw_data=None
 
     def addComment(self, msg=None):
         """Add comment for this workitem
@@ -99,26 +104,13 @@ class Workitem(FieldBase):
                          verify=False,
                          headers=headers,
                          data=comment_msg)
-        self.log.info("Successfully add comment: %s for <Workitem %s>",
+        self.log.info("Successfully add comment: [%s] for <Workitem %s>",
                       msg, self)
 
         raw_data = xmltodict.parse(resp.content)
         return Comment(comment_url,
                        self.rtc_obj,
                        raw_data=raw_data["rtc_cm:Comment"])
-
-    def getComment(self, url):
-        headers = copy.deepcopy(self.rtc_obj.headers)
-#         headers['Content-type'] = 'application/rdf+xml'
-#         headers['Accept'] = 'application/rdf+xml'
-        resp = self.get(url, verify=False,
-                        headers=headers)
-        print resp.content
-        print str(resp.content)
-        return resp.content
-#         raw_data = xmltodict.parse(resp.content).get("oslc_cm:Collection")
-#         return Comment()
-#         url, rtc_obj, raw_data=None
 
     def addSubscribers(self, subscribers):
         """Add subscribers for this workitem
@@ -218,29 +210,6 @@ class State(FieldBase):
 
     def get_rtc_obj(self):
         return self.rtc_obj
-
-    def __initialize(self):
-        """Request to get response
-
-        """
-        pass
-
-
-class ItemScheme(FieldBase):
-    log = logging.getLogger("workitem.ItemScheme")
-
-    def __str__(self):
-        return self.title
-
-    def get_rtc_obj(self):
-        return self.rtc_obj
-
-    def getScheme(self):
-        """TODO
-
-        :return:
-        """
-        pass
 
     def __initialize(self):
         """Request to get response

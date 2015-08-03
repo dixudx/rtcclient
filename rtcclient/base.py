@@ -1,8 +1,9 @@
 import abc
 import logging
 from rtcclient import requests
-from rtcclient import OrderedDict
 import xmltodict
+from rtcclient import urlunquote, OrderedDict
+from rtcclient import exception
 
 
 class RTCBase(object):
@@ -195,26 +196,71 @@ class FieldBase(RTCBase):
         pass
 
     def __initializeFromRaw(self):
-        """Initialze from raw data (OrderedDict)
-
-        """
+        """Initialze from raw data (OrderedDict)"""
         for (key, value) in self.raw_data.iteritems():
             if key.startswith("@"):
                 continue
 
             attr = key.split(":")[-1].replace("-", "_")
             attr_list = attr.split(".")
-            # TODO: long attributes
+
+            # ignore long attributes
             if len(attr_list) > 1:
-                attr = "_".join([attr_list[-2],
-                                 attr_list[-1]])
+                # attr = "_".join([attr_list[-2],
+                #                  attr_list[-1]])
+                continue
 
             self.field_alias[attr] = key
 
-            # TODO: object not url
             if isinstance(value, OrderedDict):
                 value = value.values()[0]
+                try:
+                    value = self.__get_rdf_resource_title(value)
+                except exception.RTCException:
+                    self.log.error("Unable to handle %s", value)
             self.setattr(attr, value)
+
+    def __get_rdf_resource_title(self, rdf_url):
+        # handle for /jts/users
+        if "/jts/users" in rdf_url:
+            return urlunquote(rdf_url.split("/")[-1])
+
+        resp = self.get(rdf_url,
+                        verify=False,
+                        headers=self.rtc_obj.headers)
+        raw_data = xmltodict.parse(resp.content)
+
+        root_key = raw_data.keys()[0]
+        total_count = raw_data[root_key].get("@oslc_cm:totalCount")
+        if total_count is None:
+            return raw_data[root_key].get("dc:title")
+        else:
+            result_list = list()
+            entry_keys = [entry_key for entry_key in raw_data[root_key].keys()
+                          if not entry_key.startswith("@")]
+            for entry_key in entry_keys:
+                entries = raw_data[root_key][entry_key]
+                if isinstance(entries, OrderedDict):
+                    entry_result = self.__handle_rdf_entry(entries)
+                    result_list.append(entry_result)
+                else:
+                    for entry in entries:
+                        entry_result = self.__handle_rdf_entry(entry)
+                        result_list.append(entry_result)
+
+            if not result_list:
+                return None
+            return result_list
+
+    def __handle_rdf_entry(self, entry):
+        return_fields = ["rtc_cm:userId",
+                         "dc:title",
+                         "dc:description"]
+        subkeys = entry.keys()
+        for return_field in return_fields:
+            if return_field in subkeys:
+                return entry.get(return_field)
+        raise exception.RTCException()
 
     def setattr(self, attr, value):
         self.__setattr__(attr, value)

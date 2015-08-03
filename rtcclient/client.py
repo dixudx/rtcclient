@@ -1,9 +1,9 @@
 from rtcclient.base import RTCBase
 import xmltodict
 from rtcclient import exception
-from rtcclient.project_area import ProjectArea, TeamArea, Member
+from rtcclient.project_area import ProjectArea, TeamArea, Member, Administrator
 from rtcclient.project_area import PlannedFor, FiledAgainst, FoundIn
-from rtcclient.project_area import Severity, Priority
+from rtcclient.project_area import Severity, Priority, ItemType
 from rtcclient.workitem import Workitem
 import logging
 from rtcclient import urlparse, urlquote, urlencode, OrderedDict
@@ -67,38 +67,19 @@ class RTCClient(RTCBase):
         _headers['Accept'] = RTCBase.CONTENT_XML
         return _headers
 
-    def getProjectAreas(self):
+    def getProjectAreas(self, archived=False):
         """Get all <ProjectArea> objects
+
+        If no ProjectAreas are retrieved, None is returned.
 
         :return: A list contains all the <ProjectArea> objects
         :rtype: list
         pass
         """
 
-        # TODO: compare _get_paged_resources: different contents
-        # TODO: oslc/projectareas?oslc_cm.pageSize=50&_startIndex=0
-        self.log.info("Get all the ProjectAreas")
-
-        proj_areas_url = "/".join([self.url,
-                                   "process/project-areas"])
-        resp = self.get(proj_areas_url,
-                        verify=False,
-                        headers=self.headers)
-
-        proj_areas_list = list()
-        raw_data = xmltodict.parse(resp.content)
-        proj_areas_raw = raw_data['jp06:project-areas']['jp06:project-area']
-        if not proj_areas_raw:
-            self.log.warning("No ProjectAreas are found in <%s>", self)
-            return None
-
-        for proj_area_raw in proj_areas_raw:
-            proj_area = ProjectArea(url=proj_area_raw.get("jp06:url"),
-                                    rtc_obj=self,
-                                    raw_data=proj_area_raw,
-                                    name=proj_area_raw.get("@jp06:name"))
-            proj_areas_list.append(proj_area)
-        return proj_areas_list
+        return self._get_paged_resources("ProjectArea",
+                                         page_size="10",
+                                         archived=archived)
 
     def getProjectArea(self, projectarea_name):
         """Get <ProjectArea> object by its name
@@ -118,7 +99,7 @@ class RTCClient(RTCBase):
         proj_areas = self.getProjectAreas()
         if proj_areas is not None:
             for proj_area in proj_areas:
-                if proj_area.name == projectarea_name:
+                if proj_area.title == projectarea_name:
                     self.log.info("Find <ProjectArea %s>", proj_area)
                     return proj_area
 
@@ -238,11 +219,13 @@ class RTCClient(RTCBase):
 
         teamareas = self.getTeamAreas(projectarea_id=projectarea_id,
                                       projectarea_name=projectarea_name)
-        for teamarea in teamareas:
-            # TODO: check the title uniqueness
-            if teamarea.title == teamarea_name:
-                self.log.info("Find <TeamArea %s>", teamarea)
-                return teamarea
+
+        if teamareas is not None:
+            for teamarea in teamareas:
+                # TODO: check the title uniqueness
+                if teamarea.title == teamarea_name:
+                    self.log.info("Find <TeamArea %s>", teamarea)
+                    return teamarea
 
         self.log.error("No TeamArea named %s", teamarea_name)
         raise exception.NotFound("No TeamArea named %s" % teamarea_name)
@@ -252,6 +235,8 @@ class RTCClient(RTCBase):
 
         If both `projectarea_id` and `projectarea_name` are None,
         all the TeamAreas in all ProjectAreas will be returned.
+
+        If no TeamAreas are retrieved, None is returned.
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
@@ -300,10 +285,12 @@ class RTCClient(RTCBase):
 
         plannedfors = self.getPlannedFors(projectarea_id=projectarea_id,
                                           projectarea_name=projectarea_name)
-        for plannedfor in plannedfors:
-            if plannedfor.title == plannedfor_name:
-                self.log.info("Find <PlannedFor %s>", plannedfor)
-                return plannedfor
+
+        if plannedfors is not None:
+            for plannedfor in plannedfors:
+                if plannedfor.title == plannedfor_name:
+                    self.log.info("Find <PlannedFor %s>", plannedfor)
+                    return plannedfor
 
         self.log.error("No PlannedFor named %s", plannedfor_name)
         raise exception.NotFound("No PlannedFor named %s" % plannedfor_name)
@@ -313,6 +300,8 @@ class RTCClient(RTCBase):
 
         If both `projectarea_id` and `projectarea_name` are None,
         all the PlannedFors in all ProjectAreas will be returned.
+
+        If no PlannedFors are retrieved, None is returned.
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
@@ -347,10 +336,12 @@ class RTCClient(RTCBase):
 
         severities = self.getSeverities(projectarea_id=projectarea_id,
                                         projectarea_name=projectarea_name)
-        for severity in severities:
-            if severity.title == severity_name:
-                self.log.info("Find <Severity %s>", severity)
-                return severity
+
+        if severities is not None:
+            for severity in severities:
+                if severity.title == severity_name:
+                    self.log.info("Find <Severity %s>", severity)
+                    return severity
 
         self.log.error("No Severity named %s", severity_name)
         raise exception.NotFound("No Severity named %s" % severity_name)
@@ -359,6 +350,8 @@ class RTCClient(RTCBase):
         """Get all <Severity> objects by projectarea's id or name
 
         At least either of `projectarea_id` and `projectarea_name` is given
+
+        If no Severities are retrieved, None is returned.
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
@@ -398,10 +391,12 @@ class RTCClient(RTCBase):
 
         priorities = self.getPriorities(projectarea_id=projectarea_id,
                                         projectarea_name=projectarea_name)
-        for priority in priorities:
-            if priority.title == priority_name:
-                self.log.info("Find <Priority %s>", priority)
-                return priority
+
+        if priorities is not None:
+            for priority in priorities:
+                if priority.title == priority_name:
+                    self.log.info("Find <Priority %s>", priority)
+                    return priority
 
         self.log.error("No Priority named %s", priority_name)
         raise exception.NotFound("No Priority named %s" % priority_name)
@@ -409,7 +404,9 @@ class RTCClient(RTCBase):
     def getPriorities(self, projectarea_id=None, projectarea_name=None):
         """Get all <Priority> objects by projectarea's id or name
 
-        At least either of `projectarea_id` and `projectarea_name` is given
+        At least either of `projectarea_id` and `projectarea_name` is given.
+
+        If no Priorities are retrieved, None is returned.
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
@@ -450,10 +447,12 @@ class RTCClient(RTCBase):
 
         foundins = self.getFoundIns(projectarea_id=projectarea_id,
                                     projectarea_name=projectarea_name)
-        for foundin in foundins:
-            if foundin.title == foundin_name:
-                self.log.info("Find <FoundIn %s>", foundin)
-                return foundin
+
+        if foundins is not None:
+            for foundin in foundins:
+                if foundin.title == foundin_name:
+                    self.log.info("Find <FoundIn %s>", foundin)
+                    return foundin
 
         self.log.error("No FoundIn named %s", foundin_name)
         raise exception.NotFound("No FoundIn named %s" % foundin_name)
@@ -463,6 +462,8 @@ class RTCClient(RTCBase):
 
         If both `projectarea_id` and `projectarea_name` are None,
         all the FoundIns in all ProjectAreas will be returned.
+
+        If no FoundIns are retrieved, None is returned.
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
@@ -498,10 +499,12 @@ class RTCClient(RTCBase):
 
         filedagainsts = self.getFiledAgainsts(projectarea_id=projectarea_id,
                                               projectarea_name=projectarea_name)
-        for filedggainst in filedagainsts:
-            if filedggainst.title == filedagainst_name:
-                self.log.info("Find <FiledAgainst %s>", filedggainst)
-                return filedggainst
+
+        if filedagainsts is not None:
+            for filedggainst in filedagainsts:
+                if filedggainst.title == filedagainst_name:
+                    self.log.info("Find <FiledAgainst %s>", filedggainst)
+                    return filedggainst
 
         self.log.error("No FiledAgainst named %s", filedagainst_name)
         raise exception.NotFound("No FiledAgainst named %s" % filedagainst_name)
@@ -511,6 +514,8 @@ class RTCClient(RTCBase):
 
         If both `projectarea_id` and `projectarea_name` are None,
         all the FiledAgainsts in all ProjectAreas will be returned.
+
+        If no FiledAgainsts are retrieved, None is returned.
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
@@ -597,14 +602,16 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
         except Exception, excp:
-            # TODO: invalid token for all get resp
             self.log.error(excp)
+            raise exception.NotFound("Not found <Workitem %s>", workitem_id)
 
     def getWorkitems(self, projectarea_id=None, projectarea_name=None):
         """Get all <Workitem> objects by projectarea's id or name
 
         If both projectarea_id and projectarea_name are None, all the workitems
         in all ProjectAreas will be returned.
+
+        If no Workitems are retrieved, None is returned.
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
@@ -621,7 +628,8 @@ class RTCClient(RTCBase):
             if self.checkProjectAreaID(projectarea_id):
                 projectarea_ids.append(projectarea_id)
             else:
-                raise exception.BadValue("Invalid ProjectAred ID: %s" % projectarea_id)
+                raise exception.BadValue("Invalid ProjectAred ID: "
+                                         "%s" % projectarea_id)
 
         self.log.warning("For a single ProjectArea, only latest 1000 "
                          "workitems can be fetched. "
@@ -633,6 +641,8 @@ class RTCClient(RTCBase):
                                                   page_size='100')
             workitems_list.extend(workitems)
 
+        if not workitems_list:
+            return None
         return workitems_list
 
     def createWorkitem(self, item_type, title, description=None,
@@ -677,17 +687,8 @@ class RTCClient(RTCBase):
 
             self._checkMissingParamsFromWorkitem(copied_from, keep=keep,
                                                  **kwargs)
-
-            # get rdf:resource by keywords
-            for keyword in kwargs.keys():
-                try:
-                    keyword_cls = eval("self.get" + keyword.capitalize())
-                    keyword_obj = keyword_cls(kwargs[keyword],
-                                              projectarea_id=None)
-                    kwargs[keyword] = keyword_obj.url
-                except Exception, excp:
-                    self.log.error(excp)
-
+            kwargs = self._retrieveValidInfo(projectarea_id,
+                                             **kwargs)
             wi_raw = self.templater.renderFromWorkitem(copied_from,
                                                        keep=keep,
                                                        encoding="UTF-8",
@@ -697,6 +698,8 @@ class RTCClient(RTCBase):
 
         else:
             self._checkMissingParams(template, **kwargs)
+            kwargs = self._retrieveValidInfo(projectarea_id,
+                                             **kwargs)
             wi_raw = self.templater.render(template,
                                            title=title,
                                            description=description,
@@ -749,6 +752,10 @@ class RTCClient(RTCBase):
                                                    description=description)
         return self._createWorkitem(wi_url_post, wi_raw)
 
+    def updateWorkitem(self):
+        pass
+        #TODO
+
     def _createWorkitem(self, url_post, workitem_raw):
         headers = copy.deepcopy(self.headers)
         headers['Content-Type'] = RTCClient.OSLC_CR_XML
@@ -786,6 +793,18 @@ class RTCClient(RTCBase):
                                                  keep=keep)
         self._findMissingParams(parameters, **kwargs)
 
+    def _retrieveValidInfo(self, projectarea_id, **kwargs):
+        # get rdf:resource by keywords
+        for keyword in kwargs.keys():
+            try:
+                keyword_cls = eval("self.get" + keyword.capitalize())
+                keyword_obj = keyword_cls(kwargs[keyword],
+                                          projectarea_id=projectarea_id)
+                kwargs[keyword] = keyword_obj.url
+            except Exception, excp:
+                self.log.error(excp)
+        return kwargs
+
     def _findMissingParams(self, parameters, **kwargs):
         known_parameters = ["title", "description"]
         for known_parameter in known_parameters:
@@ -816,26 +835,13 @@ class RTCClient(RTCBase):
                        item_type)
         try:
             project_area = self.getProjectAreaByID(projectarea_id)
-            itemtype = project_area.getItemType(item_type)
-            return True
+            if project_area.getItemType(item_type):
+                return True
+            else:
+                return False
         except (exception.NotFound, exception.BadValue):
             self.log.error("Invalid ProjectArea name")
             return False
-
-    def getScheme(self, item_type):
-        """Get the scheme for the certain workitem type, including some
-        optional and mandatory fields/parameters
-
-        TODO
-        :param item_type: the type of the workitem (e.g. task/defect/issue)
-        :return: :class:`ItemScheme <ItemScheme>` object
-        :rtype: workitem.ItemScheme
-        """
-
-        # TODO
-        self.log.debug("Get the scheme for workitem %s",
-                       item_type)
-        pass
 
     def get_query_url(self, projectarea_id=None, projectarea_name=None,
                       query_str=""):
@@ -866,29 +872,46 @@ class RTCClient(RTCBase):
         return projectarea_id
 
     def _get_paged_resources(self, resource_name, projectarea_id=None,
-                             page_size='100'):
+                             page_size='100', archived=False):
         # TODO: multi-thread
+
+        self.log.debug("Start to fetch all %ss with [ProjectArea ID: %s] "
+                       "and [archived=%s]",
+                       resource_name,
+                       projectarea_id if projectarea_id else "not specified",
+                       archived)
 
         if resource_name in ("Workitem",
                              "Severity",
-                             "Priority") and not projectarea_id:
+                             "Priority",
+                             "Member",
+                             "Administrator",
+                             "Type") and not projectarea_id:
             self.log.error("No ProjectArea ID is specified")
             raise exception.EmptyAttrib("No ProjectArea ID")
 
         # TODO: for category/deliverable/iteration object
         resource_map = {"TeamArea": "teamareas",
+                        "ProjectArea": "projectareas",
                         "FiledAgainst": "categories",
                         "FoundIn": "deliverables",
                         "PlannedFor": "iterations",
+                        "ItemType": "types/%s" % projectarea_id,
+                        "Member": "projectareas/%s/rtc_cm:members" % projectarea_id,
+                        "Administrator": "projectareas/%s/rtc_cm:administrators" % projectarea_id,
                         "Workitem": "contexts/%s/workitems" % projectarea_id,
                         "Severity": "enumerations/%s/severity" % projectarea_id,
                         "Priority": "enumerations/%s/priority" % projectarea_id
                         }
 
         entry_map = {"TeamArea": "rtc_cm:Team",
+                     "ProjectArea": "rtc_cm:Project",
                      "FiledAgainst": "rtc_cm:Category",
                      "FoundIn": "rtc_cm:Deliverable",
                      "PlannedFor": "rtc_cm:Iteration",
+                     "ItemType": "rtc_cm:Type",
+                     "Member": "rtc_cm:User",
+                     "Administrator": "rtc_cm:User",
                      "Workitem": "oslc_cm:ChangeRequest",
                      "Severity": "rtc_cm:Literal",
                      "Priority": "rtc_cm:Literal"}
@@ -913,6 +936,16 @@ class RTCClient(RTCBase):
                         headers=self.headers)
         raw_data = xmltodict.parse(resp.content)
 
+        try:
+            total_count = int(raw_data.get("oslc_cm:Collection")
+                                      .get("oslc_cm:totalCount"))
+            if total_count == 0:
+                self.log.warning("No %ss are found",
+                                 resource_name)
+                return None
+        except:
+            pass
+
         resources_list = []
 
         while True:
@@ -923,7 +956,8 @@ class RTCClient(RTCBase):
             if isinstance(entries, OrderedDict):
                 resource = self._handle_resource_entry(resource_name,
                                                        entries,
-                                                       projectarea_url=pa_url)
+                                                       projectarea_url=pa_url,
+                                                       archived=archived)
                 if resource is not None:
                     resources_list.append(resource)
                 break
@@ -931,7 +965,8 @@ class RTCClient(RTCBase):
             for entry in entries:
                 resource = self._handle_resource_entry(resource_name,
                                                        entry,
-                                                       projectarea_url=pa_url)
+                                                       projectarea_url=pa_url,
+                                                       archived=archived)
                 if resource is not None:
                     resources_list.append(resource)
 
@@ -945,14 +980,28 @@ class RTCClient(RTCBase):
             else:
                 break
 
+        if not resources_list:
+            self.log.warning("No %ss are found with [ProjectArea ID: %s] "
+                             "and [archived=%s]",
+                             resource_name,
+                             projectarea_id if projectarea_id
+                             else "not specified",
+                             archived)
+            return None
+
         return resources_list
 
     def _handle_resource_entry(self, resource_name, entry,
-                               projectarea_url=None):
+                               projectarea_url=None, archived=False):
         if projectarea_url is not None:
             if (entry.get("rtc_cm:projectArea")
                      .get("@rdf:resource")) != projectarea_url:
                 return None
+
+        entry_archived = entry.get("rtc_cm:archived")
+        if (entry_archived is not None and
+                eval(entry_archived.capitalize()) != archived):
+            return None
 
         resource_cls = eval(resource_name)
         if resource_name == "Workitem":

@@ -8,28 +8,27 @@ from rtcclient import exception
 class ProjectArea(FieldBase):
     log = logging.getLogger("project_area.ProjectArea")
 
-    def __init__(self, url, rtc_obj, raw_data=None, name=None):
+    def __init__(self, url, rtc_obj, raw_data=None):
         FieldBase.__init__(self, url, rtc_obj, raw_data)
-        self.name = name
         # TODO: for new projectarea obj, self.url may be None
         self.id = self.url.split("/")[-1]
 
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_rtc_obj(self):
         return self.rtc_obj
 
     def __initialize(self):
-        """Request to get response
-
-        """
+        """Request to get response"""
 
         self.log.error("For ProjectArea, raw_data is mandatory")
         raise exception.EmptyAttrib("Please input raw_data")
 
     def getRoles(self):
         """Get all Role objects in this project area
+
+        If no Roles are retrieved, None is returned.
 
         :return: a list contains all `Role <Role>` objects
         :rtype: list
@@ -38,7 +37,9 @@ class ProjectArea(FieldBase):
 
         self.log.info("Get all the roles in <ProjectArea %s>",
                       self)
-        resp = self.get(self.roles_url,
+        roles_url = "".join([self.url,
+                             "process/project-areas/%s/roles" % self.id])
+        resp = self.get(roles_url,
                         verify=False,
                         headers=self.rtc_obj.headers)
 
@@ -82,30 +83,15 @@ class ProjectArea(FieldBase):
     def getMembers(self):
         """Get all the Member objects in this project area
 
+        If no Members are retrieved, None is returned.
+
         :return: a list contains all `Member <Member>` objects
         :rtype: list
         """
 
-        self.log.info("Get all the members in <ProjectArea %s>",
-                      self)
-        resp = self.get(self.members_url,
-                        verify=False,
-                        headers=self.rtc_obj.headers)
-
-        raw_data = xmltodict.parse(resp.content)
-        members_raw = raw_data['jp06:members']['jp06:member']
-        if not members_raw:
-            self.log.warning("There are no members in <ProjectArea %s>",
-                             self)
-            return None
-
-        members_list = list()
-        for member_raw in members_raw:
-            member = Member(member_raw.get("jp06:url"),
-                            self.rtc_obj,
-                            raw_data=member_raw)
-            members_list.append(member)
-        return members_list
+        return self.rtc_obj._get_paged_resources("Member",
+                                                 projectarea_id=self.id,
+                                                 page_size='100')
 
     def getMember(self, email):
         """Get the Member object by the email address
@@ -131,35 +117,16 @@ class ProjectArea(FieldBase):
     def getItemTypes(self):
         """Get all the ItemType objects in this project area
 
+        If no ItemTypes are retrieved, None is returned.
+
         :return: a list contains all `ItemType <ItemType>` objects
         :rtype: list
         pass
         """
 
-        self.log.info("Get all the workitem types in <ProjectArea %s>",
-                      self)
-
-        types_url = "/".join([self.rtc_obj.url,
-                              "oslc/types",
-                              self.id])
-        resp = self.get(types_url,
-                        verify=False,
-                        headers=self.rtc_obj.headers)
-
-        itemtypes_dict = dict()
-        raw_data = xmltodict.parse(resp.content)
-        itemtypes_raw = raw_data["oslc_cm:Collection"]["rtc_cm:Type"]
-        if not itemtypes_raw:
-            self.log.warning("There are no workitem types in <ProjectArea %s>",
-                             self)
-            return None
-
-        for itemtype_raw in itemtypes_raw:
-            itemtype = ItemType(itemtype_raw.get("@rdf:resource"),
-                                self.rtc_obj,
-                                raw_data=itemtype_raw)
-            itemtypes_dict[itemtype.title] = itemtype
-        return itemtypes_dict
+        return self.rtc_obj._get_paged_resources("ItemType",
+                                                 projectarea_id=self.id,
+                                                 page_size='10')
 
     def getItemType(self, title):
         """Get the ItemType object by the title
@@ -177,62 +144,44 @@ class ProjectArea(FieldBase):
                               itemtype, self)
                 return itemtype
 
-        excp_msg = "No itemtype's title is %s in <ProjectArea %s>" % (title,
+        excp_msg = "No itemtype's name is %s in <ProjectArea %s>" % (title,
                                                                       self)
         self.log.error(excp_msg)
         raise exception.NotFound(excp_msg)
 
-    def getAdmins(self):
-        """Get all the Admin objects in this project area
+    def getAdministrators(self):
+        """Get all the Administrator objects in this project area
 
-        :return: a list contains all `Admin <Admin>` objects
+        If no Administrators are retrieved, None is returned.
+
+        :return: a list contains all `Administrator <Administrator>` objects
         :rtype: list
         """
 
-        self.log.info("Get all the admins in <ProjectArea %s>",
-                      self)
+        return self.rtc_obj._get_paged_resources("Administrator",
+                                                 projectarea_id=self.id,
+                                                 page_size='10')
 
-        resp = self.get(self.admins_url,
-                        verify=False,
-                        headers=self.rtc_obj.headers)
-
-        raw_data = xmltodict.parse(resp.content)
-        admins_raw = raw_data["jp:admins"]["jp:admin"]
-
-        if not admins_raw:
-            self.log.warning("There are no admins in <ProjectArea %s>",
-                             self)
-            return None
-
-        admins_list = list()
-        for admin_raw in admins_raw:
-            admin = Admin(admin_raw.get("jp:url"),
-                          self.rtc_obj,
-                          raw_data=admin_raw)
-            admins_list.append(admin)
-
-        return admins_list
-
-    def getAdmin(self, email):
-        """Get the <Admin> object by the email address
+    def getAdministrator(self, email):
+        """Get the <Administrator> object by the email address
 
         :param email: the email addr (e.g. somebody@gmail.com)
-        :return: :class:`Admin <Admin>` object
-        :rtype: project_area.Admin
+        :return: :class:`Administrator <Administrator>` object
+        :rtype: project_area.Administrator
         """
 
-        admins = self.getAdmins()
-        if admins is not None:
-            for admin in admins:
-                if admin.email == email:
-                    self.log.info("Get <Admin %s> in <ProjectArea %s>",
-                                  admin, self)
-                    return admin
+        administrators = self.getAdministrators()
+        if administrators is not None:
+            for administrator in administrators:
+                if administrator.email == email:
+                    self.log.info("Get <Administrator %s> in <ProjectArea %s>",
+                                  administrator, self)
+                    return administrator
 
-        excp_msg = "No admin's title is %s in <ProjectArea %s>" % (email,
-                                                                   self)
-        self.log.error(excp_msg)
-        raise exception.NotFound(excp_msg)
+        msg = "No administrator's email is %s in <ProjectArea %s>" % (email,
+                                                                      self)
+        self.log.error(msg)
+        raise exception.NotFound(msg)
 
 
 class Role(FieldBase):
@@ -257,10 +206,11 @@ class Member(FieldBase):
 
     def __init__(self, url, rtc_obj, raw_data=None):
         FieldBase.__init__(self, url, rtc_obj, raw_data=raw_data)
+        # add a new attribute mainly for the un-recorded member use
         self.email = urlunquote(self.url.split("/")[-1])
 
     def __str__(self):
-        return self.email
+        return self.title
 
     def get_rtc_obj(self):
         return self.rtc_obj
@@ -272,8 +222,8 @@ class Member(FieldBase):
         pass
 
 
-class Admin(Member):
-    log = logging.getLogger("project_area.Admin")
+class Administrator(Member):
+    log = logging.getLogger("project_area.Administrator")
 
 
 class ProjectAdmin(Member):

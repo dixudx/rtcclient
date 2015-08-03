@@ -265,7 +265,7 @@ class Templater(RTCBase):
         replace_fields = [("rtc_cm:teamArea", "{{ teamArea }}"),
                           ("rtc_cm:ownedBy", "{{ ownedBy }}"),
                           ("rtc_cm:plannedFor", "{{ plannedFor }}"),
-                          ("rtc_cm:foundIn", "{{ foundIn }}")
+                          ("rtc_cm:foundIn", "{{ foundIn }}"),
                           ("oslc_cm:severity", "{{ severity }}"),
                           ("oslc_cm:priority", "{{ priority }}"),
                           ("rtc_cm:filedAgainst", "{{ filedAgainst }}")]
