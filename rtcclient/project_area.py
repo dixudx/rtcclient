@@ -20,9 +20,7 @@ class ProjectArea(FieldBase):
         return self.rtc_obj
 
     def __initialize(self):
-        """Request to get response
-
-        """
+        """Request to get response"""
 
         self.log.error("For ProjectArea, raw_data is mandatory")
         raise exception.EmptyAttrib("Please input raw_data")
