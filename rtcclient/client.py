@@ -602,8 +602,8 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
         except Exception, excp:
-            # TODO: invalid token for all get resp
             self.log.error(excp)
+            raise exception.NotFound("Not found <Workitem %s>", workitem_id)
 
     def getWorkitems(self, projectarea_id=None, projectarea_name=None):
         """Get all <Workitem> objects by projectarea's id or name
@@ -628,7 +628,8 @@ class RTCClient(RTCBase):
             if self.checkProjectAreaID(projectarea_id):
                 projectarea_ids.append(projectarea_id)
             else:
-                raise exception.BadValue("Invalid ProjectAred ID: %s" % projectarea_id)
+                raise exception.BadValue("Invalid ProjectAred ID: "
+                                         "%s" % projectarea_id)
 
         self.log.warning("For a single ProjectArea, only latest 1000 "
                          "workitems can be fetched. "
@@ -686,17 +687,8 @@ class RTCClient(RTCBase):
 
             self._checkMissingParamsFromWorkitem(copied_from, keep=keep,
                                                  **kwargs)
-
-            # get rdf:resource by keywords
-            for keyword in kwargs.keys():
-                try:
-                    keyword_cls = eval("self.get" + keyword.capitalize())
-                    keyword_obj = keyword_cls(kwargs[keyword],
-                                              projectarea_id=None)
-                    kwargs[keyword] = keyword_obj.url
-                except Exception, excp:
-                    self.log.error(excp)
-
+            kwargs = self._retrieveValidInfo(projectarea_id,
+                                             **kwargs)
             wi_raw = self.templater.renderFromWorkitem(copied_from,
                                                        keep=keep,
                                                        encoding="UTF-8",
@@ -706,6 +698,8 @@ class RTCClient(RTCBase):
 
         else:
             self._checkMissingParams(template, **kwargs)
+            kwargs = self._retrieveValidInfo(projectarea_id,
+                                             **kwargs)
             wi_raw = self.templater.render(template,
                                            title=title,
                                            description=description,
@@ -758,6 +752,10 @@ class RTCClient(RTCBase):
                                                    description=description)
         return self._createWorkitem(wi_url_post, wi_raw)
 
+    def updateWorkitem(self):
+        pass
+        #TODO
+
     def _createWorkitem(self, url_post, workitem_raw):
         headers = copy.deepcopy(self.headers)
         headers['Content-Type'] = RTCClient.OSLC_CR_XML
@@ -795,6 +793,18 @@ class RTCClient(RTCBase):
                                                  keep=keep)
         self._findMissingParams(parameters, **kwargs)
 
+    def _retrieveValidInfo(self, projectarea_id, **kwargs):
+        # get rdf:resource by keywords
+        for keyword in kwargs.keys():
+            try:
+                keyword_cls = eval("self.get" + keyword.capitalize())
+                keyword_obj = keyword_cls(kwargs[keyword],
+                                          projectarea_id=projectarea_id)
+                kwargs[keyword] = keyword_obj.url
+            except Exception, excp:
+                self.log.error(excp)
+        return kwargs
+
     def _findMissingParams(self, parameters, **kwargs):
         known_parameters = ["title", "description"]
         for known_parameter in known_parameters:
@@ -825,26 +835,13 @@ class RTCClient(RTCBase):
                        item_type)
         try:
             project_area = self.getProjectAreaByID(projectarea_id)
-            itemtype = project_area.getItemType(item_type)
-            return True
+            if project_area.getItemType(item_type):
+                return True
+            else:
+                return False
         except (exception.NotFound, exception.BadValue):
             self.log.error("Invalid ProjectArea name")
             return False
-
-    def getScheme(self, item_type):
-        """Get the scheme for the certain workitem type, including some
-        optional and mandatory fields/parameters
-
-        TODO
-        :param item_type: the type of the workitem (e.g. task/defect/issue)
-        :return: :class:`ItemScheme <ItemScheme>` object
-        :rtype: workitem.ItemScheme
-        """
-
-        # TODO
-        self.log.debug("Get the scheme for workitem %s",
-                       item_type)
-        pass
 
     def get_query_url(self, projectarea_id=None, projectarea_name=None,
                       query_str=""):
