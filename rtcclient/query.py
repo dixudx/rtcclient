@@ -9,36 +9,46 @@ from rtcclient import OrderedDict
 class Query(RTCBase):
     log = logging.getLogger("query:Query")
 
-    def __init__(self, baseurl, rtc_obj, query_str):
+    def __init__(self, rtc_obj):
         """Initialize <Query> object
 
         :param baseurl: base url for querying
         :param rtc_obj: a ref to the rtc object
-        :param query_str: a valid query string
+
         """
 
-        RTCBase.__init__(self, baseurl)
         self.rtc_obj = rtc_obj
-        self.query_str = query_str
+        RTCBase.__init__(self, self.rtc_obj.url)
 
     def __str__(self):
-        return self.query_str
+        return "Query @ %s" % self.rtc_obj
 
-    def queryWorkitems(self, projectarea_id):
-        """Query workitems with the query string
+    def get_rtc_obj(self):
+        return self.rtc_obj
 
+    def queryWorkitems(self, query_str, projectarea_id=None,
+                       projectarea_name=None):
+        """Query workitems with the query string in a certain ProjectArea
+
+        At least either of `projectarea_id` and `projectarea_name` is given
+
+        :param query_str: a valid query string
         :param projectarea_id: the project area id
-        :return: a list contains all <Workitem> objects
+        :param projectarea_name: the project area name
+        :return: a list contains the queried <Workitem> objects
         :rtype: list
         """
 
-        self.log.info("Start to query workitems with query string: %s",
-                      self.query_str)
+        pa_id = (self.rtc_obj
+                     ._pre_get_resource(projectarea_id=projectarea_id,
+                                        projectarea_name=projectarea_name))
 
-        query_str = urlquote(self.query_str)
+        self.log.info("Start to query workitems with query string: %s",
+                      query_str)
+
+        query_str = urlquote(query_str)
         query_url = "/".join([self.rtc_obj.url,
-                              "oslc/contexts",
-                              projectarea_id,
+                              "oslc/contexts/%s" % pa_id,
                               "workitems?oslc_cm.query=%s" % query_str])
 
         resp = self.get(query_url,

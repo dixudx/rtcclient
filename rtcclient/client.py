@@ -10,6 +10,7 @@ from rtcclient import urlparse, urlquote, urlencode, OrderedDict
 import copy
 from rtcclient.template import Templater
 from rtcclient import _search_path
+from rtcclient.query import Query
 # import urlparse
 
 
@@ -32,6 +33,7 @@ class RTCClient(RTCBase):
         RTCBase.__init__(self, url)
         self.headers = self._get_headers()
         self.templater = Templater(self, searchpath=searchpath)
+        self.query = Query(self)
 
     def __str__(self):
         return "RTC Server at %s" % self.url
@@ -831,25 +833,6 @@ class RTCClient(RTCBase):
             self.log.error("Invalid ProjectArea name")
             return False
 
-    def get_query_url(self, projectarea_id=None, projectarea_name=None,
-                      query_str=""):
-        """Format the query url with the query combination string
-
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :param query_str: the query combination string
-        :return: formatted query url
-        :rtype: string
-        """
-
-        if not projectarea_id:
-            projectarea_id = self.getProjectAreaID(projectarea_name)
-
-        url = "/".join([self.url,
-                        "oslc/contexts/%s" % projectarea_id,
-                        "workitems?oslc_cm.query=%s" % urlquote(query_str)])
-        return url
-
     def _pre_get_resource(self, projectarea_id=None, projectarea_name=None):
         if projectarea_id is None:
             if projectarea_name is not None:
@@ -877,7 +860,8 @@ class RTCClient(RTCBase):
                                 "Administrator",
                                 "ItemType",
                                 "Action"]
-        workitem_required = ["Comment"]
+        workitem_required = ["Comment",
+                             "Subscriber"]
         customized_required = ["Action"]
 
         if resource_name in projectarea_required and not projectarea_id:
@@ -906,6 +890,7 @@ class RTCClient(RTCBase):
                    "Severity": "enumerations/%s/severity" % projectarea_id,
                    "Priority": "enumerations/%s/priority" % projectarea_id,
                    "Comment": "workitems/%s/rtc_cm:comments" % workitem_id,
+                   "Subscriber": "workitems/%s/rtc_cm:subscribers" % workitem_id,
                    "Action": "workflows/%s/actions/%s" % (projectarea_id,
                                                           customized_attr)
                    }
@@ -922,6 +907,7 @@ class RTCClient(RTCBase):
                      "Severity": "rtc_cm:Literal",
                      "Priority": "rtc_cm:Literal",
                      "Comment": "rtc_cm:Comment",
+                     "Subscriber": "rtc_cm:User",
                      "Action": "rtc_cm:Action"}
 
         if resource_name not in res_map:
@@ -1014,7 +1000,11 @@ class RTCClient(RTCBase):
                 eval(entry_archived.capitalize()) != archived):
             return None
 
-        resource_cls = eval(resource_name)
+        if resource_name == "Subscriber":
+            resource_cls = Member
+        else:
+            resource_cls = eval(resource_name)
+
         if resource_name == "Workitem":
             resource_url = entry.get("@rdf:resource")
             resource_url = "/".join([self.url,

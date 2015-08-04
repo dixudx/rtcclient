@@ -172,9 +172,8 @@ class FieldBase(RTCBase):
     def __str__(self):
         pass
 
-    @abc.abstractmethod
     def get_rtc_obj(self):
-        pass
+        return self.rtc_obj
 
     def _initialize(self):
         """Initialize the object from the request"""

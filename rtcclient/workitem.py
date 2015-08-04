@@ -133,10 +133,13 @@ class Workitem(FieldBase):
     def getSubscribers(self):
         """Get subscribers of this workitem
 
-        :return: a list contains all the `Workitem <Workitem>` objects
+        :return: a list contains all the `Member <Member>` objects
         :rtype: list
         """
-        pass
+
+        return self.rtc_obj._get_paged_resources("Subscribers",
+                                                 workitem_id=self.identifier,
+                                                 page_size="10")
 
     def updateField(self, field):
         pass
