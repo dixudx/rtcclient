@@ -163,7 +163,7 @@ class FieldBase(RTCBase):
         self.field_alias = dict()
         self.rtc_obj = rtc_obj
         self.raw_data = raw_data
-        if raw_data:
+        if raw_data is not None:
             self.__initializeFromRaw()
         elif self.url:
             self._initialize()
@@ -189,11 +189,13 @@ class FieldBase(RTCBase):
         self.log.info("Finish the initialization for <%s %s>",
                       self.__class__.__name__, self)
 
-#     @abc.abstractmethod
     def __initialize(self, resp):
         """Initialize from the response"""
 
-        pass
+        raw_data = xmltodict.parse(resp.content)
+        root_key = raw_data.keys()[0]
+        self.raw_data = raw_data.get(root_key)
+        self.__initializeFromRaw()
 
     def __initializeFromRaw(self):
         """Initialze from raw data (OrderedDict)"""

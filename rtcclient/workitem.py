@@ -3,6 +3,9 @@ import logging
 import xmltodict
 from rtcclient import urlunquote
 import copy
+from rtcclient.project_area import Member
+from rtcclient import exception
+from requests.exceptions import HTTPError
 
 
 class Workitem(FieldBase):
@@ -14,22 +17,6 @@ class Workitem(FieldBase):
 
     def __str__(self):
         return str(self.identifier)
-
-    def get_rtc_obj(self):
-        return self.rtc_obj
-
-    def __initialize(self, resp):
-        """Initialize from the response"""
-
-        raw_data = xmltodict.parse(resp.content)
-        self.raw_data = raw_data["oslc_cm:ChangeRequest"]
-        self.__initializeFromRaw()
-
-    def getState(self):
-        """Get the workitem state
-        """
-
-        pass
 
     def update(self, new_workitem, state=None):
 
@@ -45,16 +32,38 @@ class Workitem(FieldBase):
         pass
 
     def getComments(self):
-        pass
+        """Get all <Comment> objects 
 
-    def getComment(self, url):
-        resp = self.get(url,
-                        verify=False,
-                        headers=self.rtc_obj.headers)
-        return resp.content
-#         raw_data = xmltodict.parse(resp.content).get("oslc_cm:Collection")
-#         return Comment()
-#         url, rtc_obj, raw_data=None
+        :return: a list contains all the `Comment <Comment>` objects
+        :rtype: list
+        """
+
+        return self.rtc_obj._get_paged_resources("Comment",
+                                                 workitem_id=self.identifier,
+                                                 page_size="100")
+
+    def getCommentByID(self, comment_id):
+        """Get <Comment> object by its id
+
+        :param comment_id: comment id (integer)
+        :return: `Comment <Comment>` object
+        :rtype: workitem.Comment
+        """
+
+        # check the validity of comment id
+        try:
+            comment_id = int(comment_id)
+        except (ValueError, TypeError):
+            raise exception.BadValue("Please input valid comment id")
+
+        comment_url = "/".join([self.url,
+                                "rtc_cm:comments/%s" % comment_id])
+        try:
+            return Comment(comment_url,
+                           self.rtc_obj)
+        except HTTPError:
+            self.log.error("Comment %s does not exist", comment_id)
+            raise exception.BadValue("Comment %s does not exist" % comment_id)
 
     def addComment(self, msg=None):
         """Add comment for this workitem
@@ -121,69 +130,59 @@ class Workitem(FieldBase):
         """
         pass
 
+    def getSubscribers(self):
+        """Get subscribers of this workitem
+
+        :return: a list contains all the `Workitem <Workitem>` objects
+        :rtype: list
+        """
+        pass
+
     def updateField(self, field):
         pass
 
     def getFields(self):
         pass
 
-    def getActions(self, type, projectarea_id=None,
-                   projectarea_name=None):
+    def getActions(self):
         """Get all the actions of this workitem
 
-        TODO: type
-        :param type: workitem type
-        :param projectarea_id: project area id
-        :param projectarea_name: project area name
         :return: a list contains all the `Action <Action>` objects
         :rtype: list
         """
 
-        if not projectarea_id:
-            projectarea_id = self.rtc_obj.getProjectAreaID(projectarea_name)
+        cust_attr = (self.raw_data.get("rtc_cm:state")
+                                  .get("@rdf:resource")
+                                  .split("/")[-2])
+        return self.rtc_obj._get_paged_resources("Action",
+                                                 projectarea_id=self.contextId,
+                                                 customized_attr=cust_attr,
+                                                 page_size="100")
 
-        self.log.info("Get all the actions")
-        baseurl = self.rtc_obj.url
-        actions_url = "/".join([baseurl,
-                                "oslc/workflows",
-                                projectarea_id,
-                                "actions/%s" % type])
-        resp = self.get(actions_url,
-                        verify=False,
-                        headers=self.rtc_obj.headers)
-        collects = xmltodict.parse(resp.content).get("oslc_cm:Collection")
-        total_cnt = int(collects.get("@oslc_cm:totalCount", 0))
-        if total_cnt == 0:
-            self.log.warning("No actions are found")
-            return None
-
-        actions_raw = collects.get("rtc_cm:Action")
-        actions_list = list()
-        for action_raw in actions_raw:
-            action = Action(action_raw.get("@rdf:about"), self.rtc_obj)
-            actions_list.append(action)
-        return actions_list
-
-    def getAction(self, projectarea_id, action_name):
+    def getAction(self, action_name):
         """Get <Action> object by its name
 
         TODO: projectarea_id, workitem type
-        :param projectarea_id, project area id
         :return: :class:`Action <Action>` object
         :rtype: workitem.Action
         """
 
-        actions = self.getActions(projectarea_id)
+        self.log.debug("Try to get <Action %s>", action_name)
+        if not action_name:
+            excp_msg = "Please specify a valid action name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
+        actions = self.getActions()
 
         if actions is not None:
             for action in actions:
                 if action.title == action_name:
-                    self.log.info("Get an action whose name is %s",
-                                  action_name)
+                    self.log.info("Find <Action %s>", action)
                     return action
-            self.log.error("No action's name is %s",
-                           action_name)
-            return None
+
+        self.log.error("No Action named %s", action_name)
+        raise exception.NotFound("No Action named %s" % action_name)
 
 
 class Action(FieldBase):
@@ -192,15 +191,6 @@ class Action(FieldBase):
     def __str__(self):
         return self.title
 
-    def get_rtc_obj(self):
-        return self.rtc_obj
-
-    def __initialize(self):
-        """Request to get response
-
-        """
-        pass
-
 
 class State(FieldBase):
     log = logging.getLogger("workitem.State")
@@ -208,33 +198,13 @@ class State(FieldBase):
     def __str__(self):
         return self.title
 
-    def get_rtc_obj(self):
-        return self.rtc_obj
-
-    def __initialize(self):
-        """Request to get response
-
-        """
-        pass
-
 
 class Comment(FieldBase):
     log = logging.getLogger("workitem.Comment")
 
     def __init__(self, url, rtc_obj, raw_data=None):
+        self.id = url.split("/")[-1]
         FieldBase.__init__(self, url, rtc_obj, raw_data)
-        self.id = self.url.split("/")[-1]
 
     def __str__(self):
         return self.id
-
-    def get_rtc_obj(self):
-        return self.rtc_obj
-
-    def __initialize(self, resp):
-        """Initialize from the response"""
-
-        raw_data = xmltodict.parse(resp.content)
-        self.raw_data = raw_data["rtc_cm:Comment"]
-        self.__initializeFromRaw()
-

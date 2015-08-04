@@ -24,9 +24,6 @@ class Query(RTCBase):
     def __str__(self):
         return self.query_str
 
-    def get_rtc_obj(self):
-        return self.rtc_obj
-
     def queryWorkitems(self, projectarea_id):
         """Query workitems with the query string
 

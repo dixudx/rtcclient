@@ -4,7 +4,7 @@ from rtcclient import exception
 from rtcclient.project_area import ProjectArea, TeamArea, Member, Administrator
 from rtcclient.project_area import PlannedFor, FiledAgainst, FoundIn
 from rtcclient.project_area import Severity, Priority, ItemType
-from rtcclient.workitem import Workitem
+from rtcclient.workitem import Workitem, Comment, Action
 import logging
 from rtcclient import urlparse, urlquote, urlencode, OrderedDict
 import copy
@@ -201,9 +201,6 @@ class RTCClient(RTCBase):
                     projectarea_name=None):
         """Get <TeamArea> object by TeamArea name
 
-        If both `projectarea_id` and `projectarea_name` are None,
-        all the TeamAreas in all ProjectAreas will be returned.
-
         :param teamarea_name: the TeamArea name
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
@@ -248,7 +245,7 @@ class RTCClient(RTCBase):
                                              projectarea_name=projectarea_name)
         return self._get_paged_resources("TeamArea",
                                          projectarea_id=projarea_id,
-                                         page_size='100')
+                                         page_size="100")
 
     def getOwnedBy(self, email, projectarea_id=None,
                    projectarea_name=None):
@@ -266,9 +263,6 @@ class RTCClient(RTCBase):
     def getPlannedFor(self, plannedfor_name, projectarea_id=None,
                       projectarea_name=None):
         """Get <PlannedFor> object by PlannedFor name
-
-        If both `projectarea_id` and `projectarea_name` are None,
-        all the PlannedFors in all ProjectAreas will be returned.
 
         :param plannedfor_name: the PlannedFor name
         :param projectarea_id: the project area id
@@ -313,7 +307,7 @@ class RTCClient(RTCBase):
                                              projectarea_name=projectarea_name)
         return self._get_paged_resources("PlannedFor",
                                          projectarea_id=projarea_id,
-                                         page_size='100')
+                                         page_size="100")
 
     def getSeverity(self, severity_name, projectarea_id=None,
                     projectarea_name=None):
@@ -368,7 +362,7 @@ class RTCClient(RTCBase):
                                         "projectarea_id and projectarea_name")
         return self._get_paged_resources("Severity",
                                          projectarea_id=projarea_id,
-                                         page_size='10')
+                                         page_size="10")
 
     def getPriority(self, priority_name, projectarea_id=None,
                     projectarea_name=None):
@@ -423,14 +417,11 @@ class RTCClient(RTCBase):
                                         "projectarea_id and projectarea_name")
         return self._get_paged_resources("Priority",
                                          projectarea_id=projarea_id,
-                                         page_size='10')
+                                         page_size="10")
 
     def getFoundIn(self, foundin_name, projectarea_id=None,
                    projectarea_name=None):
         """Get <FoundIn> object by FoundIn name
-
-        If both `projectarea_id` and `projectarea_name` are None,
-        all the FoundIns in all ProjectAreas will be returned.
 
         :param foundin_name: the FoundIn name
         :param projectarea_id: the project area id
@@ -475,14 +466,11 @@ class RTCClient(RTCBase):
                                              projectarea_name=projectarea_name)
         return self._get_paged_resources("FoundIn",
                                          projectarea_id=projarea_id,
-                                         page_size='100')
+                                         page_size="100")
 
     def getFiledAgainst(self, filedagainst_name, projectarea_id=None,
                         projectarea_name=None):
         """Get <FiledAgainst> object by FiledAgainst name
-
-        If both `projectarea_id` and `projectarea_name` are None,
-        all the FiledAgainsts in all ProjectAreas will be returned.
 
         :param filedagainst_name: the FiledAgainst name
         :param projectarea_id: the project area id
@@ -527,7 +515,7 @@ class RTCClient(RTCBase):
                                              projectarea_name=projectarea_name)
         return self._get_paged_resources("FiledAgainst",
                                          projectarea_id=projarea_id,
-                                         page_size='100')
+                                         page_size="100")
 
     def getTemplate(self, copied_from, template_name=None,
                     template_folder=None, keep=False, encoding="UTF-8"):
@@ -638,7 +626,7 @@ class RTCClient(RTCBase):
         for projarea_id in projectarea_ids:
             workitems = self._get_paged_resources("Workitem",
                                                   projectarea_id=projarea_id,
-                                                  page_size='100')
+                                                  page_size="100")
             workitems_list.extend(workitems)
 
         if not workitems_list:
@@ -872,7 +860,8 @@ class RTCClient(RTCBase):
         return projectarea_id
 
     def _get_paged_resources(self, resource_name, projectarea_id=None,
-                             page_size='100', archived=False):
+                             workitem_id=None, customized_attr=None,
+                             page_size="100", archived=False):
         # TODO: multi-thread
 
         self.log.debug("Start to fetch all %ss with [ProjectArea ID: %s] "
@@ -881,28 +870,45 @@ class RTCClient(RTCBase):
                        projectarea_id if projectarea_id else "not specified",
                        archived)
 
-        if resource_name in ("Workitem",
-                             "Severity",
-                             "Priority",
-                             "Member",
-                             "Administrator",
-                             "Type") and not projectarea_id:
+        projectarea_required = ["Workitem",
+                                "Severity",
+                                "Priority",
+                                "Member",
+                                "Administrator",
+                                "ItemType",
+                                "Action"]
+        workitem_required = ["Comment"]
+        customized_required = ["Action"]
+
+        if resource_name in projectarea_required and not projectarea_id:
             self.log.error("No ProjectArea ID is specified")
             raise exception.EmptyAttrib("No ProjectArea ID")
 
-        # TODO: for category/deliverable/iteration object
-        resource_map = {"TeamArea": "teamareas",
-                        "ProjectArea": "projectareas",
-                        "FiledAgainst": "categories",
-                        "FoundIn": "deliverables",
-                        "PlannedFor": "iterations",
-                        "ItemType": "types/%s" % projectarea_id,
-                        "Member": "projectareas/%s/rtc_cm:members" % projectarea_id,
-                        "Administrator": "projectareas/%s/rtc_cm:administrators" % projectarea_id,
-                        "Workitem": "contexts/%s/workitems" % projectarea_id,
-                        "Severity": "enumerations/%s/severity" % projectarea_id,
-                        "Priority": "enumerations/%s/priority" % projectarea_id
-                        }
+        if resource_name in workitem_required and not workitem_id:
+            self.log.error("No Workitem ID is specified")
+            raise exception.EmptyAttrib("No Workitem ID")
+
+        if resource_name in customized_required and not customized_attr:
+            self.log.error("No customized value is specified")
+            raise exception.EmptyAttrib("No customized value")
+
+        res_map = {"TeamArea": "teamareas",
+                   "ProjectArea": "projectareas",
+                   "FiledAgainst": "categories",
+                   "FoundIn": "deliverables",
+                   "PlannedFor": "iterations",
+                   "ItemType": "types/%s" % projectarea_id,
+                   "Member": "projectareas/%s/rtc_cm:members" % projectarea_id,
+                   "Administrator": "/".join(["projectareas",
+                                              "%s" % projectarea_id,
+                                              "rtc_cm:administrators"]),
+                   "Workitem": "contexts/%s/workitems" % projectarea_id,
+                   "Severity": "enumerations/%s/severity" % projectarea_id,
+                   "Priority": "enumerations/%s/priority" % projectarea_id,
+                   "Comment": "workitems/%s/rtc_cm:comments" % workitem_id,
+                   "Action": "workflows/%s/actions/%s" % (projectarea_id,
+                                                          customized_attr)
+                   }
 
         entry_map = {"TeamArea": "rtc_cm:Team",
                      "ProjectArea": "rtc_cm:Project",
@@ -914,16 +920,18 @@ class RTCClient(RTCBase):
                      "Administrator": "rtc_cm:User",
                      "Workitem": "oslc_cm:ChangeRequest",
                      "Severity": "rtc_cm:Literal",
-                     "Priority": "rtc_cm:Literal"}
+                     "Priority": "rtc_cm:Literal",
+                     "Comment": "rtc_cm:Comment",
+                     "Action": "rtc_cm:Action"}
 
-        if resource_name not in resource_map:
+        if resource_name not in res_map:
             self.log.error("Unsupported resource name")
             raise exception.BadValue("Unsupported resource name")
 
         resource_url = "".join([self.url,
                                 "/oslc/{0}?oslc_cm.pageSize={1}",
                                 "&_startIndex=0"])
-        resource_url = resource_url.format(resource_map[resource_name],
+        resource_url = resource_url.format(res_map[resource_name],
                                            page_size)
 
         pa_url = ("/".join([self.url,
@@ -994,9 +1002,12 @@ class RTCClient(RTCBase):
     def _handle_resource_entry(self, resource_name, entry,
                                projectarea_url=None, archived=False):
         if projectarea_url is not None:
-            if (entry.get("rtc_cm:projectArea")
-                     .get("@rdf:resource")) != projectarea_url:
-                return None
+            try:
+                if (entry.get("rtc_cm:projectArea")
+                         .get("@rdf:resource")) != projectarea_url:
+                    return None
+            except AttributeError:
+                pass
 
         entry_archived = entry.get("rtc_cm:archived")
         if (entry_archived is not None and
