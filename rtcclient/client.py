@@ -859,10 +859,12 @@ class RTCClient(RTCBase):
                                 "Member",
                                 "Administrator",
                                 "ItemType",
-                                "Action"]
+                                "Action",
+                                "Query"]
         workitem_required = ["Comment",
                              "Subscriber"]
-        customized_required = ["Action"]
+        customized_required = ["Action",
+                               "Query"]
 
         if resource_name in projectarea_required and not projectarea_id:
             self.log.error("No ProjectArea ID is specified")
@@ -892,7 +894,9 @@ class RTCClient(RTCBase):
                    "Comment": "workitems/%s/rtc_cm:comments" % workitem_id,
                    "Subscriber": "workitems/%s/rtc_cm:subscribers" % workitem_id,
                    "Action": "workflows/%s/actions/%s" % (projectarea_id,
-                                                          customized_attr)
+                                                          customized_attr),
+                   "Query": "".join(["contexts/%s/workitems" % projectarea_id,
+                                     "?oslc_cm.query=%s" % customized_attr])
                    }
 
         entry_map = {"TeamArea": "rtc_cm:Team",
@@ -908,7 +912,9 @@ class RTCClient(RTCBase):
                      "Priority": "rtc_cm:Literal",
                      "Comment": "rtc_cm:Comment",
                      "Subscriber": "rtc_cm:User",
-                     "Action": "rtc_cm:Action"}
+                     "Action": "rtc_cm:Action",
+                     "Query": "oslc_cm:ChangeRequest"
+                    }
 
         if resource_name not in res_map:
             self.log.error("Unsupported resource name")
@@ -928,14 +934,30 @@ class RTCClient(RTCBase):
         resp = self.get(resource_url,
                         verify=False,
                         headers=self.headers)
-        raw_data = xmltodict.parse(resp.content)
+
+        try:
+            raw_data = xmltodict.parse(resp.content)
+        except Exception, excp_msg:
+            # to be verified for adding page size
+
+            # mainly useful for Query
+            # For a query with many Workitems returned (usually more than one
+            # page), the raw_data is somewhat invalid. I think this is a bug
+            # of RTC
+            self.log.error(excp_msg)
+            query_new_url = resp.history[-1].url
+            self.log.debug("Switch to request the redirect url for query %s",
+                           query_new_url)
+            resp = self.get(query_new_url,
+                            verify=False,
+                            headers=self.headers)
+            raw_data = xmltodict.parse(resp.content)
 
         try:
             total_count = int(raw_data.get("oslc_cm:Collection")
                                       .get("oslc_cm:totalCount"))
             if total_count == 0:
-                self.log.warning("No %ss are found",
-                                 resource_name)
+                self.log.warning("No %ss are found", resource_name)
                 return None
         except:
             pass
@@ -956,6 +978,7 @@ class RTCClient(RTCBase):
                     resources_list.append(resource)
                 break
 
+            # iterate all the entries
             for entry in entries:
                 resource = self._handle_resource_entry(resource_name,
                                                        entry,
@@ -964,8 +987,8 @@ class RTCClient(RTCBase):
                 if resource is not None:
                     resources_list.append(resource)
 
+            # find the next page
             url_next = raw_data.get('oslc_cm:Collection').get('@oslc_cm:next')
-
             if url_next:
                 resp = self.get(url_next,
                                 verify=False,
@@ -983,6 +1006,7 @@ class RTCClient(RTCBase):
                              archived)
             return None
 
+        self.log.debug("Successfully fetching all the paged resources")
         return resources_list
 
     def _handle_resource_entry(self, resource_name, entry,
@@ -1002,10 +1026,13 @@ class RTCClient(RTCBase):
 
         if resource_name == "Subscriber":
             resource_cls = Member
+        elif resource_name == "Query":
+            resource_cls = Workitem
         else:
             resource_cls = eval(resource_name)
 
-        if resource_name == "Workitem":
+        if resource_name in ["Workitem",
+                             "Query"]:
             resource_url = entry.get("@rdf:resource")
             resource_url = "/".join([self.url,
                                      "oslc/workitems",

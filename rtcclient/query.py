@@ -12,9 +12,7 @@ class Query(RTCBase):
     def __init__(self, rtc_obj):
         """Initialize <Query> object
 
-        :param baseurl: base url for querying
         :param rtc_obj: a ref to the rtc object
-
         """
 
         self.rtc_obj = rtc_obj
@@ -51,65 +49,7 @@ class Query(RTCBase):
                               "oslc/contexts/%s" % pa_id,
                               "workitems?oslc_cm.query=%s" % query_str])
 
-        resp = self.get(query_url,
-                        verify=False,
-                        headers=self.rtc_obj.headers)
-
-        try:
-            workitems_raw_info = xmltodict.parse(resp.content)
-        except Exception, excp_msg:
-            self.log.error(excp_msg)
-            query_new_url = resp.history[-1].url
-            self.log.debug("Switch to request the redirect url %s",
-                           query_new_url)
-            resp = self.get(query_new_url,
-                            verify=False,
-                            headers=self.rtc_obj.headers)
-            workitems_raw_info = xmltodict.parse(resp.content)
-
-        total_count = int(workitems_raw_info.get("oslc_cm:Collection")
-                                            .get("@oslc_cm:totalCount"))
-
-        if total_count == 0:
-            self.log.warning("No workitems match the query string: %s",
-                             self.query_str)
-            return None
-
-        workitems_list = list()
-
-        # TODO: self.rtc_obj._get_paged_resources
-        # for queries with workitems in several pages
-        while True:
-            workitems = (workitems_raw_info.get("oslc_cm:Collection")
-                                           .get("oslc_cm:ChangeRequest"))
-
-            # the single one on the last page
-            if isinstance(workitems, OrderedDict):
-                wk = Workitem(workitems.get("@rdf:about"),
-                              self.rtc_obj,
-                              raw_data=workitems)
-                workitems_list.append(wk)
-                break
-
-            for workitem in workitems:
-                wk = Workitem(workitem.get("@rdf:about"),
-                              self.rtc_obj,
-                              raw_data=workitem)
-                workitems_list.append(wk)
-
-            url_next = (workitems_raw_info.get('oslc_cm:Collection')
-                                          .get('@oslc_cm:next'))
-
-            if url_next:
-                self.log.debug("Query request on the next page: %s",
-                               url_next)
-                resp = self.get(url_next,
-                                verify=False,
-                                headers=self.rtc_obj.headers)
-                workitems_raw_info = xmltodict.parse(resp.content)
-            else:
-                break
-
-        self.log.info("Fetch all the workitems match the query string: %s",
-                      self.query_str)
-        return workitems_list
+        return self.rtc_obj._get_paged_resources("Query",
+                                                 projectarea_id=pa_id,
+                                                 customized_attr=query_str,
+                                                 page_size="100")
