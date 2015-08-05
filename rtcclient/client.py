@@ -920,9 +920,10 @@ class RTCClient(RTCBase):
             self.log.error("Unsupported resource name")
             raise exception.BadValue("Unsupported resource name")
 
-        resource_url = "".join([self.url,
-                                "/oslc/{0}?oslc_cm.pageSize={1}",
-                                "&_startIndex=0"])
+        resource_url = "%s/oslc/{0}" % self.url
+        if resource_name != "Query":
+            resource_url = "".join([resource_url,
+                                    "?oslc_cm.pageSize={1}&_startIndex=0"])
         resource_url = resource_url.format(res_map[resource_name],
                                            page_size)
 
@@ -938,9 +939,7 @@ class RTCClient(RTCBase):
         try:
             raw_data = xmltodict.parse(resp.content)
         except Exception, excp_msg:
-            # to be verified for adding page size
-
-            # mainly useful for Query
+            # mainly used for Query
             # For a query with many Workitems returned (usually more than one
             # page), the raw_data is somewhat invalid. I think this is a bug
             # of RTC
@@ -955,7 +954,7 @@ class RTCClient(RTCBase):
 
         try:
             total_count = int(raw_data.get("oslc_cm:Collection")
-                                      .get("oslc_cm:totalCount"))
+                                      .get("@oslc_cm:totalCount"))
             if total_count == 0:
                 self.log.warning("No %ss are found", resource_name)
                 return None

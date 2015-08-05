@@ -45,9 +45,6 @@ class Query(RTCBase):
                       query_str)
 
         query_str = urlquote(query_str)
-        query_url = "/".join([self.rtc_obj.url,
-                              "oslc/contexts/%s" % pa_id,
-                              "workitems?oslc_cm.query=%s" % query_str])
 
         return self.rtc_obj._get_paged_resources("Query",
                                                  projectarea_id=pa_id,
