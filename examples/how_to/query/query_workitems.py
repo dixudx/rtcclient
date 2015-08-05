@@ -18,6 +18,12 @@ if __name__ == "__main__":
     # below query string means: query all the workitems whose title
     # is "use case 1"
     myquerystr = 'dc:title="use case 1"'
+
+    # specify the returned properties: title, id, state, owner
+    # This is optional. All properties will be returned if not specified
+    returned_prop = "dc:title,dc:identifier,rtc_cm:state,rtc_cm:ownedBy"
+
     queried_wis = myquery.queryWorkitems(query_str=myquerystr,
-                                         projectarea_name=projectarea_name)
+                                         projectarea_name=projectarea_name,
+                                         returned_properties=returned_prop)
     print queried_wis
