@@ -25,14 +25,17 @@ class Query(RTCBase):
         return self.rtc_obj
 
     def queryWorkitems(self, query_str, projectarea_id=None,
-                       projectarea_name=None):
+                       projectarea_name=None, returned_properties=None):
         """Query workitems with the query string in a certain ProjectArea
+
+        You can also customize your preferred properties to be returned
 
         At least either of `projectarea_id` and `projectarea_name` is given
 
         :param query_str: a valid query string
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
+        :param returned_properties: the returned properties that you want
         :return: a list contains the queried <Workitem> objects
         :rtype: list
         """
@@ -45,9 +48,10 @@ class Query(RTCBase):
                       query_str)
 
         query_str = urlquote(query_str)
-        query_url = "/".join([self.rtc_obj.url,
-                              "oslc/contexts/%s" % pa_id,
-                              "workitems?oslc_cm.query=%s" % query_str])
+        if returned_properties:
+            query_str = "".join([query_str,
+                                 "&oslc_cm.properties=",
+                                 urlquote(returned_properties)])
 
         return self.rtc_obj._get_paged_resources("Query",
                                                  projectarea_id=pa_id,
