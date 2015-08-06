@@ -10,7 +10,6 @@ class ProjectArea(FieldBase):
 
     def __init__(self, url, rtc_obj, raw_data):
         FieldBase.__init__(self, url, rtc_obj, raw_data)
-        # TODO: for new projectarea obj, self.url may be None
         self.id = self.url.split("/")[-1]
 
     def __str__(self):
@@ -29,13 +28,12 @@ class ProjectArea(FieldBase):
 
         :return: a list contains all `Role <Role>` objects
         :rtype: list
-        pass
         """
 
         self.log.info("Get all the roles in <ProjectArea %s>",
                       self)
-        roles_url = "".join([self.url,
-                             "process/project-areas/%s/roles" % self.id])
+        roles_url = "/".join([self.rtc_obj.url,
+                              "process/project-areas/%s/roles" % self.id])
         resp = self.get(roles_url,
                         verify=False,
                         headers=self.rtc_obj.headers)
@@ -61,7 +59,6 @@ class ProjectArea(FieldBase):
         :param label: the role label name
         :return: :class:`Role <Role>` object
         :rtype: project_area.Role
-        pass
         """
 
         roles = self.getRoles()
@@ -77,28 +74,34 @@ class ProjectArea(FieldBase):
         self.log.error(excp_msg)
         raise exception.NotFound(excp_msg)
 
-    def getMembers(self):
+    def getMembers(self, returned_properties=None):
         """Get all the Member objects in this project area
 
         If no Members are retrieved, None is returned.
 
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: a list contains all `Member <Member>` objects
         :rtype: list
         """
 
+        rp = returned_properties
         return self.rtc_obj._get_paged_resources("Member",
                                                  projectarea_id=self.id,
-                                                 page_size='100')
+                                                 page_size='100',
+                                                 returned_properties=rp)
 
-    def getMember(self, email):
+    def getMember(self, email, returned_properties=None):
         """Get the Member object by the email address
 
         :param email: the email addr (e.g. somebody@gmail.com)
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: :class:`Member <Member>` object
         :rtype: project_area.Member
         """
 
-        members = self.getMembers()
+        members = self.getMembers(returned_properties=returned_properties)
         if members is not None:
             for member in members:
                 if member.email == email:
@@ -111,29 +114,34 @@ class ProjectArea(FieldBase):
         self.log.error(excp_msg)
         raise exception.NotFound(excp_msg)
 
-    def getItemTypes(self):
+    def getItemTypes(self, returned_properties=None):
         """Get all the ItemType objects in this project area
 
         If no ItemTypes are retrieved, None is returned.
 
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: a list contains all `ItemType <ItemType>` objects
         :rtype: list
-        pass
         """
 
+        rp = returned_properties
         return self.rtc_obj._get_paged_resources("ItemType",
                                                  projectarea_id=self.id,
-                                                 page_size='10')
+                                                 page_size='10',
+                                                 returned_properties=rp)
 
-    def getItemType(self, title):
+    def getItemType(self, title, returned_properties=None):
         """Get the ItemType object by the title
 
         :param title: the title (e.g. Story/Epic/..)
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: :class:`ItemType <ItemType>` object
         :rtype: project_area.ItemType
         """
 
-        itemtypes = self.getItemTypes()
+        itemtypes = self.getItemTypes(returned_properties=returned_properties)
         if itemtypes is not None:
             if title in itemtypes:
                 itemtype = itemtypes[title]
@@ -142,32 +150,39 @@ class ProjectArea(FieldBase):
                 return itemtype
 
         excp_msg = "No itemtype's name is %s in <ProjectArea %s>" % (title,
-                                                                      self)
+                                                                     self)
         self.log.error(excp_msg)
         raise exception.NotFound(excp_msg)
 
-    def getAdministrators(self):
+    def getAdministrators(self, returned_properties=None):
         """Get all the Administrator objects in this project area
 
         If no Administrators are retrieved, None is returned.
 
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: a list contains all `Administrator <Administrator>` objects
         :rtype: list
         """
 
+        rp = returned_properties
         return self.rtc_obj._get_paged_resources("Administrator",
                                                  projectarea_id=self.id,
-                                                 page_size='10')
+                                                 page_size='10',
+                                                 returned_properties=rp)
 
-    def getAdministrator(self, email):
+    def getAdministrator(self, email, returned_properties=None):
         """Get the <Administrator> object by the email address
 
         :param email: the email addr (e.g. somebody@gmail.com)
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: :class:`Administrator <Administrator>` object
         :rtype: project_area.Administrator
         """
 
-        administrators = self.getAdministrators()
+        rp = returned_properties
+        administrators = self.getAdministrators(returned_properties=rp)
         if administrators is not None:
             for administrator in administrators:
                 if administrator.email == email:

@@ -1,9 +1,6 @@
-import xmltodict
-from rtcclient.workitem import Workitem
 from rtcclient.base import RTCBase
 import logging
 from rtcclient import urlquote
-from rtcclient import OrderedDict
 
 
 class Query(RTCBase):
@@ -28,14 +25,13 @@ class Query(RTCBase):
                        projectarea_name=None, returned_properties=None):
         """Query workitems with the query string in a certain ProjectArea
 
-        You can also customize your preferred properties to be returned
-
         At least either of `projectarea_id` and `projectarea_name` is given
 
         :param query_str: a valid query string
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
         :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: a list contains the queried <Workitem> objects
         :rtype: list
         """
@@ -46,14 +42,12 @@ class Query(RTCBase):
 
         self.log.info("Start to query workitems with query string: %s",
                       query_str)
-
         query_str = urlquote(query_str)
-        if returned_properties:
-            query_str = "".join([query_str,
-                                 "&oslc_cm.properties=",
-                                 urlquote(returned_properties)])
+        rp = returned_properties
 
-        return self.rtc_obj._get_paged_resources("Query",
-                                                 projectarea_id=pa_id,
-                                                 customized_attr=query_str,
-                                                 page_size="100")
+        return (self.rtc_obj
+                    ._get_paged_resources("Query",
+                                          projectarea_id=pa_id,
+                                          customized_attr=query_str,
+                                          page_size="100",
+                                          returned_properties=rp))
