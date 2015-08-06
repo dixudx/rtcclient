@@ -15,7 +15,18 @@ from rtcclient.query import Query
 
 
 class RTCClient(RTCBase):
-    """A wrapped class for RTC Client"""
+    """A wrapped class for RTC Client
+
+    Tips: You can also customize your preferred properties to be returned
+    by specified `returned_properties` when the called methods contain
+    this optional parameter, which can also GREATLY IMPROVE the performance
+    of this client especially for getting and querying lots of Workitems.
+
+    Important Note: `returned_properties` is an advanced parameter, the
+    returned properties can be found in `ClassInstance.field_alias.values()`,
+    e.g. `myworkitem1.field_alias.values()`. If you don't care the performance,
+    just leave it alone with None.
+    """
 
     log = logging.getLogger("client.RTCClient")
 
@@ -69,23 +80,33 @@ class RTCClient(RTCBase):
         _headers['Accept'] = RTCBase.CONTENT_XML
         return _headers
 
-    def getProjectAreas(self, archived=False):
+    def getProjectAreas(self, archived=False,
+                        returned_properties=None):
         """Get all <ProjectArea> objects
 
         If no ProjectAreas are retrieved, None is returned.
 
+        :param archived: whether the ProjectAreas are archived
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: A list contains all the <ProjectArea> objects
         :rtype: list
         pass
         """
 
+        rp = returned_properties
         return self._get_paged_resources("ProjectArea",
                                          page_size="10",
-                                         archived=archived)
+                                         archived=archived,
+                                         returned_properties=rp)
 
-    def getProjectArea(self, projectarea_name):
+    def getProjectArea(self, projectarea_name, archived=False,
+                       returned_properties=None):
         """Get <ProjectArea> object by its name
 
+        :param archived: whether the ProjectArea is archived
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :param projectarea_name: the project area name
         :return: :class:`ProjectArea <ProjectArea>` object
         :rtype: project_area.ProjectArea
@@ -98,7 +119,9 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        proj_areas = self.getProjectAreas()
+        rp = returned_properties
+        proj_areas = self.getProjectAreas(archived=archived,
+                                          returned_properties=rp)
         if proj_areas is not None:
             for proj_area in proj_areas:
                 if proj_area.title == projectarea_name:
@@ -108,10 +131,14 @@ class RTCClient(RTCBase):
         self.log.error("No ProjectArea named %s", projectarea_name)
         raise exception.NotFound("No ProjectArea named %s" % projectarea_name)
 
-    def getProjectAreaByID(self, projectarea_id):
+    def getProjectAreaByID(self, projectarea_id, archived=False,
+                           returned_properties=None):
         """Get <ProjectArea> object by its id
 
         :param projectarea_id: the project area id
+        :param archived: whether the ProjectArea is archived
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: :class:`ProjectArea <ProjectArea>` object
         :rtype: project_area.ProjectArea
         pass
@@ -124,7 +151,9 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        proj_areas = self.getProjectAreas()
+        rp = returned_properties
+        proj_areas = self.getProjectAreas(archived=archived,
+                                          returned_properties=rp)
         if proj_areas is not None:
             for proj_area in proj_areas:
                 if proj_area.id == projectarea_id:
@@ -134,10 +163,11 @@ class RTCClient(RTCBase):
         self.log.error("No ProjectArea's ID is %s", projectarea_id)
         raise exception.NotFound("No ProjectArea's ID is %s" % projectarea_id)
 
-    def getProjectAreaID(self, projectarea_name):
+    def getProjectAreaID(self, projectarea_name, archived=False):
         """Get <ProjectArea> id by projectarea name
 
         :param projectarea_name: the project area name
+        :param archived: whether the ProjectArea is archived
         :return :class `string` object
         :rtype: string
         pass
@@ -145,28 +175,31 @@ class RTCClient(RTCBase):
 
         self.log.debug("Get the ProjectArea id by its name: %s",
                        projectarea_name)
-        proj_area = self.getProjectArea(projectarea_name)
+        proj_area = self.getProjectArea(projectarea_name,
+                                        archived=archived)
         if proj_area:
             return proj_area.id
         raise exception.NotFound("No ProjectArea named %s" % projectarea_name)
 
-    def getProjectAreaIDs(self, projectarea_name=None):
+    def getProjectAreaIDs(self, projectarea_name=None, archived=False):
         """Get <ProjectArea> id by projectarea name
 
         If `projectarea_name` is None, all the ProjectArea IDs
         will be returned.
 
         :param projectarea_name: the project area name
+        :param archived: whether the ProjectAreas are archived
         :return: a list contains all the ProjectArea IDs
         :rtype: list
         """
 
         projectarea_ids = list()
         if projectarea_name:
-            projectarea_id = self.getProjectAreaID(projectarea_name)
+            projectarea_id = self.getProjectAreaID(projectarea_name,
+                                                   archived=archived)
             projectarea_ids.append(projectarea_id)
         elif projectarea_name is None:
-            projectareas = self.getProjectAreas()
+            projectareas = self.getProjectAreas(archived=archived)
             projectarea_ids = [proj_area.id for proj_area in projectareas]
         else:
             error_msg = "Invalid ProjectArea name: [%s]" % projectarea_name
@@ -175,10 +208,11 @@ class RTCClient(RTCBase):
 
         return projectarea_ids
 
-    def checkProjectAreaID(self, projectarea_id):
+    def checkProjectAreaID(self, projectarea_id, archived=False):
         """Check the validity of <ProjectArea> ID
 
         :param projectarea_id: the project area id
+        :param archived: whether the ProjectArea is archived
         :return True or False
         :rtype: bool
         """
@@ -186,7 +220,7 @@ class RTCClient(RTCBase):
         self.log.debug("Check the validity of the ProjectArea id: %s",
                        projectarea_id)
 
-        proj_areas = self.getProjectAreas()
+        proj_areas = self.getProjectAreas(archived=archived)
         if proj_areas is not None:
             for proj_area in proj_areas:
                 if proj_area.id == projectarea_id:
@@ -200,12 +234,20 @@ class RTCClient(RTCBase):
         return False
 
     def getTeamArea(self, teamarea_name, projectarea_id=None,
-                    projectarea_name=None):
+                    projectarea_name=None, archived=False,
+                    returned_properties=None):
         """Get <TeamArea> object by TeamArea name
 
+        If ProjectArea id or name is specified, then the matched TeamArea in
+        that ProjectArea will be returned.
+        Otherwise, return the first found TeamArea with that name.
+
         :param teamarea_name: the TeamArea name
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
+        :param projectarea_id: the ProjectArea id
+        :param projectarea_name: the ProjectArea name
+        :param archived: whether the TeamArea is archived
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: the `TeamArea <TeamArea>` object
         :rtype: projectarea.TeamArea
         """
@@ -217,7 +259,9 @@ class RTCClient(RTCBase):
             raise exception.BadValue(excp_msg)
 
         teamareas = self.getTeamAreas(projectarea_id=projectarea_id,
-                                      projectarea_name=projectarea_name)
+                                      projectarea_name=projectarea_name,
+                                      archived=archived,
+                                      returned_properties=returned_properties)
 
         if teamareas is not None:
             for teamarea in teamareas:
@@ -229,7 +273,8 @@ class RTCClient(RTCBase):
         self.log.error("No TeamArea named %s", teamarea_name)
         raise exception.NotFound("No TeamArea named %s" % teamarea_name)
 
-    def getTeamAreas(self, projectarea_id=None, projectarea_name=None):
+    def getTeamAreas(self, projectarea_id=None, projectarea_name=None,
+                     archived=False, returned_properties=None):
         """Get all <TeamArea> objects by projectarea's id or name
 
         If both `projectarea_id` and `projectarea_name` are None,
@@ -239,15 +284,22 @@ class RTCClient(RTCBase):
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
+        :param archived: whether the TeamAreas are archived
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: a list contains all the `TeamArea <TeamArea>` objects
         :rtype: list
         """
 
         projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
                                              projectarea_name=projectarea_name)
+
+        rp = returned_properties
         return self._get_paged_resources("TeamArea",
                                          projectarea_id=projarea_id,
-                                         page_size="100")
+                                         page_size="100",
+                                         archived=archived,
+                                         returned_properties=rp)
 
     def getOwnedBy(self, email, projectarea_id=None,
                    projectarea_name=None):
@@ -263,12 +315,16 @@ class RTCClient(RTCBase):
                       self)
 
     def getPlannedFor(self, plannedfor_name, projectarea_id=None,
-                      projectarea_name=None):
+                      projectarea_name=None, archived=False,
+                      returned_properties=None):
         """Get <PlannedFor> object by PlannedFor name
 
         :param plannedfor_name: the PlannedFor name
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
+        :param archived: whether the PlannedFor is archived
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: the `PlannedFor <PlannedFor>` object
         :rtype: projectarea.PlannedFor
         """
@@ -279,8 +335,11 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
+        rp = returned_properties
         plannedfors = self.getPlannedFors(projectarea_id=projectarea_id,
-                                          projectarea_name=projectarea_name)
+                                          projectarea_name=projectarea_name,
+                                          archived=archived,
+                                          returned_properties=rp)
 
         if plannedfors is not None:
             for plannedfor in plannedfors:
@@ -291,7 +350,8 @@ class RTCClient(RTCBase):
         self.log.error("No PlannedFor named %s", plannedfor_name)
         raise exception.NotFound("No PlannedFor named %s" % plannedfor_name)
 
-    def getPlannedFors(self, projectarea_id=None, projectarea_name=None):
+    def getPlannedFors(self, projectarea_id=None, projectarea_name=None,
+                       archived=False, returned_properties=None):
         """Get all <PlannedFor> objects by projectarea's id or name
 
         If both `projectarea_id` and `projectarea_name` are None,
@@ -301,15 +361,22 @@ class RTCClient(RTCBase):
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
+        :param archived: whether the PlannedFors are archived
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: a list contains all the `PlannedFor <PlannedFor>` objects
         :rtype: list
         """
 
         projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
                                              projectarea_name=projectarea_name)
+
+        rp = returned_properties
         return self._get_paged_resources("PlannedFor",
                                          projectarea_id=projarea_id,
-                                         page_size="100")
+                                         page_size="100",
+                                         archived=archived,
+                                         returned_properties=rp)
 
     def getSeverity(self, severity_name, projectarea_id=None,
                     projectarea_name=None):
@@ -422,12 +489,13 @@ class RTCClient(RTCBase):
                                          page_size="10")
 
     def getFoundIn(self, foundin_name, projectarea_id=None,
-                   projectarea_name=None):
+                   projectarea_name=None, archived=False):
         """Get <FoundIn> object by FoundIn name
 
         :param foundin_name: the FoundIn name
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
+        :param archived: whether the FoundIn is archived
         :return: the `FoundIn <FoundIn>` object
         :rtype: projectarea.FoundIn
         """
@@ -439,7 +507,8 @@ class RTCClient(RTCBase):
             raise exception.BadValue(excp_msg)
 
         foundins = self.getFoundIns(projectarea_id=projectarea_id,
-                                    projectarea_name=projectarea_name)
+                                    projectarea_name=projectarea_name,
+                                    archived=archived)
 
         if foundins is not None:
             for foundin in foundins:
@@ -450,7 +519,8 @@ class RTCClient(RTCBase):
         self.log.error("No FoundIn named %s", foundin_name)
         raise exception.NotFound("No FoundIn named %s" % foundin_name)
 
-    def getFoundIns(self, projectarea_id=None, projectarea_name=None):
+    def getFoundIns(self, projectarea_id=None, projectarea_name=None,
+                    archived=False):
         """Get all <FoundIn> objects by projectarea's id or name
 
         If both `projectarea_id` and `projectarea_name` are None,
@@ -460,6 +530,7 @@ class RTCClient(RTCBase):
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
+        :param archived: whether the FoundIns are archived
         :return: a list contains all the `FoundIn <FoundIn>` objects
         :rtype: list
         """
@@ -468,15 +539,17 @@ class RTCClient(RTCBase):
                                              projectarea_name=projectarea_name)
         return self._get_paged_resources("FoundIn",
                                          projectarea_id=projarea_id,
-                                         page_size="100")
+                                         page_size="100",
+                                         archived=archived)
 
     def getFiledAgainst(self, filedagainst_name, projectarea_id=None,
-                        projectarea_name=None):
+                        projectarea_name=None, archived=False):
         """Get <FiledAgainst> object by FiledAgainst name
 
         :param filedagainst_name: the FiledAgainst name
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
+        :param archived: whether the FiledAgainst is archived
         :return: the `FiledAgainst <FiledAgainst>` object
         :rtype: projectarea.FiledAgainst
         """
@@ -488,7 +561,8 @@ class RTCClient(RTCBase):
             raise exception.BadValue(excp_msg)
 
         filedagainsts = self.getFiledAgainsts(projectarea_id=projectarea_id,
-                                              projectarea_name=projectarea_name)
+                                              projectarea_name=projectarea_name,
+                                              archived=archived)
 
         if filedagainsts is not None:
             for filedggainst in filedagainsts:
@@ -499,7 +573,8 @@ class RTCClient(RTCBase):
         self.log.error("No FiledAgainst named %s", filedagainst_name)
         raise exception.NotFound("No FiledAgainst named %s" % filedagainst_name)
 
-    def getFiledAgainsts(self, projectarea_id=None, projectarea_name=None):
+    def getFiledAgainsts(self, projectarea_id=None, projectarea_name=None,
+                         archived=False):
         """Get all <FiledAgainst> objects by projectarea's id or name
 
         If both `projectarea_id` and `projectarea_name` are None,
@@ -509,6 +584,7 @@ class RTCClient(RTCBase):
 
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
+        :param archived: whether the FiledAgainsts are archived
         :return: a list contains all the `FiledAgainst <FiledAgainst>` objects
         :rtype: list
         """
@@ -517,7 +593,8 @@ class RTCClient(RTCBase):
                                              projectarea_name=projectarea_name)
         return self._get_paged_resources("FiledAgainst",
                                          projectarea_id=projarea_id,
-                                         page_size="100")
+                                         page_size="100",
+                                         archived=archived)
 
     def getTemplate(self, copied_from, template_name=None,
                     template_folder=None, keep=False, encoding="UTF-8"):
@@ -564,10 +641,15 @@ class RTCClient(RTCBase):
         return self.templater.listFieldsFromWorkitem(copied_from,
                                                      keep=keep)
 
-    def getWorkitem(self, workitem_id):
+    def listProperties(self):
+        pass
+
+    def getWorkitem(self, workitem_id, returned_properties=None):
         """Get <Workitem> object by its id/number
 
         :param workitem_id: the workitem number (integer)
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: :class:`Workitem <Workitem>` object
         :rtype: workitem.Workitem
         """
@@ -576,6 +658,10 @@ class RTCClient(RTCBase):
             if int(workitem_id):
                 workitem_url = "/".join([self.url,
                                          "oslc/workitems/%s" % workitem_id])
+                if returned_properties is not None:
+                    workitem_url = "".join([workitem_url,
+                                            "?oslc_cm.properties=",
+                                            urlquote(returned_properties)])
                 resp = self.get(workitem_url,
                                 verify=False,
                                 headers=self.headers)
@@ -595,7 +681,8 @@ class RTCClient(RTCBase):
             self.log.error(excp)
             raise exception.NotFound("Not found <Workitem %s>", workitem_id)
 
-    def getWorkitems(self, projectarea_id=None, projectarea_name=None):
+    def getWorkitems(self, projectarea_id=None, projectarea_name=None,
+                     returned_properties=None):
         """Get all <Workitem> objects by projectarea's id or name
 
         If both projectarea_id and projectarea_name are None, all the workitems
@@ -603,8 +690,13 @@ class RTCClient(RTCBase):
 
         If no Workitems are retrieved, None is returned.
 
+        You can also customize your preferred properties to be returned
+        by specified `returned_properties`
+
         :param projectarea_id: the project area id
         :param projectarea_name: the project area name
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
         :return: a list contains all the `Workitem <Workitem>` objects
         :rtype: list
         pass
@@ -625,10 +717,12 @@ class RTCClient(RTCBase):
                          "workitems can be fetched. "
                          "This may be a bug of Rational Team Concert")
 
+        rp = returned_properties
         for projarea_id in projectarea_ids:
             workitems = self._get_paged_resources("Workitem",
                                                   projectarea_id=projarea_id,
-                                                  page_size="100")
+                                                  page_size="100",
+                                                  returned_properties=rp)
             workitems_list.extend(workitems)
 
         if not workitems_list:
@@ -844,7 +938,8 @@ class RTCClient(RTCBase):
 
     def _get_paged_resources(self, resource_name, projectarea_id=None,
                              workitem_id=None, customized_attr=None,
-                             page_size="100", archived=False):
+                             page_size="100", archived=False,
+                             returned_properties=None):
         # TODO: multi-thread
 
         self.log.debug("Start to fetch all %ss with [ProjectArea ID: %s] "
@@ -914,18 +1009,28 @@ class RTCClient(RTCBase):
                      "Subscriber": "rtc_cm:User",
                      "Action": "rtc_cm:Action",
                      "Query": "oslc_cm:ChangeRequest"
-                    }
+                     }
 
         if resource_name not in res_map:
             self.log.error("Unsupported resource name")
             raise exception.BadValue("Unsupported resource name")
 
-        resource_url = "%s/oslc/{0}" % self.url
-        if resource_name != "Query":
-            resource_url = "".join([resource_url,
-                                    "?oslc_cm.pageSize={1}&_startIndex=0"])
+        resource_url = "".join([self.url,
+                                "/oslc/{0}",
+                                "?" if resource_name != "Query"
+                                else "&",
+                                "oslc_cm.pageSize={1}&_startIndex=0"])
+
         resource_url = resource_url.format(res_map[resource_name],
                                            page_size)
+
+        if returned_properties is not None:
+            if not isinstance(returned_properties, str):
+                raise exception.BadValue("returned_properties is not a"
+                                         "valid string")
+            resource_url = "".join([resource_url,
+                                    "&oslc_cm.properties=",
+                                    urlquote(returned_properties)])
 
         pa_url = ("/".join([self.url,
                             "oslc/projectareas",
@@ -935,22 +1040,7 @@ class RTCClient(RTCBase):
         resp = self.get(resource_url,
                         verify=False,
                         headers=self.headers)
-
-        try:
-            raw_data = xmltodict.parse(resp.content)
-        except Exception, excp_msg:
-            # mainly used for Query
-            # For a query with many Workitems returned (usually more than one
-            # page), the raw_data is somewhat invalid. I think this is a bug
-            # of RTC
-            self.log.error(excp_msg)
-            query_new_url = resp.history[-1].url
-            self.log.debug("Switch to request the redirect url for query %s",
-                           query_new_url)
-            resp = self.get(query_new_url,
-                            verify=False,
-                            headers=self.headers)
-            raw_data = xmltodict.parse(resp.content)
+        raw_data = xmltodict.parse(resp.content)
 
         try:
             total_count = int(raw_data.get("oslc_cm:Collection")

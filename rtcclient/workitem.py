@@ -1,9 +1,7 @@
 from rtcclient.base import FieldBase
 import logging
 import xmltodict
-from rtcclient import urlunquote
 import copy
-from rtcclient.project_area import Member
 from rtcclient import exception
 from requests.exceptions import HTTPError
 
@@ -32,7 +30,7 @@ class Workitem(FieldBase):
         pass
 
     def getComments(self):
-        """Get all <Comment> objects 
+        """Get all <Comment> objects
 
         :return: a list contains all the `Comment <Comment>` objects
         :rtype: list
