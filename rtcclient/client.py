@@ -67,7 +67,7 @@ class RTCClient(RTCBase):
         credentials = urlencode({'j_username': self.username,
                                  'j_password': self.password})
 
-        resp = self.post(self.url+'/authenticated/j_security_check',
+        resp = self.post(self.url + '/authenticated/j_security_check',
                          data=credentials,
                          verify=False,
                          headers=_headers)
@@ -560,18 +560,19 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        filedagainsts = self.getFiledAgainsts(projectarea_id=projectarea_id,
-                                              projectarea_name=projectarea_name,
-                                              archived=archived)
+        fas = self.getFiledAgainsts(projectarea_id=projectarea_id,
+                                    projectarea_name=projectarea_name,
+                                    archived=archived)
 
-        if filedagainsts is not None:
-            for filedggainst in filedagainsts:
+        if fas is not None:
+            for filedggainst in fas:
                 if filedggainst.title == filedagainst_name:
                     self.log.info("Find <FiledAgainst %s>", filedggainst)
                     return filedggainst
 
-        self.log.error("No FiledAgainst named %s", filedagainst_name)
-        raise exception.NotFound("No FiledAgainst named %s" % filedagainst_name)
+        error_msg = "No FiledAgainst named %s" % filedagainst_name
+        self.log.error(error_msg)
+        raise exception.NotFound(error_msg)
 
     def getFiledAgainsts(self, projectarea_id=None, projectarea_name=None,
                          archived=False):
@@ -838,7 +839,6 @@ class RTCClient(RTCBase):
 
     def updateWorkitem(self):
         pass
-        #TODO
 
     def _createWorkitem(self, url_post, workitem_raw):
         headers = copy.deepcopy(self.headers)
@@ -987,7 +987,9 @@ class RTCClient(RTCBase):
                    "Severity": "enumerations/%s/severity" % projectarea_id,
                    "Priority": "enumerations/%s/priority" % projectarea_id,
                    "Comment": "workitems/%s/rtc_cm:comments" % workitem_id,
-                   "Subscriber": "workitems/%s/rtc_cm:subscribers" % workitem_id,
+                   "Subscriber": "/".join(["workitems",
+                                           "%s" % workitem_id,
+                                           "rtc_cm:subscribers"]),
                    "Action": "workflows/%s/actions/%s" % (projectarea_id,
                                                           customized_attr),
                    "Query": "".join(["contexts/%s/workitems" % projectarea_id,

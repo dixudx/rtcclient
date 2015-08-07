@@ -44,6 +44,9 @@ class RTCBase(object):
         except:
             return None
 
+    def __getitem__(self, key):
+        return self.__getattribute__(key)
+
     @abc.abstractmethod
     def get_rtc_obj(self):
         pass
@@ -126,9 +129,9 @@ class RTCBase(object):
 
         self.log.debug("Put a request to %s with data: %s",
                        url, data)
-        response = requests.post(url, data=data,
-                                 verify=verify, headers=headers,
-                                 timeout=timeout, **kwargs)
+        response = requests.put(url, data=data,
+                                verify=verify, headers=headers,
+                                timeout=timeout, **kwargs)
         if response.status_code not in [200, 201]:
             self.log.error('Failed PUT request at <%s> with response: %s',
                            url,

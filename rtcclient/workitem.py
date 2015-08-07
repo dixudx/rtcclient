@@ -20,12 +20,12 @@ class Workitem(FieldBase):
 
         # TODO
 
-#         if state:
-#             action = self.getAction(self.contextId, action_name)
-#             update_url = "".join([self.url,
-#                                   "?_action=%s" % action.title])
-#         else:
-#             update_url = self.url
+        # if state:
+        #     action = self.getAction(self.contextId, action_name)
+        #     update_url = "".join([self.url,
+        #                           "?_action=%s" % action.title])
+        # else:
+        #     update_url = self.url
 
         pass
 

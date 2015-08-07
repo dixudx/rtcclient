@@ -1,0 +1,6 @@
+pytest
+pep8!=1.6.0,!=1.6.1,!=1.6.2,>=1.5.7
+pytest-pep8
+pytest-flake8
+pytest-env
+pytest-mock>=0.6.0
