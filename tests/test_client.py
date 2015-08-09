@@ -1,8 +1,9 @@
 from rtcclient.client import RTCClient
 import requests
+import pytest
 
 
-def test_header(mocker):
+def test_headers(mocker):
     mocked_get = mocker.patch("requests.get")
     mocker_post = mocker.patch("requests.post")
 
@@ -20,3 +21,11 @@ def test_header(mocker):
                        username="user",
                        password="password")
     assert client.headers == expected_headers
+
+
+class TestRTCClient:
+    @pytest.fixture(autouse=True)
+    def myrtcclient(self, rtcclient):
+        self.myclient = rtcclient
+        return self.myclient
+
