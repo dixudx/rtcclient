@@ -5,8 +5,6 @@
 <rtc_cm:detailedDescription/>
 <rtc_cm:initialized>true</rtc_cm:initialized>
 <rtc_cm:archived>true</rtc_cm:archived>
-<rtc_cm:members oslc_cm:collref="http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw/rtc_cm:members"/>
-<rtc_cm:administrators oslc_cm:collref="http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw/rtc_cm:administrators"/>
 </rtc_cm:Project>
 <rtc_cm:Project rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA">
 <dc:title>ProjectArea2</dc:title>
@@ -14,7 +12,5 @@
 <rtc_cm:detailedDescription/>
 <rtc_cm:initialized>true</rtc_cm:initialized>
 <rtc_cm:archived>false</rtc_cm:archived>
-<rtc_cm:members oslc_cm:collref="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA/rtc_cm:members"/>
-<rtc_cm:administrators oslc_cm:collref="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA/rtc_cm:administrators"/>
 </rtc_cm:Project>
 </oslc_cm:Collection>

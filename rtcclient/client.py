@@ -182,7 +182,7 @@ class RTCClient(RTCBase):
         raise exception.NotFound("No ProjectArea named %s" % projectarea_name)
 
     def getProjectAreaIDs(self, projectarea_name=None, archived=False):
-        """Get <ProjectArea> id by projectarea name
+        """Get all <ProjectArea> ID(s) by projectarea name
 
         If `projectarea_name` is None, all the ProjectArea IDs
         will be returned.
@@ -1058,6 +1058,9 @@ class RTCClient(RTCBase):
         while True:
             entries = (raw_data.get("oslc_cm:Collection")
                                .get(entry_map[resource_name]))
+
+            if entries is None:
+                break
 
             # for the last single entry
             if isinstance(entries, OrderedDict):
