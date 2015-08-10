@@ -1,0 +1,251 @@
+<oslc_cm:Collection xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:dc="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:calm="http://jazz.net/xmlns/prod/jazz/calm/1.0/" xmlns:rtc_cm="http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/" xmlns:oslc_pl="http://open-services.net/ns/pl#" oslc_cm:totalCount="2">
+<oslc_cm:ChangeRequest rdf:resource="http://test.url:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/161">
+<rtc_cm:archived>false</rtc_cm:archived>
+<rtc_cm:browser/>
+<rtc_cm:filedAgainst rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.Category/_wDWgId-TEd6VxeRBsGx82Q"/>
+<rtc_cm:collabnet_id/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.build_impact rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/impact/impact.literal.l14"/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.compliance/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.cp_impact/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.security rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/security/security.literal.l2"/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.subscriptiontype/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.test_phase/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.unit_test rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/unit_test/unit_test.literal.l2"/>
+<rtc_cm:com.ibm.ocs.workitem.custom.customer_type/>
+<rtc_cm:com.ibm.workitem.attribute.costom.buildlabel/>
+<rtc_cm:com.ibm.workitem.attribute.custom.completeperc>0</rtc_cm:com.ibm.workitem.attribute.custom.completeperc>
+<rtc_cm:com.ibm.workitem.attribute.custom.minispec/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.activity/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.content/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.deftype/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.history/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.impact/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.qualifier/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.source/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.target/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.trigger/>
+<rtc_cm:com.ibm.workitem.attribute.custom.startdate/>
+<rtc_cm:com.ibm.workitem.attribute.custome.isvalid/>
+<rtc_cm:contextId>_CuZu0HUwEeKicpXBddtqNA</rtc_cm:contextId>
+<rtc_cm:correctedEstimate/>
+<dc:created>2009-12-03T20:33:42.543Z</dc:created>
+<dc:creator rdf:resource="http://test.url:9443/jts/users/tester1%40email.com"/>
+<rtc_cm:deployment_env/>
+<dc:description>
+Set up instant messaging<br/><br/>To set up instant messaging inside your Jazz client, consult the <a href="http://publib.boulder.ibm.com/infocenter/rtc/v2r0m0/index.jsp?topic=/com.ibm.team.collaboration.doc/topics/t_connect_st.html">Connect to a local Sametime or Notes application</a> or <a href="http://publib.boulder.ibm.com/infocenter/rtc/v2r0m0/topic/com.ibm.team.collaboration.doc/topics/t_connect_jabber.html">Connect to a Jabber server</a> help topics.
+</dc:description>
+<rtc_cm:due/>
+<rtc_cm:estimate/>
+<rtc_cm:foundIn/>
+<dc:identifier>161</dc:identifier>
+<rtc_cm:comments oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:comments"/>
+<oslc_cm:priority rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/priority/priority.literal.l01"/>
+<rtc_cm:resolution/>
+<oslc_cm:severity rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/severity/severity.literal.l3"/>
+<rtc_cm:state rdf:resource="http://test.url:9443/jazz/oslc/workflows/_CuZu0HUwEeKicpXBddtqNA/states/default_workflow/default_workflow.state.s1"/>
+<rtc_cm:subscribers oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:subscribers"/>
+<dc:subject/>
+<dc:modified>2010-02-16T16:04:00.244Z</dc:modified>
+<rtc_cm:modifiedBy rdf:resource="http://test.url:9443/jts/users/tester2%40email.com"/>
+<rtc_cm:ownedBy rdf:resource="http://test.url:9443/jts/users/tester3%40email.com"/>
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
+<rtc_cm:resolved>2010-02-16T16:03:59.164Z</rtc_cm:resolved>
+<rtc_cm:resolvedBy rdf:resource="http://test.url:9443/jts/users/tester2%40email.com"/>
+<rtc_cm:root_cause/>
+<rtc_cm:startDate/>
+<dc:title>[Joining a Team] Set Up Instant Messaging</dc:title>
+<rtc_cm:plannedFor/>
+<rtc_cm:technical_component rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/technical_component/technical_component.literal.l12"/>
+<rtc_cm:test_case_no/>
+<rtc_cm:test_points>0</rtc_cm:test_points>
+<rtc_cm:timeSpent/>
+<dc:type rdf:resource="http://test.url:9443/jazz/oslc/types/_CuZu0HUwEeKicpXBddtqNA/task"/>
+<rtc_cm:teamArea rdf:resource="http://test.url:9443/jazz/oslc/teamareas/_XazXEPbZEeGWkpg5MjeYZQ"/>
+<rtc_cm:timeSheet rdf:resource="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:timeSheet"/>
+<rtc_cm:progressTracking rdf:resource="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/progressTracking"/>
+<oslc_pl:schedule rdf:resource="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/schedule"/>
+<calm:affectsExecutionResult oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:affectsExecutionResult"/>
+<calm:blocksTestExecutionRecord oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:blocksTestExecutionRecord"/>
+<calm:testedByTestCase oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:testedByTestCase"/>
+<calm:implementsRequirement oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:implementsRequirement"/>
+<oslc_cm:tracksWorkItem oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/oslc_cm:tracksWorkItem"/>
+<oslc_cm:trackedWorkItem oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/oslc_cm:trackedWorkItem"/>
+<oslc_cm:relatedChangeManagement oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/oslc_cm:relatedChangeManagement"/>
+<calm:tracksChanges oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:tracksChanges"/>
+<calm:relatedTestCase oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:relatedTestCase"/>
+<calm:relatedTestScript oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:relatedTestScript"/>
+<calm:relatedExecutionRecord oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:relatedExecutionRecord"/>
+<calm:relatedTestPlan oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:relatedTestPlan"/>
+<calm:tracksRequirement oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:tracksRequirement"/>
+<calm:relatedRequirement oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:relatedRequirement"/>
+<calm:elaboratedByArchitectureElement oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:elaboratedByArchitectureElement"/>
+<calm:affectsPlanItem oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:affectsPlanItem"/>
+<calm:affectedByDefect oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:affectedByDefect"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotionBuildResult.promotionBuildResult oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotionBuildResult.promotionBuildResult"/>
+<rtc_cm:com.ibm.team.workitem.linktype.blocksworkitem.blocks oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.blocksworkitem.blocks"/>
+<rtc_cm:com.ibm.team.workitem.linktype.parentworkitem.parent oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.parentworkitem.parent"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotionDefinition.promotionDefinition oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotionDefinition.promotionDefinition"/>
+<rtc_cm:com.ibm.team.workitem.linktype.attachment.attachment oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.attachment.attachment"/>
+<rtc_cm:com.ibm.team.enterprise.package.linktype.packageDefinition.packageDefinition oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.package.linktype.packageDefinition.packageDefinition"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.notPromotedChangeSets.notPromotedChangeSets oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.promotion.linktype.notPromotedChangeSets.notPromotedChangeSets"/>
+<rtc_cm:com.ibm.team.build.linktype.includedWorkItems.com.ibm.team.build.common.link.includedInBuilds oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.build.linktype.includedWorkItems.com.ibm.team.build.common.link.includedInBuilds"/>
+<rtc_cm:com.ibm.team.workitem.linktype.copiedworkitem.copiedFrom oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.copiedworkitem.copiedFrom"/>
+<rtc_cm:com.ibm.team.enterprise.packaging.linktype.resultWorkItem.result oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.packaging.linktype.resultWorkItem.result"/>
+<rtc_cm:com.ibm.team.enterprise.package.linktype.packageBuildResult.packageBuildResult oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.package.linktype.packageBuildResult.packageBuildResult"/>
+<rtc_cm:com.ibm.team.connector.ccbridge.common.act2wi.s oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.connector.ccbridge.common.act2wi.s"/>
+<rtc_cm:com.ibm.team.connector.ccbridge.common.ver2wi.s oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.connector.ccbridge.common.ver2wi.s"/>
+<rtc_cm:com.ibm.team.workitem.linktype.resolvesworkitem.resolves oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.resolvesworkitem.resolves"/>
+<rtc_cm:com.ibm.team.build.linktype.includedDeployments.com.ibm.team.build.common.link.includedInDeployment oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.build.linktype.includedDeployments.com.ibm.team.build.common.link.includedInDeployment"/>
+<rtc_cm:com.ibm.team.enterprise.deployment.linktype.deploymentDefinition.packageDefinition oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.deployment.linktype.deploymentDefinition.packageDefinition"/>
+<rtc_cm:com.ibm.team.build.linktype.reportedWorkItems.com.ibm.team.build.common.link.reportedAgainstBuilds oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.build.linktype.reportedWorkItems.com.ibm.team.build.common.link.reportedAgainstBuilds"/>
+<rtc_cm:com.ibm.team.enterprise.deployment.linktype.deploymentBuildResult.packageBuildResult oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.deployment.linktype.deploymentBuildResult.packageBuildResult"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.failedChangeSets.failedChangeSets oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.promotion.linktype.failedChangeSets.failedChangeSets"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.resultWorkItem.promoted oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.promotion.linktype.resultWorkItem.promoted"/>
+<rtc_cm:com.ibm.team.scm.svn.linkType.workItem.s oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.scm.svn.linkType.workItem.s"/>
+<rtc_cm:com.ibm.team.workitem.linktype.duplicateworkitem.duplicateOf oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.duplicateworkitem.duplicateOf"/>
+<calm:relatedTestSuite oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/calm:relatedTestSuite"/>
+<rtc_cm:com.ibm.team.workitem.linktype.relatedworkitem.related oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.relatedworkitem.related"/>
+<rtc_cm:com.ibm.team.workitem.linktype.schedulePredecessor.predecessor oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.schedulePredecessor.predecessor"/>
+<rtc_cm:com.ibm.team.build.linktype.includedPackages.com.ibm.team.build.common.link.includedInPackages oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.build.linktype.includedPackages.com.ibm.team.build.common.link.includedInPackages"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.gapChangeSets.gapChangeSets oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.promotion.linktype.gapChangeSets.gapChangeSets"/>
+<rtc_cm:com.ibm.team.connector.scm.common.linkType.importerDependency.t oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.connector.scm.common.linkType.importerDependency.t"/>
+<rtc_cm:com.ibm.team.workitem.linktype.resolvesworkitem.resolvedBy oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.resolvesworkitem.resolvedBy"/>
+<rtc_cm:com.ibm.team.workitem.linktype.copiedworkitem.copies oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.copiedworkitem.copies"/>
+<rtc_cm:com.ibm.team.workitem.linktype.duplicateworkitem.duplicates oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.duplicateworkitem.duplicates"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotedChangeSets.promotedChangeSets oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotedChangeSets.promotedChangeSets"/>
+<rtc_cm:com.ibm.team.enterprise.packaging.linktype.resultWorkItem.promoted oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.packaging.linktype.resultWorkItem.promoted"/>
+<rtc_cm:com.ibm.team.workitem.linktype.parentworkitem.children oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.parentworkitem.children"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotedBuildMaps.promotedBuildMaps oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotedBuildMaps.promotedBuildMaps"/>
+<rtc_cm:com.ibm.team.connector.scm.common.linkType.tracksUcmObject.t oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.connector.scm.common.linkType.tracksUcmObject.t"/>
+<rtc_cm:com.ibm.team.workitem.linktype.schedulePredecessor.successor oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.schedulePredecessor.successor"/>
+<rtc_cm:com.ibm.team.workitem.linktype.relatedartifact.relatedArtifact oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.relatedartifact.relatedArtifact"/>
+<rtc_cm:com.ibm.team.filesystem.workitems.change_set.com.ibm.team.scm.ChangeSet oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.filesystem.workitems.change_set.com.ibm.team.scm.ChangeSet"/>
+<rtc_cm:com.ibm.team.workitem.linktype.blocksworkitem.dependsOn oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.blocksworkitem.dependsOn"/>
+<rtc_cm:com.ibm.team.workitem.linktype.textualReference.textuallyReferenced oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.workitem.linktype.textualReference.textuallyReferenced"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.resultWorkItem.result oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.promotion.linktype.resultWorkItem.result"/>
+</oslc_cm:ChangeRequest>
+<oslc_cm:ChangeRequest rdf:resource="http://test.url:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/6329">
+<rtc_cm:archived>false</rtc_cm:archived>
+<rtc_cm:browser/>
+<rtc_cm:filedAgainst rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.Category/_gLerwBIYEd-oeK_GbRorpg"/>
+<rtc_cm:collabnet_id/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.build_impact rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/impact/impact.literal.l14"/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.compliance/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.cp_impact/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.security rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/security/security.literal.l2"/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.subscriptiontype/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.test_phase/>
+<rtc_cm:com.ibm.ocs.workitem.attribute.custom.unit_test rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/unit_test/unit_test.literal.l2"/>
+<rtc_cm:com.ibm.ocs.workitem.custom.customer_type/>
+<rtc_cm:com.ibm.workitem.attribute.costom.buildlabel/>
+<rtc_cm:com.ibm.workitem.attribute.custom.completeperc>0</rtc_cm:com.ibm.workitem.attribute.custom.completeperc>
+<rtc_cm:com.ibm.workitem.attribute.custom.minispec/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.activity/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.content/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.deftype/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.history/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.impact/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.qualifier/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.source/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.target/>
+<rtc_cm:com.ibm.workitem.attribute.custom.odc.trigger/>
+<rtc_cm:com.ibm.workitem.attribute.custom.startdate/>
+<rtc_cm:com.ibm.workitem.attribute.custome.isvalid/>
+<rtc_cm:contextId>_CuZu0HUwEeKicpXBddtqNA</rtc_cm:contextId>
+<rtc_cm:correctedEstimate/>
+<dc:created>2010-05-05T22:31:19.228Z</dc:created>
+<dc:creator rdf:resource="http://test.url:9443/jts/users/tester1%40email.com"/>
+<rtc_cm:deployment_env/>
+<dc:description>...</dc:description>
+<rtc_cm:due/>
+<rtc_cm:estimate/>
+<rtc_cm:external_ticket/>
+<rtc_cm:foundIn rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.Deliverable/_7z1e8CWMEd-Gp6LY79-UHw"/>
+<dc:identifier>6329</dc:identifier>
+<rtc_cm:comments oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:comments"/>
+<oslc_cm:priority rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/priority/priority.literal.l07"/>
+<rtc_cm:resolution/>
+<oslc_cm:severity rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/severity/severity.literal.l2"/>
+<rtc_cm:state rdf:resource="http://test.url:9443/jazz/oslc/workflows/_CuZu0HUwEeKicpXBddtqNA/states/default_workflow/default_workflow.state.s1"/>
+<rtc_cm:subscribers oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:subscribers"/>
+<dc:subject>esa40</dc:subject>
+<dc:modified>2010-07-06T13:57:21.358Z</dc:modified>
+<rtc_cm:modifiedBy rdf:resource="http://test.url:9443/jts/users/tester2%40email.com"/>
+<rtc_cm:ownedBy rdf:resource="http://test.url:9443/jts/users/tester1%40email.com"/>
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
+<rtc_cm:resolved>2010-07-06T13:57:20.380Z</rtc_cm:resolved>
+<rtc_cm:resolvedBy rdf:resource="http://test.url:9443/jts/users/tester1%40email.com"/>
+<rtc_cm:root_cause/>
+<rtc_cm:startDate/>
+<dc:title>...</dc:title>
+<rtc_cm:plannedFor rdf:resource="http://test.url:9443/jazz/oslc/iterations/_0O1M0GOPEd-6mcIqsmW3Jg"/>
+<rtc_cm:technical_component rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/technical_component/technical_component.literal.l12"/>
+<rtc_cm:test_case_no/>
+<rtc_cm:test_points>0</rtc_cm:test_points>
+<rtc_cm:timeSpent/>
+<dc:type rdf:resource="http://test.url:9443/jazz/oslc/types/_CuZu0HUwEeKicpXBddtqNA/defect"/>
+<rtc_cm:teamArea rdf:resource="http://test.url:9443/jazz/oslc/teamareas/_XazXEPbZEeGWkpg5MjeYZQ"/>
+<rtc_cm:timeSheet rdf:resource="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:timeSheet"/>
+<rtc_cm:progressTracking rdf:resource="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/progressTracking"/>
+<oslc_pl:schedule rdf:resource="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/schedule"/>
+<calm:affectsExecutionResult oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:affectsExecutionResult"/>
+<calm:blocksTestExecutionRecord oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:blocksTestExecutionRecord"/>
+<calm:testedByTestCase oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:testedByTestCase"/>
+<calm:implementsRequirement oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:implementsRequirement"/>
+<oslc_cm:tracksWorkItem oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/oslc_cm:tracksWorkItem"/>
+<oslc_cm:trackedWorkItem oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/oslc_cm:trackedWorkItem"/>
+<oslc_cm:relatedChangeManagement oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/oslc_cm:relatedChangeManagement"/>
+<calm:tracksChanges oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:tracksChanges"/>
+<calm:relatedTestCase oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:relatedTestCase"/>
+<calm:relatedTestScript oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:relatedTestScript"/>
+<calm:relatedExecutionRecord oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:relatedExecutionRecord"/>
+<calm:relatedTestPlan oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:relatedTestPlan"/>
+<calm:tracksRequirement oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:tracksRequirement"/>
+<calm:relatedRequirement oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:relatedRequirement"/>
+<calm:elaboratedByArchitectureElement oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:elaboratedByArchitectureElement"/>
+<calm:affectsPlanItem oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:affectsPlanItem"/>
+<calm:affectedByDefect oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:affectedByDefect"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotionBuildResult.promotionBuildResult oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotionBuildResult.promotionBuildResult"/>
+<rtc_cm:com.ibm.team.workitem.linktype.blocksworkitem.blocks oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.blocksworkitem.blocks"/>
+<rtc_cm:com.ibm.team.workitem.linktype.parentworkitem.parent oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.parentworkitem.parent"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotionDefinition.promotionDefinition oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotionDefinition.promotionDefinition"/>
+<rtc_cm:com.ibm.team.workitem.linktype.attachment.attachment oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.attachment.attachment"/>
+<rtc_cm:com.ibm.team.enterprise.package.linktype.packageDefinition.packageDefinition oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.package.linktype.packageDefinition.packageDefinition"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.notPromotedChangeSets.notPromotedChangeSets oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.promotion.linktype.notPromotedChangeSets.notPromotedChangeSets"/>
+<rtc_cm:com.ibm.team.build.linktype.includedWorkItems.com.ibm.team.build.common.link.includedInBuilds oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.build.linktype.includedWorkItems.com.ibm.team.build.common.link.includedInBuilds"/>
+<rtc_cm:com.ibm.team.workitem.linktype.copiedworkitem.copiedFrom oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.copiedworkitem.copiedFrom"/>
+<rtc_cm:com.ibm.team.enterprise.packaging.linktype.resultWorkItem.result oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.packaging.linktype.resultWorkItem.result"/>
+<rtc_cm:com.ibm.team.enterprise.package.linktype.packageBuildResult.packageBuildResult oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.package.linktype.packageBuildResult.packageBuildResult"/>
+<rtc_cm:com.ibm.team.connector.ccbridge.common.act2wi.s oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.connector.ccbridge.common.act2wi.s"/>
+<rtc_cm:com.ibm.team.connector.ccbridge.common.ver2wi.s oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.connector.ccbridge.common.ver2wi.s"/>
+<rtc_cm:com.ibm.team.workitem.linktype.resolvesworkitem.resolves oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.resolvesworkitem.resolves"/>
+<rtc_cm:com.ibm.team.build.linktype.includedDeployments.com.ibm.team.build.common.link.includedInDeployment oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.build.linktype.includedDeployments.com.ibm.team.build.common.link.includedInDeployment"/>
+<rtc_cm:com.ibm.team.enterprise.deployment.linktype.deploymentDefinition.packageDefinition oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.deployment.linktype.deploymentDefinition.packageDefinition"/>
+<rtc_cm:com.ibm.team.build.linktype.reportedWorkItems.com.ibm.team.build.common.link.reportedAgainstBuilds oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.build.linktype.reportedWorkItems.com.ibm.team.build.common.link.reportedAgainstBuilds"/>
+<rtc_cm:com.ibm.team.enterprise.deployment.linktype.deploymentBuildResult.packageBuildResult oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.deployment.linktype.deploymentBuildResult.packageBuildResult"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.failedChangeSets.failedChangeSets oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.promotion.linktype.failedChangeSets.failedChangeSets"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.resultWorkItem.promoted oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.promotion.linktype.resultWorkItem.promoted"/>
+<rtc_cm:com.ibm.team.scm.svn.linkType.workItem.s oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.scm.svn.linkType.workItem.s"/>
+<rtc_cm:com.ibm.team.workitem.linktype.duplicateworkitem.duplicateOf oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.duplicateworkitem.duplicateOf"/>
+<calm:relatedTestSuite oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/calm:relatedTestSuite"/>
+<rtc_cm:com.ibm.team.workitem.linktype.relatedworkitem.related oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.relatedworkitem.related"/>
+<rtc_cm:com.ibm.team.workitem.linktype.schedulePredecessor.predecessor oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.schedulePredecessor.predecessor"/>
+<rtc_cm:com.ibm.team.build.linktype.includedPackages.com.ibm.team.build.common.link.includedInPackages oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.build.linktype.includedPackages.com.ibm.team.build.common.link.includedInPackages"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.gapChangeSets.gapChangeSets oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.promotion.linktype.gapChangeSets.gapChangeSets"/>
+<rtc_cm:com.ibm.team.connector.scm.common.linkType.importerDependency.t oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.connector.scm.common.linkType.importerDependency.t"/>
+<rtc_cm:com.ibm.team.workitem.linktype.resolvesworkitem.resolvedBy oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.resolvesworkitem.resolvedBy"/>
+<rtc_cm:com.ibm.team.workitem.linktype.copiedworkitem.copies oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.copiedworkitem.copies"/>
+<rtc_cm:com.ibm.team.workitem.linktype.duplicateworkitem.duplicates oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.duplicateworkitem.duplicates"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotedChangeSets.promotedChangeSets oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotedChangeSets.promotedChangeSets"/>
+<rtc_cm:com.ibm.team.enterprise.packaging.linktype.resultWorkItem.promoted oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.packaging.linktype.resultWorkItem.promoted"/>
+<rtc_cm:com.ibm.team.workitem.linktype.parentworkitem.children oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.parentworkitem.children"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotedBuildMaps.promotedBuildMaps oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.promotion.linktype.promotedBuildMaps.promotedBuildMaps"/>
+<rtc_cm:com.ibm.team.connector.scm.common.linkType.tracksUcmObject.t oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.connector.scm.common.linkType.tracksUcmObject.t"/>
+<rtc_cm:com.ibm.team.workitem.linktype.schedulePredecessor.successor oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.schedulePredecessor.successor"/>
+<rtc_cm:com.ibm.team.workitem.linktype.relatedartifact.relatedArtifact oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.relatedartifact.relatedArtifact"/>
+<rtc_cm:com.ibm.team.filesystem.workitems.change_set.com.ibm.team.scm.ChangeSet oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.filesystem.workitems.change_set.com.ibm.team.scm.ChangeSet"/>
+<rtc_cm:com.ibm.team.workitem.linktype.blocksworkitem.dependsOn oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.blocksworkitem.dependsOn"/>
+<rtc_cm:com.ibm.team.workitem.linktype.textualReference.textuallyReferenced oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.workitem.linktype.textualReference.textuallyReferenced"/>
+<rtc_cm:com.ibm.team.enterprise.promotion.linktype.resultWorkItem.result oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:com.ibm.team.enterprise.promotion.linktype.resultWorkItem.result"/>
+</oslc_cm:ChangeRequest>
+</oslc_cm:Collection>

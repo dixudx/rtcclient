@@ -1,0 +1,30 @@
+<oslc_cm:Collection xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:dc="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rtc_cm="http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/" oslc_cm:totalCount="4">
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/priority/priority.literal.l01">
+<dc:identifier>priority.literal.l01</dc:identifier>
+<dc:title>Unassigned</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/unassigned.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/priority/priority.literal.l02">
+<dc:identifier>priority.literal.l02</dc:identifier>
+<dc:title>Low</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/low.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/priority/priority.literal.l07">
+<dc:identifier>priority.literal.l07</dc:identifier>
+<dc:title>Medium</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/medium.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/priority/priority.literal.l11">
+<dc:identifier>priority.literal.l11</dc:identifier>
+<dc:title>High</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/high.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+</oslc_cm:Collection>

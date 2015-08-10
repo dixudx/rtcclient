@@ -1,0 +1,12 @@
+<oslc_cm:Collection xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:dc="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rtc_cm="http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/" oslc_cm:totalCount="2">
+<rtc_cm:Comment rdf:resource="http://test.url:9443/jazz/oslc/workitems/141488/rtc_cm:comments/0">
+<dc:created>2015-07-27T02:35:47.391Z</dc:created>
+<dc:creator rdf:resource="http://test.url:9443/jts/users/tester1%40email.com"/>
+<dc:description>comment test</dc:description>
+</rtc_cm:Comment>
+<rtc_cm:Comment rdf:resource="http://test.url:9443/jazz/oslc/workitems/141488/rtc_cm:comments/1">
+<dc:created>2015-07-27T10:48:55.197Z</dc:created>
+<dc:creator rdf:resource="http://test.url:9443/jts/users/tester2%40email.com"/>
+<dc:description>add comment test2</dc:description>
+</rtc_cm:Comment>
+</oslc_cm:Collection>

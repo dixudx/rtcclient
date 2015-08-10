@@ -1,0 +1,10 @@
+<oslc_cm:Collection xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:dc="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rtc_cm="http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/" oslc_cm:totalCount="1">
+<rtc_cm:User rdf:resource="http://test.url:9443/jts/users/tester1%40email.com">
+<rtc_cm:userId>tester1@email.com</rtc_cm:userId>
+<dc:title>tester1</dc:title>
+<rtc_cm:emailAddress>mailto:tester1%40email.com</rtc_cm:emailAddress>
+<rtc_cm:photo/>
+<dc:modified>2009-08-17T10:08:03.721Z</dc:modified>
+<rtc_cm:modifiedBy rdf:resource="http://test.url:9443/jts/users/ADMIN"/>
+</rtc_cm:User>
+</oslc_cm:Collection>

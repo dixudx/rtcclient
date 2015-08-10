@@ -1,0 +1,18 @@
+<oslc_cm:Collection xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:dc="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rtc_cm="http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/" oslc_cm:totalCount="2">
+<rtc_cm:Status rdf:resource="http://test.url:9443/jazz/oslc/workflows/_CuZu0HUwEeKicpXBddtqNA/states/default_workflow/default_workflow.state.s1">
+<dc:identifier>default_workflow.state.s1</dc:identifier>
+<dc:title>Closed</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/workflow/close.gif
+</rtc_cm:iconUrl>
+<rtc_cm:group>inprogress</rtc_cm:group>
+</rtc_cm:Status>
+<rtc_cm:Status rdf:resource="http://test.url:9443/jazz/oslc/workflows/_CuZu0HUwEeKicpXBddtqNA/states/default_workflow/default_workflow.state.s2">
+<dc:identifier>default_workflow.state.s2</dc:identifier>
+<dc:title>In Progress</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/workflow/inprogress.gif
+</rtc_cm:iconUrl>
+<rtc_cm:group>closed</rtc_cm:group>
+</rtc_cm:Status>
+</oslc_cm:Collection>
