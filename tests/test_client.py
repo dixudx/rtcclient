@@ -1,6 +1,10 @@
 from rtcclient.client import RTCClient
 import requests
 import pytest
+import utils_test
+from rtcclient.project_area import ProjectArea
+import xmltodict
+from rtcclient.exception import BadValue, NotFound, RTCException, EmptyAttrib
 
 
 def test_headers(mocker):
@@ -26,6 +30,90 @@ def test_headers(mocker):
 class TestRTCClient:
     @pytest.fixture(autouse=True)
     def myrtcclient(self, rtcclient):
-        self.myclient = rtcclient
-        return self.myclient
+        myclient = rtcclient
+        return myclient
 
+    @pytest.fixture
+    def mock_get_pas(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("projectareas.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_projectareas_unarchived(self, myrtcclient, mock_get_pas):
+        projectareas = myrtcclient.getProjectAreas(archived=False)
+
+        raw_content = utils_test.pa2
+        pa = ProjectArea("http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA",
+                         myrtcclient,
+                         xmltodict.parse(raw_content))
+        assert projectareas == [pa]
+
+    def test_get_projectareas_archived(self, myrtcclient, mock_get_pas):
+        projectareas = myrtcclient.getProjectAreas(archived=True)
+
+        raw_content = utils_test.pa1
+        pa = ProjectArea("http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw",
+                         myrtcclient,
+                         xmltodict.parse(raw_content))
+        assert projectareas == [pa]
+
+    def test_get_projectarea_unarchived(self, myrtcclient, mock_get_pas):
+        pa = myrtcclient.getProjectArea(projectarea_name="ProjectArea2",
+                                        archived=False)
+
+        raw_content = utils_test.pa2
+        assert pa == ProjectArea("http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA",
+                                 myrtcclient,
+                                 xmltodict.parse(raw_content))
+
+    def test_get_projectarea_exception(self, myrtcclient):
+        invalid_names = [None, "", False]
+        for invalid_name in invalid_names:
+            with pytest.raises(BadValue):
+                myrtcclient.getProjectArea(projectarea_name=invalid_name,
+                                           archived=False)
+
+    def test_get_projectarea_archived(self, myrtcclient, mock_get_pas):
+        pa = myrtcclient.getProjectArea(projectarea_name="ProjectArea1",
+                                        archived=True)
+
+        raw_content = utils_test.pa1
+        assert pa == ProjectArea("http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw",
+                                 myrtcclient,
+                                 xmltodict.parse(raw_content))
+
+    def test_get_projectarea_byid(self, myrtcclient, mock_get_pas):
+        pa = myrtcclient.getProjectAreaByID(projectarea_id="_CuZu0HUwEeKicpXBddtqNA",
+                                            archived=False)
+        raw_content = utils_test.pa2
+        assert pa == ProjectArea("http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA",
+                                 myrtcclient,
+                                 xmltodict.parse(raw_content))
+
+    def test_get_projectarea_id(self, myrtcclient, mock_get_pas):
+        pa_id = myrtcclient.getProjectAreaID(projectarea_name="ProjectArea1",
+                                             archived=True)
+        assert pa_id == "_0qMJUMfiEd6yW_0tvNlbrw"
+
+        pa_id = myrtcclient.getProjectAreaID(projectarea_name="ProjectArea2",
+                                             archived=False)
+        assert pa_id == "_CuZu0HUwEeKicpXBddtqNA"
+
+    def test_get_projectarea_ids(self, myrtcclient, mock_get_pas):
+
+        pa_id = myrtcclient.getProjectAreaIDs(projectarea_name="ProjectArea1",
+                                              archived=True)
+        assert pa_id == ["_0qMJUMfiEd6yW_0tvNlbrw"]
+
+        pa_id = myrtcclient.getProjectAreaIDs(archived=True)
+        assert pa_id == ["_0qMJUMfiEd6yW_0tvNlbrw"]
+
+        pa_id = myrtcclient.getProjectAreaIDs(projectarea_name="ProjectArea2",
+                                              archived=False)
+        assert pa_id == ["_CuZu0HUwEeKicpXBddtqNA"]
+
+        pa_id = myrtcclient.getProjectAreaIDs(archived=False)
+        assert pa_id == ["_CuZu0HUwEeKicpXBddtqNA"]

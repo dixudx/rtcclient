@@ -1,0 +1,23 @@
+<oslc_cm:Collection xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:dc="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rtc_cm="http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/" oslc_cm:totalCount="3">
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/severity/severity.literal.l1">
+<dc:identifier>severity.literal.l1</dc:identifier>
+<dc:title>Unclassified</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/unassigned2.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/severity/severity.literal.l2">
+<dc:identifier>severity.literal.l2</dc:identifier>
+<dc:title>Normal</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/normal.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/severity/severity.literal.l3">
+<dc:identifier>severity.literal.l3</dc:identifier>
+<dc:title>Critical</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/critical.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+</oslc_cm:Collection>

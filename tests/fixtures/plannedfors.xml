@@ -1,0 +1,26 @@
+<oslc_cm:Collection xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:dc="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rtc_cm="http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/" oslc_cm:totalCount="2">
+<rtc_cm:Iteration rdf:resource="http://test.url:9443/jazz/oslc/iterations/_00J9ocfiEd6yW_0tvNlbrw">
+<dc:identifier>1.0</dc:identifier>
+<dc:title>Release 1.0</dc:title>
+<dc:description/>
+<rtc_cm:startDate>2009-11-02T06:00:00.000Z</rtc_cm:startDate>
+<rtc_cm:endDate>2009-12-12T06:00:00.000Z</rtc_cm:endDate>
+<rtc_cm:parent/>
+<rtc_cm:hasDeliverable>true</rtc_cm:hasDeliverable>
+<rtc_cm:archived>true</rtc_cm:archived>
+<rtc_cm:timeline rdf:resource="http://test.url:9443/jazz/oslc/timelines/_00J9oMfiEd6yW_0tvNlbrw"/>
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw"/>
+</rtc_cm:Iteration>
+<rtc_cm:Iteration rdf:resource="http://test.url:9443/jazz/oslc/iterations/_DbGcwHUwEeKicpXBddtqNA">
+<dc:identifier>1.0 S1</dc:identifier>
+<dc:title>Sprint 1 (1.0)</dc:title>
+<dc:description/>
+<rtc_cm:startDate>2013-02-12T06:00:00.000Z</rtc_cm:startDate>
+<rtc_cm:endDate>2013-03-04T06:00:00.000Z</rtc_cm:endDate>
+<rtc_cm:parent rdf:resource="http://test.url:9443/jazz/oslc/iterations/_DbF1sXUwEeKicpXBddtqNA"/>
+<rtc_cm:hasDeliverable>true</rtc_cm:hasDeliverable>
+<rtc_cm:archived>false</rtc_cm:archived>
+<rtc_cm:timeline rdf:resource="http://test.url:9443/jazz/oslc/timelines/_DbF1sHUwEeKicpXBddtqNA"/>
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
+</rtc_cm:Iteration>
+</oslc_cm:Collection>
