@@ -46,7 +46,8 @@ class TestRTCClient:
         projectareas = myrtcclient.getProjectAreas(archived=False)
 
         raw_content = utils_test.pa2
-        pa = ProjectArea("http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA",
+        pa = ProjectArea("/".join(["http://test.url:9443/jazz/oslc",
+                                   "projectareas/_CuZu0HUwEeKicpXBddtqNA"]),
                          myrtcclient,
                          xmltodict.parse(raw_content))
         assert projectareas == [pa]
@@ -55,7 +56,8 @@ class TestRTCClient:
         projectareas = myrtcclient.getProjectAreas(archived=True)
 
         raw_content = utils_test.pa1
-        pa = ProjectArea("http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw",
+        pa = ProjectArea("/".join(["http://test.url:9443/jazz/oslc",
+                                   "projectareas/_0qMJUMfiEd6yW_0tvNlbrw"]),
                          myrtcclient,
                          xmltodict.parse(raw_content))
         assert projectareas == [pa]
@@ -65,7 +67,9 @@ class TestRTCClient:
                                         archived=False)
 
         raw_content = utils_test.pa2
-        assert pa == ProjectArea("http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA",
+        url = "/".join(["http://test.url:9443/jazz/oslc",
+                        "projectareas/_CuZu0HUwEeKicpXBddtqNA"])
+        assert pa == ProjectArea(url,
                                  myrtcclient,
                                  xmltodict.parse(raw_content))
 
@@ -81,15 +85,20 @@ class TestRTCClient:
                                         archived=True)
 
         raw_content = utils_test.pa1
-        assert pa == ProjectArea("http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw",
+        url = "/".join(["http://test.url:9443/jazz/oslc",
+                        "projectareas/_0qMJUMfiEd6yW_0tvNlbrw"])
+        assert pa == ProjectArea(url,
                                  myrtcclient,
                                  xmltodict.parse(raw_content))
 
     def test_get_projectarea_byid(self, myrtcclient, mock_get_pas):
-        pa = myrtcclient.getProjectAreaByID(projectarea_id="_CuZu0HUwEeKicpXBddtqNA",
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        pa = myrtcclient.getProjectAreaByID(projectarea_id=pa_id,
                                             archived=False)
         raw_content = utils_test.pa2
-        assert pa == ProjectArea("http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA",
+        url = "/".join(["http://test.url:9443/jazz/oslc",
+                        "projectareas/_CuZu0HUwEeKicpXBddtqNA"])
+        assert pa == ProjectArea(url,
                                  myrtcclient,
                                  xmltodict.parse(raw_content))
 
