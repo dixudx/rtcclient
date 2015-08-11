@@ -194,6 +194,8 @@ class FieldBase(RTCBase):
     def __initialize(self, resp):
         """Initialize from the response"""
 
+        # TODO: need further check the structure here
+        # if the first line contains <rtc_cm:Cls>
         raw_data = xmltodict.parse(resp.content)
         root_key = raw_data.keys()[0]
         self.raw_data = raw_data.get(root_key)
