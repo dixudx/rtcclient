@@ -200,6 +200,8 @@ class RTCClient(RTCBase):
             projectarea_ids.append(projectarea_id)
         elif projectarea_name is None:
             projectareas = self.getProjectAreas(archived=archived)
+            if projectareas is None:
+                return None
             projectarea_ids = [proj_area.id for proj_area in projectareas]
         else:
             error_msg = "Invalid ProjectArea name: [%s]" % projectarea_name
@@ -700,13 +702,17 @@ class RTCClient(RTCBase):
             Refer to class `RTCClient` for more explanations
         :return: a list contains all the `Workitem <Workitem>` objects
         :rtype: list
-        pass
         """
 
         workitems_list = list()
         projectarea_ids = list()
         if not projectarea_id:
-            projectarea_ids.extend(self.getProjectAreaIDs(projectarea_name))
+            pa_ids = self.getProjectAreaIDs(projectarea_name)
+            if pa_ids is None:
+                self.log.warning("Stop getting workitems because of "
+                                 "no ProjectAreas")
+                return None
+            projectarea_ids.extend(pa_ids)
         else:
             if self.checkProjectAreaID(projectarea_id):
                 projectarea_ids.append(projectarea_id)
@@ -727,6 +733,8 @@ class RTCClient(RTCBase):
             workitems_list.extend(workitems)
 
         if not workitems_list:
+            self.log.warning("Cannot find a workitem in the ProjectAreas "
+                             "with ids: %s" % projectarea_ids)
             return None
         return workitems_list
 
@@ -931,10 +939,11 @@ class RTCClient(RTCBase):
         if projectarea_id is None:
             if projectarea_name is not None:
                 projectarea_id = self.getProjectAreaID(projectarea_name)
+                return projectarea_id
         else:
             if not self.checkProjectAreaID(projectarea_id):
                 raise exception.BadValue("Invalid ProjectArea id")
-        return projectarea_id
+        return None
 
     def _get_paged_resources(self, resource_name, projectarea_id=None,
                              workitem_id=None, customized_attr=None,
