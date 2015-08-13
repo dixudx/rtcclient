@@ -305,11 +305,12 @@ class RTCClient(RTCBase):
 
     def getOwnedBy(self, email, projectarea_id=None,
                    projectarea_name=None):
-        # TODO: return url -> obj
         parse_result = urlparse.urlparse(self.url)
+        new_path = "/".join(["/jts/users",
+                             urlquote(email)])
         new_parse_result = urlparse.ParseResult(scheme=parse_result.scheme,
                                                 netloc=parse_result.netloc,
-                                                path=urlquote(email),
+                                                path=new_path,
                                                 params=parse_result.params,
                                                 query=parse_result.query,
                                                 fragment=parse_result.fragment)
@@ -938,12 +939,12 @@ class RTCClient(RTCBase):
     def _pre_get_resource(self, projectarea_id=None, projectarea_name=None):
         if projectarea_id is None:
             if projectarea_name is not None:
-                projectarea_id = self.getProjectAreaID(projectarea_name)
-                return projectarea_id
+                return self.getProjectAreaID(projectarea_name)
+            return None
         else:
             if not self.checkProjectAreaID(projectarea_id):
                 raise exception.BadValue("Invalid ProjectArea id")
-        return None
+            return projectarea_id
 
     def _get_paged_resources(self, resource_name, projectarea_id=None,
                              workitem_id=None, customized_attr=None,

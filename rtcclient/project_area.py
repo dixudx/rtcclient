@@ -212,7 +212,9 @@ class Member(FieldBase):
         self.email = urlunquote(self.url.split("/")[-1])
 
     def __str__(self):
-        return self.title
+        if hasattr(self, "title"):
+            return self.title
+        return self.email
 
     def _initialize(self):
         pass
