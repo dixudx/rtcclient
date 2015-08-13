@@ -305,11 +305,12 @@ class RTCClient(RTCBase):
 
     def getOwnedBy(self, email, projectarea_id=None,
                    projectarea_name=None):
-        # TODO: return url -> obj
         parse_result = urlparse.urlparse(self.url)
+        new_path = "/".join(["/jts/users",
+                             urlquote(email)])
         new_parse_result = urlparse.ParseResult(scheme=parse_result.scheme,
                                                 netloc=parse_result.netloc,
-                                                path=urlquote(email),
+                                                path=new_path,
                                                 params=parse_result.params,
                                                 query=parse_result.query,
                                                 fragment=parse_result.fragment)

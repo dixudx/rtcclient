@@ -2,7 +2,7 @@ from rtcclient.client import RTCClient
 import requests
 import pytest
 import utils_test
-from rtcclient.project_area import ProjectArea, TeamArea
+from rtcclient.project_area import ProjectArea, TeamArea, Member
 import xmltodict
 from rtcclient.exception import BadValue, NotFound, RTCException, EmptyAttrib
 
@@ -381,3 +381,10 @@ class TestRTCClient:
             myrtcclient.getTeamArea("Team1",
                                     projectarea_id=pa_id,
                                     archived=True)
+
+    def test_get_owned_by(self, myrtcclient):
+        member = myrtcclient.getOwnedBy("tester1@email.com")
+        url = "http://test.url:9443/jts/users/tester1%40email.com"
+        assert member == Member(url,
+                                myrtcclient)
+        assert member.email == "tester1@email.com"
