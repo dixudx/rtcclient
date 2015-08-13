@@ -2,7 +2,7 @@ from rtcclient.client import RTCClient
 import requests
 import pytest
 import utils_test
-from rtcclient.project_area import ProjectArea, TeamArea, Member
+from rtcclient.project_area import ProjectArea, TeamArea, Member, PlannedFor
 import xmltodict
 from rtcclient.exception import BadValue, NotFound, RTCException, EmptyAttrib
 
@@ -271,6 +271,7 @@ class TestRTCClient:
                        myrtcclient,
                        xmltodict.parse(raw_content).get("rtc_cm:Team"))
         assert str(ta1) == "Team1"
+        # fake data: pls ignore the value
         assert ta1.members == ["Team1", "Team2"]
         assert ta1.administrators == ["Team1", "Team2"]
 
@@ -281,6 +282,7 @@ class TestRTCClient:
                        myrtcclient,
                        xmltodict.parse(raw_content).get("rtc_cm:Team"))
         assert str(ta2) == "Team2"
+        # fake data: pls ignore the value
         assert ta2.members == ["Team1", "Team2"]
         assert ta2.administrators == ["Team1", "Team2"]
 
@@ -388,3 +390,80 @@ class TestRTCClient:
         assert member == Member(url,
                                 myrtcclient)
         assert member.email == "tester1@email.com"
+
+    @pytest.fixture
+    def mock_get_plannedfors(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("plannedfors.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_plannedfors_unarchived(self, myrtcclient,
+                                        mock_get_plannedfors, mocker):
+        plannedfors = myrtcclient.getPlannedFors()
+
+        # PlannedFor1
+        raw_content = utils_test.plannedfor1
+        pf1 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
+                                   "iterations/_00J9ocfiEd6yW_0tvNlbrw"]),
+                         myrtcclient,
+                         xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
+        assert str(pf1) == "Release 1.0"
+        # fake data: pls ignore the value
+        assert pf1.timeline == ["Release 1.0", "Sprint 1 (1.0)"]
+        assert pf1.projectArea == ["Release 1.0", "Sprint 1 (1.0)"]
+
+        # PlannedFor1
+        raw_content = utils_test.plannedfor2
+        pf2 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
+                                   "iterations/_DbGcwHUwEeKicpXBddtqNA"]),
+                         myrtcclient,
+                         xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
+        assert str(pf2) == "Sprint 1 (1.0)"
+        # fake data: pls ignore the value
+        assert pf2.timeline == ["Release 1.0", "Sprint 1 (1.0)"]
+        assert pf2.projectArea == ["Release 1.0", "Sprint 1 (1.0)"]
+
+        assert plannedfors == [pf2]
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getPlannedFors(projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        plannedfors = myrtcclient.getPlannedFors(projectarea_id=pa_id)
+        assert plannedfors == [pf2]
+
+    def test_get_plannedfors_archived(self, myrtcclient,
+                                      mock_get_plannedfors, mocker):
+        plannedfors = myrtcclient.getPlannedFors(archived=True)
+
+        # PlannedFor1
+        raw_content = utils_test.plannedfor1
+        pf1 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
+                                   "iterations/_00J9ocfiEd6yW_0tvNlbrw"]),
+                         myrtcclient,
+                         xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
+        assert plannedfors == [pf1]
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getTeamAreas(projectarea_id="fake_id",
+                                     archived=True)
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_0qMJUMfiEd6yW_0tvNlbrw"
+        plannedfors = myrtcclient.getPlannedFors(projectarea_id=pa_id,
+                                                 archived=True)
+        assert plannedfors == [pf1]

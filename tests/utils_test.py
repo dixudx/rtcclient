@@ -54,3 +54,33 @@ ta2 = """
 <rtc_cm:administrators oslc_cm:collref="http://test.url:9443/jazz/oslc/teamareas/_XazXEPbZEeGWkpg5MjeYZQ/rtc_cm:administrators"/>
 </rtc_cm:Team>
 """
+
+plannedfor1 = """
+<rtc_cm:Iteration rdf:resource="http://test.url:9443/jazz/oslc/iterations/_00J9ocfiEd6yW_0tvNlbrw">
+<dc:identifier>1.0</dc:identifier>
+<dc:title>Release 1.0</dc:title>
+<dc:description/>
+<rtc_cm:startDate>2009-11-02T06:00:00.000Z</rtc_cm:startDate>
+<rtc_cm:endDate>2009-12-12T06:00:00.000Z</rtc_cm:endDate>
+<rtc_cm:parent/>
+<rtc_cm:hasDeliverable>true</rtc_cm:hasDeliverable>
+<rtc_cm:archived>true</rtc_cm:archived>
+<rtc_cm:timeline rdf:resource="http://test.url:9443/jazz/oslc/timelines/_00J9oMfiEd6yW_0tvNlbrw"/>
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw"/>
+</rtc_cm:Iteration>
+"""
+
+plannedfor2 = """
+<rtc_cm:Iteration rdf:resource="http://test.url:9443/jazz/oslc/iterations/_DbGcwHUwEeKicpXBddtqNA">
+<dc:identifier>1.0 S1</dc:identifier>
+<dc:title>Sprint 1 (1.0)</dc:title>
+<dc:description/>
+<rtc_cm:startDate>2013-02-12T06:00:00.000Z</rtc_cm:startDate>
+<rtc_cm:endDate>2013-03-04T06:00:00.000Z</rtc_cm:endDate>
+<rtc_cm:parent rdf:resource="http://test.url:9443/jazz/oslc/iterations/_DbF1sXUwEeKicpXBddtqNA"/>
+<rtc_cm:hasDeliverable>true</rtc_cm:hasDeliverable>
+<rtc_cm:archived>false</rtc_cm:archived>
+<rtc_cm:timeline rdf:resource="http://test.url:9443/jazz/oslc/timelines/_DbF1sHUwEeKicpXBddtqNA"/>
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
+</rtc_cm:Iteration>
+"""
