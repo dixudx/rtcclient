@@ -1,5 +1,7 @@
 import os
 import xmltodict
+from rtcclient import OrderedDict
+
 
 _path = os.path.realpath(os.path.dirname(__file__))
 _search_path = os.path.join(_path, 'fixtures')
@@ -68,3 +70,18 @@ filedagainst1 = (xmltodict.parse(read_fixture("filedagainsts.xml"))
 filedagainst2 = (xmltodict.parse(read_fixture("filedagainsts.xml"))
                           .get("oslc_cm:Collection")
                           .get("rtc_cm:Category")[1])
+
+workitem1 = (xmltodict.parse(read_fixture("workitems.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("oslc_cm:ChangeRequest")[0])
+
+workitem1_origin = OrderedDict()
+workitem1_origin["oslc_cm:ChangeRequest"] = workitem1
+workitem1_raw = xmltodict.unparse(workitem1_origin)
+
+workitem2 = (xmltodict.parse(read_fixture("workitems.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("oslc_cm:ChangeRequest")[1])
+workitem2_origin = OrderedDict()
+workitem2_origin["oslc_cm:ChangeRequest"] = workitem2
+workitem2_raw = xmltodict.unparse(workitem2_origin)

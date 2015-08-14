@@ -5,6 +5,7 @@ import utils_test
 from rtcclient.project_area import ProjectArea, TeamArea, Member, PlannedFor
 from rtcclient.project_area import Severity, Priority, FoundIn, FiledAgainst
 import xmltodict
+from rtcclient.workitem import Workitem
 from rtcclient.exception import BadValue, NotFound, RTCException, EmptyAttrib
 
 
@@ -1049,3 +1050,121 @@ class TestRTCClient:
                                                    projectarea_id=pa_id,
                                                    archived=True)
         assert filedagainst == fa1
+
+    def test_get_workitem(self, mocker, myrtcclient):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.workitem1_raw
+        mocked_get.return_value = mock_resp
+
+        # test for invalid workitem id
+        invalid_ids = [None, '']
+        for invalid_id in invalid_ids:
+            with pytest.raises(BadValue):
+                myrtcclient.getWorkitem(invalid_id)
+
+        # test for valid workitem id
+        workitem = myrtcclient.getWorkitem(161)
+
+        # Workitem1
+        workitem1 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
+                             myrtcclient,
+                             workitem_id=161,
+                             raw_data=utils_test.workitem1)
+        assert workitem == workitem1
+
+        workitem11 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
+                              myrtcclient,
+                              raw_data=utils_test.workitem1)
+        assert workitem1 == workitem11
+
+        assert workitem1.identifier == "161"
+        assert workitem1.archived == "false"
+        assert workitem1.browser is None
+        assert workitem1.collabnet_id is None
+        assert workitem1.contextId == "_CuZu0HUwEeKicpXBddtqNA"
+        assert workitem1.correctedEstimate is None
+        assert workitem1.created == "2009-12-03T20:33:42.543Z"
+        assert workitem1.creator == "tester1@email.com"
+        assert workitem1.description == "description for test demo"
+        assert workitem1.due is None
+        assert workitem1.estimate is None
+        assert workitem1.foundIn is None
+        assert workitem1.resolution is None
+        assert workitem1.subject is None
+        assert workitem1.modified == "2010-02-16T16:04:00.244Z"
+        assert workitem1.resolved == "2010-02-16T16:03:59.164Z"
+        assert workitem1.startDate is None
+        assert workitem1.plannedFor is None
+        assert workitem1.title == "input title here for 161"
+
+        # fake data: ignore these
+        # just list two attributes here
+        # skip other attributes with rdf:resource
+        assert workitem1.filedAgainst == "input title here for 161"
+        assert workitem1.comments == "input title here for 161"
+
+    @pytest.fixture
+    def mock_get_workitems(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("workitems.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_workitems_unarchived(self, myrtcclient,
+                                      mock_get_workitems, mocker):
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getWorkitems(projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        workitems = myrtcclient.getWorkitems(projectarea_id=pa_id)
+
+        # Workitem1
+        workitem1 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
+                             myrtcclient,
+                             workitem_id=161,
+                             raw_data=utils_test.workitem1)
+
+        assert workitems == [workitem1]
+
+        # test for None
+        workitems = myrtcclient.getWorkitems(projectarea_id="other_valid_id")
+        assert workitems is None
+
+    def test_get_workitems_archived(self, myrtcclient,
+                                    mock_get_workitems, mocker):
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getWorkitems(projectarea_id="fake_id",
+                                     archived=True)
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        workitems = myrtcclient.getWorkitems(projectarea_id=pa_id,
+                                             archived=True)
+
+        # Workitem2
+        workitem2 = Workitem("http://test.url:9443/jazz/oslc/workitems/6329",
+                             myrtcclient,
+                             workitem_id=6329,
+                             raw_data=utils_test.workitem2)
+
+        assert workitems == [workitem2]
+
+        # test for None
+        workitems = myrtcclient.getWorkitems(projectarea_id="other_valid_id",
+                                             archived=True)
+        assert workitems is None
