@@ -30,9 +30,8 @@
 <rtc_cm:correctedEstimate/>
 <dc:created>2009-12-03T20:33:42.543Z</dc:created>
 <dc:creator rdf:resource="http://test.url:9443/jts/users/tester1%40email.com"/>
-<rtc_cm:deployment_env/>
 <dc:description>
-Set up instant messaging<br/><br/>To set up instant messaging inside your Jazz client, consult the <a href="http://publib.boulder.ibm.com/infocenter/rtc/v2r0m0/index.jsp?topic=/com.ibm.team.collaboration.doc/topics/t_connect_st.html">Connect to a local Sametime or Notes application</a> or <a href="http://publib.boulder.ibm.com/infocenter/rtc/v2r0m0/topic/com.ibm.team.collaboration.doc/topics/t_connect_jabber.html">Connect to a Jabber server</a> help topics.
+description for test demo
 </dc:description>
 <rtc_cm:due/>
 <rtc_cm:estimate/>
@@ -51,13 +50,9 @@ Set up instant messaging<br/><br/>To set up instant messaging inside your Jazz c
 <rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
 <rtc_cm:resolved>2010-02-16T16:03:59.164Z</rtc_cm:resolved>
 <rtc_cm:resolvedBy rdf:resource="http://test.url:9443/jts/users/tester2%40email.com"/>
-<rtc_cm:root_cause/>
 <rtc_cm:startDate/>
-<dc:title>[Joining a Team] Set Up Instant Messaging</dc:title>
+<dc:title>input title here for 161</dc:title>
 <rtc_cm:plannedFor/>
-<rtc_cm:technical_component rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/technical_component/technical_component.literal.l12"/>
-<rtc_cm:test_case_no/>
-<rtc_cm:test_points>0</rtc_cm:test_points>
 <rtc_cm:timeSpent/>
 <dc:type rdf:resource="http://test.url:9443/jazz/oslc/types/_CuZu0HUwEeKicpXBddtqNA/task"/>
 <rtc_cm:teamArea rdf:resource="http://test.url:9443/jazz/oslc/teamareas/_XazXEPbZEeGWkpg5MjeYZQ"/>
@@ -125,7 +120,7 @@ Set up instant messaging<br/><br/>To set up instant messaging inside your Jazz c
 <rtc_cm:com.ibm.team.enterprise.promotion.linktype.resultWorkItem.result oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_JZTuoOBLEd6VxeRBsGx82Q/rtc_cm:com.ibm.team.enterprise.promotion.linktype.resultWorkItem.result"/>
 </oslc_cm:ChangeRequest>
 <oslc_cm:ChangeRequest rdf:resource="http://test.url:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/6329">
-<rtc_cm:archived>false</rtc_cm:archived>
+<rtc_cm:archived>true</rtc_cm:archived>
 <rtc_cm:browser/>
 <rtc_cm:filedAgainst rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.Category/_gLerwBIYEd-oeK_GbRorpg"/>
 <rtc_cm:collabnet_id/>
@@ -155,11 +150,9 @@ Set up instant messaging<br/><br/>To set up instant messaging inside your Jazz c
 <rtc_cm:correctedEstimate/>
 <dc:created>2010-05-05T22:31:19.228Z</dc:created>
 <dc:creator rdf:resource="http://test.url:9443/jts/users/tester1%40email.com"/>
-<rtc_cm:deployment_env/>
 <dc:description>...</dc:description>
 <rtc_cm:due/>
 <rtc_cm:estimate/>
-<rtc_cm:external_ticket/>
 <rtc_cm:foundIn rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.Deliverable/_7z1e8CWMEd-Gp6LY79-UHw"/>
 <dc:identifier>6329</dc:identifier>
 <rtc_cm:comments oslc_cm:collref="http://test.url:9443/jazz/oslc/workitems/_7MvhAFiVEd-MPoNQ7Mo_BQ/rtc_cm:comments"/>
@@ -175,13 +168,10 @@ Set up instant messaging<br/><br/>To set up instant messaging inside your Jazz c
 <rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
 <rtc_cm:resolved>2010-07-06T13:57:20.380Z</rtc_cm:resolved>
 <rtc_cm:resolvedBy rdf:resource="http://test.url:9443/jts/users/tester1%40email.com"/>
-<rtc_cm:root_cause/>
 <rtc_cm:startDate/>
 <dc:title>...</dc:title>
 <rtc_cm:plannedFor rdf:resource="http://test.url:9443/jazz/oslc/iterations/_0O1M0GOPEd-6mcIqsmW3Jg"/>
 <rtc_cm:technical_component rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/technical_component/technical_component.literal.l12"/>
-<rtc_cm:test_case_no/>
-<rtc_cm:test_points>0</rtc_cm:test_points>
 <rtc_cm:timeSpent/>
 <dc:type rdf:resource="http://test.url:9443/jazz/oslc/types/_CuZu0HUwEeKicpXBddtqNA/defect"/>
 <rtc_cm:teamArea rdf:resource="http://test.url:9443/jazz/oslc/teamareas/_XazXEPbZEeGWkpg5MjeYZQ"/>

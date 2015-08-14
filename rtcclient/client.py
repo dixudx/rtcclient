@@ -20,7 +20,7 @@ class RTCClient(RTCBase):
     Tips: You can also customize your preferred properties to be returned
     by specified `returned_properties` when the called methods contain
     this optional parameter, which can also GREATLY IMPROVE the performance
-    of this client especially for getting and querying lots of Workitems.
+    of this client especially when getting and querying lots of Workitems.
 
     Important Note: `returned_properties` is an advanced parameter, the
     returned properties can be found in `ClassInstance.field_alias.values()`,
@@ -677,7 +677,7 @@ class RTCClient(RTCBase):
                                 workitem_id=workitem_id,
                                 raw_data=workitem_raw)
 
-        except ValueError:
+        except (ValueError, TypeError):
             excp_msg = "Please input a valid workitem id"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -686,7 +686,7 @@ class RTCClient(RTCBase):
             raise exception.NotFound("Not found <Workitem %s>", workitem_id)
 
     def getWorkitems(self, projectarea_id=None, projectarea_name=None,
-                     returned_properties=None):
+                     returned_properties=None, archived=False):
         """Get all <Workitem> objects by projectarea's id or name
 
         If both projectarea_id and projectarea_name are None, all the workitems
@@ -701,6 +701,7 @@ class RTCClient(RTCBase):
         :param projectarea_name: the project area name
         :param returned_properties: the returned properties that you want
             Refer to class `RTCClient` for more explanations
+        :param archived: whether the Workitems are archived
         :return: a list contains all the `Workitem <Workitem>` objects
         :rtype: list
         """
@@ -730,8 +731,10 @@ class RTCClient(RTCBase):
             workitems = self._get_paged_resources("Workitem",
                                                   projectarea_id=projarea_id,
                                                   page_size="100",
-                                                  returned_properties=rp)
-            workitems_list.extend(workitems)
+                                                  returned_properties=rp,
+                                                  archived=archived)
+            if workitems is not None:
+                workitems_list.extend(workitems)
 
         if not workitems_list:
             self.log.warning("Cannot find a workitem in the ProjectAreas "

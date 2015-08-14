@@ -1,4 +1,6 @@
 import os
+import xmltodict
+from rtcclient import OrderedDict
 
 
 _path = os.path.realpath(os.path.dirname(__file__))
@@ -11,76 +13,75 @@ def read_fixture(file_name):
         return fh.read()
 
 
-pa1 = """
-<rtc_cm:Project rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw">
-<dc:title>ProjectArea1</dc:title>
-<dc:description>Demo for test: Project Area One</dc:description>
-<rtc_cm:detailedDescription/>
-<rtc_cm:initialized>true</rtc_cm:initialized>
-<rtc_cm:archived>true</rtc_cm:archived>
-</rtc_cm:Project>
-"""
+pa1 = (xmltodict.parse(read_fixture("projectareas.xml"))
+                .get("oslc_cm:Collection")
+                .get("rtc_cm:Project")[0])
 
 
-pa2 = """
-<rtc_cm:Project rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA">
-<dc:title>ProjectArea2</dc:title>
-<dc:description>Demo for test: Project Area Two</dc:description>
-<rtc_cm:detailedDescription/>
-<rtc_cm:initialized>true</rtc_cm:initialized>
-<rtc_cm:archived>false</rtc_cm:archived>
-</rtc_cm:Project>
-"""
+pa2 = (xmltodict.parse(read_fixture("projectareas.xml"))
+                .get("oslc_cm:Collection")
+                .get("rtc_cm:Project")[1])
 
 
-ta1 = """
-<rtc_cm:Team rdf:resource="http://test.url:9443/jazz/oslc/teamareas/_ECYfMHUwEeKicpXBddtqNA">
-<dc:title>Team1</dc:title>
-<dc:description/>
-<rtc_cm:archived>false</rtc_cm:archived>
-<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
-<rtc_cm:members oslc_cm:collref="http://test.url:9443/jazz/oslc/teamareas/_ECYfMHUwEeKicpXBddtqNA/rtc_cm:members"/>
-<rtc_cm:administrators oslc_cm:collref="http://test.url:9443/jazz/oslc/teamareas/_ECYfMHUwEeKicpXBddtqNA/rtc_cm:administrators"/>
-</rtc_cm:Team>
-"""
+ta1 = (xmltodict.parse(read_fixture("teamareas.xml"))
+                .get("oslc_cm:Collection")
+                .get("rtc_cm:Team")[0])
 
-ta2 = """
-<rtc_cm:Team rdf:resource="http://test.url:9443/jazz/oslc/teamareas/_XazXEPbZEeGWkpg5MjeYZQ">
-<dc:title>Team2</dc:title>
-<dc:description/>
-<rtc_cm:archived>false</rtc_cm:archived>
-<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
-<rtc_cm:members oslc_cm:collref="http://test.url:9443/jazz/oslc/teamareas/_XazXEPbZEeGWkpg5MjeYZQ/rtc_cm:members"/>
-<rtc_cm:administrators oslc_cm:collref="http://test.url:9443/jazz/oslc/teamareas/_XazXEPbZEeGWkpg5MjeYZQ/rtc_cm:administrators"/>
-</rtc_cm:Team>
-"""
+ta2 = (xmltodict.parse(read_fixture("teamareas.xml"))
+                .get("oslc_cm:Collection")
+                .get("rtc_cm:Team")[1])
 
-plannedfor1 = """
-<rtc_cm:Iteration rdf:resource="http://test.url:9443/jazz/oslc/iterations/_00J9ocfiEd6yW_0tvNlbrw">
-<dc:identifier>1.0</dc:identifier>
-<dc:title>Release 1.0</dc:title>
-<dc:description/>
-<rtc_cm:startDate>2009-11-02T06:00:00.000Z</rtc_cm:startDate>
-<rtc_cm:endDate>2009-12-12T06:00:00.000Z</rtc_cm:endDate>
-<rtc_cm:parent/>
-<rtc_cm:hasDeliverable>true</rtc_cm:hasDeliverable>
-<rtc_cm:archived>true</rtc_cm:archived>
-<rtc_cm:timeline rdf:resource="http://test.url:9443/jazz/oslc/timelines/_00J9oMfiEd6yW_0tvNlbrw"/>
-<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw"/>
-</rtc_cm:Iteration>
-"""
+plannedfor1 = (xmltodict.parse(read_fixture("plannedfors.xml"))
+                        .get("oslc_cm:Collection")
+                        .get("rtc_cm:Iteration")[0])
 
-plannedfor2 = """
-<rtc_cm:Iteration rdf:resource="http://test.url:9443/jazz/oslc/iterations/_DbGcwHUwEeKicpXBddtqNA">
-<dc:identifier>1.0 S1</dc:identifier>
-<dc:title>Sprint 1 (1.0)</dc:title>
-<dc:description/>
-<rtc_cm:startDate>2013-02-12T06:00:00.000Z</rtc_cm:startDate>
-<rtc_cm:endDate>2013-03-04T06:00:00.000Z</rtc_cm:endDate>
-<rtc_cm:parent rdf:resource="http://test.url:9443/jazz/oslc/iterations/_DbF1sXUwEeKicpXBddtqNA"/>
-<rtc_cm:hasDeliverable>true</rtc_cm:hasDeliverable>
-<rtc_cm:archived>false</rtc_cm:archived>
-<rtc_cm:timeline rdf:resource="http://test.url:9443/jazz/oslc/timelines/_DbF1sHUwEeKicpXBddtqNA"/>
-<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
-</rtc_cm:Iteration>
-"""
+plannedfor2 = (xmltodict.parse(read_fixture("plannedfors.xml"))
+                        .get("oslc_cm:Collection")
+                        .get("rtc_cm:Iteration")[1])
+
+severity1 = (xmltodict.parse(read_fixture("severities.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("rtc_cm:Literal")[0])
+
+severity2 = (xmltodict.parse(read_fixture("severities.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("rtc_cm:Literal")[1])
+
+priority1 = (xmltodict.parse(read_fixture("priorities.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("rtc_cm:Literal")[0])
+
+priority2 = (xmltodict.parse(read_fixture("priorities.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("rtc_cm:Literal")[1])
+
+foundin1 = (xmltodict.parse(read_fixture("foundins.xml"))
+                     .get("oslc_cm:Collection")
+                     .get("rtc_cm:Deliverable")[0])
+
+foundin2 = (xmltodict.parse(read_fixture("foundins.xml"))
+                     .get("oslc_cm:Collection")
+                     .get("rtc_cm:Deliverable")[1])
+
+filedagainst1 = (xmltodict.parse(read_fixture("filedagainsts.xml"))
+                          .get("oslc_cm:Collection")
+                          .get("rtc_cm:Category")[0])
+
+filedagainst2 = (xmltodict.parse(read_fixture("filedagainsts.xml"))
+                          .get("oslc_cm:Collection")
+                          .get("rtc_cm:Category")[1])
+
+workitem1 = (xmltodict.parse(read_fixture("workitems.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("oslc_cm:ChangeRequest")[0])
+
+workitem1_origin = OrderedDict()
+workitem1_origin["oslc_cm:ChangeRequest"] = workitem1
+workitem1_raw = xmltodict.unparse(workitem1_origin)
+
+workitem2 = (xmltodict.parse(read_fixture("workitems.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("oslc_cm:ChangeRequest")[1])
+workitem2_origin = OrderedDict()
+workitem2_origin["oslc_cm:ChangeRequest"] = workitem2
+workitem2_raw = xmltodict.unparse(workitem2_origin)
