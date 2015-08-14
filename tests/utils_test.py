@@ -87,3 +87,27 @@ workitem2_origin["oslc_cm:ChangeRequest"] = workitem2
 workitem2_raw = xmltodict.unparse(workitem2_origin)
 
 template_name = "issue_example.template"
+
+member1 = (xmltodict.parse(read_fixture("members.xml"))
+                    .get("oslc_cm:Collection")
+                    .get("rtc_cm:User")[0])
+
+member2 = (xmltodict.parse(read_fixture("members.xml"))
+                    .get("oslc_cm:Collection")
+                    .get("rtc_cm:User")[1])
+
+member3 = (xmltodict.parse(read_fixture("members.xml"))
+                    .get("oslc_cm:Collection")
+                    .get("rtc_cm:User")[2])
+
+itemtype1 = (xmltodict.parse(read_fixture("itemtypes.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("rtc_cm:Type")[0])
+
+itemtype2 = (xmltodict.parse(read_fixture("itemtypes.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("rtc_cm:Type")[1])
+
+admin = (xmltodict.parse(read_fixture("administrators.xml"))
+                  .get("oslc_cm:Collection")
+                  .get("rtc_cm:User"))
