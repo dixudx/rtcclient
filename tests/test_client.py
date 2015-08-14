@@ -3,6 +3,7 @@ import requests
 import pytest
 import utils_test
 from rtcclient.project_area import ProjectArea, TeamArea, Member, PlannedFor
+from rtcclient.project_area import Severity
 import xmltodict
 from rtcclient.exception import BadValue, NotFound, RTCException, EmptyAttrib
 
@@ -411,6 +412,9 @@ class TestRTCClient:
                          myrtcclient,
                          xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
         assert str(pf1) == "Release 1.0"
+        assert pf1.identifier == "1.0"
+        assert pf1.startDate == "2009-11-02T06:00:00.000Z"
+        assert pf1.endDate == "2009-12-12T06:00:00.000Z"
         # fake data: pls ignore the value
         assert pf1.timeline == ["Release 1.0", "Sprint 1 (1.0)"]
         assert pf1.projectArea == ["Release 1.0", "Sprint 1 (1.0)"]
@@ -422,6 +426,9 @@ class TestRTCClient:
                          myrtcclient,
                          xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
         assert str(pf2) == "Sprint 1 (1.0)"
+        assert pf2.identifier == "1.0 S1"
+        assert pf2.startDate == "2013-02-12T06:00:00.000Z"
+        assert pf2.endDate == "2013-03-04T06:00:00.000Z"
         # fake data: pls ignore the value
         assert pf2.timeline == ["Release 1.0", "Sprint 1 (1.0)"]
         assert pf2.projectArea == ["Release 1.0", "Sprint 1 (1.0)"]
@@ -536,3 +543,101 @@ class TestRTCClient:
             myrtcclient.getPlannedFor("Release 1.0",
                                       projectarea_id=pa_id,
                                       archived=True)
+
+    @pytest.fixture
+    def mock_get_severities(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("severities.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_severities(self, myrtcclient,
+                            mock_get_severities, mocker):
+        with pytest.raises(EmptyAttrib):
+            myrtcclient.getSeverities()
+
+        # Severity1
+        raw_content = utils_test.severity1
+        url1 = "/".join(["http://test.url:9443/jazz/oslc",
+                         "enumerations/_CuZu0HUwEeKicpXBddtqNA",
+                         "severity/severity.literal.l1"])
+        s1 = Severity(url1,
+                      myrtcclient,
+                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+        assert str(s1) == "Unclassified"
+        assert s1.url == url1
+        assert s1.identifier == "severity.literal.l1"
+        icon_url = "".join(["http://test.url:9443/jazz/service/",
+                            "com.ibm.team.workitem.common.internal.model.",
+                            "IImageContentService/processattachment/",
+                            "_CuZu0HUwEeKicpXBddtqNA/enumeration/",
+                            "unassigned2.gif"])
+        assert s1.iconUrl == icon_url
+
+        # Severity2
+        raw_content = utils_test.severity2
+        url2 = "/".join(["http://test.url:9443/jazz/oslc",
+                         "enumerations/_CuZu0HUwEeKicpXBddtqNA",
+                         "severity/severity.literal.l2"])
+        s2 = Severity(url2,
+                      myrtcclient,
+                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+        assert str(s2) == "Normal"
+        assert s2.url == url2
+        assert s2.identifier == "severity.literal.l2"
+        icon_url = "".join(["http://test.url:9443/jazz/service/",
+                            "com.ibm.team.workitem.common.internal.model.",
+                            "IImageContentService/processattachment/",
+                            "_CuZu0HUwEeKicpXBddtqNA/enumeration/",
+                            "normal.gif"])
+        assert s2.iconUrl == icon_url
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getSeverities(projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        severities = myrtcclient.getSeverities(projectarea_id=pa_id)
+        assert severities == [s1, s2]
+
+    def test_get_severity(self, myrtcclient,
+                          mock_get_severities, mocker):
+        with pytest.raises(EmptyAttrib):
+            myrtcclient.getSeverity("Unclassified")
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getSeverity("Unclassified",
+                                    projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        severity = myrtcclient.getSeverity("Unclassified",
+                                           projectarea_id=pa_id)
+
+        # Severity1
+        raw_content = utils_test.severity1
+        url1 = "/".join(["http://test.url:9443/jazz/oslc",
+                         "enumerations/_CuZu0HUwEeKicpXBddtqNA",
+                         "severity/severity.literal.l1"])
+        s1 = Severity(url1,
+                      myrtcclient,
+                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+
+        assert severity == s1
+
+        # test for None
+        with pytest.raises(NotFound):
+            myrtcclient.getSeverity("fake_severity_name",
+                                    projectarea_id=pa_id)

@@ -13,11 +13,4 @@ http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.II
 http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/normal.gif
 </rtc_cm:iconUrl>
 </rtc_cm:Literal>
-<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/severity/severity.literal.l3">
-<dc:identifier>severity.literal.l3</dc:identifier>
-<dc:title>Critical</dc:title>
-<rtc_cm:iconUrl>
-http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/critical.gif
-</rtc_cm:iconUrl>
-</rtc_cm:Literal>
 </oslc_cm:Collection>

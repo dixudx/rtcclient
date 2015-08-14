@@ -84,3 +84,23 @@ plannedfor2 = """
 <rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
 </rtc_cm:Iteration>
 """
+
+severity1 = """
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/severity/severity.literal.l1">
+<dc:identifier>severity.literal.l1</dc:identifier>
+<dc:title>Unclassified</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/unassigned2.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+"""
+
+severity2 = """
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/severity/severity.literal.l2">
+<dc:identifier>severity.literal.l2</dc:identifier>
+<dc:title>Normal</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/normal.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+"""
