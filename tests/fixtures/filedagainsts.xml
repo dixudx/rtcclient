@@ -6,17 +6,7 @@
 <dc:description/>
 <rtc_cm:defaultTeamArea/>
 <rtc_cm:depth>0</rtc_cm:depth>
-<rtc_cm:archived>false</rtc_cm:archived>
-</rtc_cm:Category>
-<rtc_cm:Category rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.Category/_XTyJEPbZEeGWkpg5MjeYZQ">
-<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
-<dc:title>Unassigned</dc:title>
-<rtc_cm:hierarchicalName>Unassigned</rtc_cm:hierarchicalName>
-<dc:description/>
-<rtc_cm:defaultTeamArea/>
-<rtc_cm:teamAreas/>
-<rtc_cm:depth>0</rtc_cm:depth>
-<rtc_cm:archived>false</rtc_cm:archived>
+<rtc_cm:archived>true</rtc_cm:archived>
 </rtc_cm:Category>
 <rtc_cm:Category rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.Category/_XcFwgfbZEeGWkpg5MjeYZQ">
 <rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
@@ -24,7 +14,6 @@
 <rtc_cm:hierarchicalName>Category 1</rtc_cm:hierarchicalName>
 <dc:description>Category to organize your work items.</dc:description>
 <rtc_cm:defaultTeamArea/>
-<rtc_cm:teamAreas/>
 <rtc_cm:depth>0</rtc_cm:depth>
 <rtc_cm:archived>false</rtc_cm:archived>
 </rtc_cm:Category>

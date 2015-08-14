@@ -3,7 +3,7 @@ import requests
 import pytest
 import utils_test
 from rtcclient.project_area import ProjectArea, TeamArea, Member, PlannedFor
-from rtcclient.project_area import Severity, Priority, FoundIn
+from rtcclient.project_area import Severity, Priority, FoundIn, FiledAgainst
 import xmltodict
 from rtcclient.exception import BadValue, NotFound, RTCException, EmptyAttrib
 
@@ -909,3 +909,166 @@ class TestRTCClient:
                                          projectarea_id=pa_id,
                                          archived=True)
         assert foundin == f1
+
+    @pytest.fixture
+    def mock_get_filedagainsts(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("filedagainsts.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_filedagainsts_unarchived(self, myrtcclient,
+                                          mock_get_filedagainsts, mocker):
+        filedagainsts = myrtcclient.getFiledAgainsts()
+
+        # Filedagainst2
+        raw_content = utils_test.filedagainst2
+        fa2 = FiledAgainst("/".join(["http://test.url:9443/jazz/resource",
+                                     "itemOid/com.ibm.team.workitem.Category",
+                                     "_XcFwgfbZEeGWkpg5MjeYZQ"]),
+                           myrtcclient,
+                           xmltodict.parse(raw_content).get("rtc_cm:Category"))
+
+        assert str(fa2) == "Category 1"
+        assert fa2.hierarchicalName == "Category 1"
+        assert fa2.description == "Category to organize your work items."
+        assert fa2.defaultTeamArea is None
+        assert fa2.depth == "0"
+        assert fa2.archived == "false"
+        # fake data: pls ignore the value
+        assert fa2.projectArea == ["Unassigned", "Category 1"]
+
+        assert filedagainsts == [fa2]
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getFiledAgainsts(projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        filedagainsts = myrtcclient.getFiledAgainsts(projectarea_id=pa_id)
+        assert filedagainsts == [fa2]
+
+    def test_get_filedagainsts_archived(self, myrtcclient,
+                                        mock_get_filedagainsts, mocker):
+        filedagainsts = myrtcclient.getFiledAgainsts(archived=True)
+
+        # Filedagainst1
+        raw_content = utils_test.filedagainst1
+        fa1 = FiledAgainst("/".join(["http://test.url:9443/jazz/resource",
+                                     "itemOid/com.ibm.team.workitem.Category",
+                                     "_D5dMsHUwEeKicpXBddtqNA"]),
+                           myrtcclient,
+                           xmltodict.parse(raw_content).get("rtc_cm:Category"))
+
+        assert str(fa1) == "Unassigned"
+        assert fa1.hierarchicalName == "Unassigned"
+        assert fa1.description is None
+        assert fa1.defaultTeamArea is None
+        assert fa1.depth == "0"
+        assert fa1.archived == "true"
+        # fake data: pls ignore the value
+        assert fa1.projectArea == ["Unassigned", "Category 1"]
+
+        assert filedagainsts == [fa1]
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getFiledAgainsts(projectarea_id="fake_id",
+                                         archived=True)
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_0qMJUMfiEd6yW_0tvNlbrw"
+        filedagainsts = myrtcclient.getFiledAgainsts(projectarea_id=pa_id,
+                                                     archived=True)
+        assert filedagainsts == [fa1]
+
+    def test_get_filedagainst_unarchived(self, myrtcclient,
+                                         mock_get_filedagainsts, mocker):
+        # test for a filedagainst which is archived
+        with pytest.raises(NotFound):
+            myrtcclient.getFiledAgainst("Unassigned")
+
+        filedagainst = myrtcclient.getFiledAgainst("Category 1")
+
+        # Filedagainst2
+        raw_content = utils_test.filedagainst2
+        fa2 = FiledAgainst("/".join(["http://test.url:9443/jazz/resource",
+                                     "itemOid/com.ibm.team.workitem.Category",
+                                     "_XcFwgfbZEeGWkpg5MjeYZQ"]),
+                           myrtcclient,
+                           xmltodict.parse(raw_content).get("rtc_cm:Category"))
+
+        assert filedagainst == fa2
+
+        # test invalid names
+        invalid_names = [None, "", False]
+        for invalid_name in invalid_names:
+            with pytest.raises(BadValue):
+                myrtcclient.getFiledAgainst(invalid_name,
+                                            projectarea_id="fake_id")
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getFiledAgainst("Category 1",
+                                        projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        filedagainst = myrtcclient.getFiledAgainst("Category 1",
+                                                   projectarea_id=pa_id)
+        assert filedagainst == fa2
+
+    def test_get_filedagainst_archived(self, myrtcclient,
+                                       mock_get_filedagainsts, mocker):
+        # test for a filedagainst which is unarchived
+        with pytest.raises(NotFound):
+            myrtcclient.getFiledAgainst("Category 1",
+                                        archived=True)
+
+        # Filedagainst1
+        raw_content = utils_test.filedagainst1
+        fa1 = FiledAgainst("/".join(["http://test.url:9443/jazz/resource",
+                                     "itemOid/com.ibm.team.workitem.Category",
+                                     "_D5dMsHUwEeKicpXBddtqNA"]),
+                           myrtcclient,
+                           xmltodict.parse(raw_content).get("rtc_cm:Category"))
+
+        # test invalid names
+        invalid_names = [None, "", False]
+        for invalid_name in invalid_names:
+            with pytest.raises(BadValue):
+                myrtcclient.getFiledAgainst(invalid_name,
+                                            projectarea_id="fake_id",
+                                            archived=True)
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getFiledAgainst("Unassigned",
+                                        projectarea_id="fake_id",
+                                        archived=True)
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_0qMJUMfiEd6yW_0tvNlbrw"
+        filedagainst = myrtcclient.getFiledAgainst("Unassigned",
+                                                   projectarea_id=pa_id,
+                                                   archived=True)
+        assert filedagainst == fa1

@@ -152,3 +152,27 @@ foundin2 = """
 <rtc_cm:modifiedBy rdf:resource="http://test.url:9443/jts/users/tester2%40email.com"/>
 </rtc_cm:Deliverable>
 """
+
+filedagainst1 = """
+<rtc_cm:Category rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.Category/_D5dMsHUwEeKicpXBddtqNA">
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw"/>
+<dc:title>Unassigned</dc:title>
+<rtc_cm:hierarchicalName>Unassigned</rtc_cm:hierarchicalName>
+<dc:description/>
+<rtc_cm:defaultTeamArea/>
+<rtc_cm:depth>0</rtc_cm:depth>
+<rtc_cm:archived>true</rtc_cm:archived>
+</rtc_cm:Category>
+"""
+
+filedagainst2 = """
+<rtc_cm:Category rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.Category/_XcFwgfbZEeGWkpg5MjeYZQ">
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
+<dc:title>Category 1</dc:title>
+<rtc_cm:hierarchicalName>Category 1</rtc_cm:hierarchicalName>
+<dc:description>Category to organize your work items.</dc:description>
+<rtc_cm:defaultTeamArea/>
+<rtc_cm:depth>0</rtc_cm:depth>
+<rtc_cm:archived>false</rtc_cm:archived>
+</rtc_cm:Category>
+"""
