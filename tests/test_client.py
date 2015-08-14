@@ -3,7 +3,7 @@ import requests
 import pytest
 import utils_test
 from rtcclient.project_area import ProjectArea, TeamArea, Member, PlannedFor
-from rtcclient.project_area import Severity, Priority
+from rtcclient.project_area import Severity, Priority, FoundIn
 import xmltodict
 from rtcclient.exception import BadValue, NotFound, RTCException, EmptyAttrib
 
@@ -405,21 +405,7 @@ class TestRTCClient:
                                         mock_get_plannedfors, mocker):
         plannedfors = myrtcclient.getPlannedFors()
 
-        # PlannedFor1
-        raw_content = utils_test.plannedfor1
-        pf1 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
-                                   "iterations/_00J9ocfiEd6yW_0tvNlbrw"]),
-                         myrtcclient,
-                         xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
-        assert str(pf1) == "Release 1.0"
-        assert pf1.identifier == "1.0"
-        assert pf1.startDate == "2009-11-02T06:00:00.000Z"
-        assert pf1.endDate == "2009-12-12T06:00:00.000Z"
-        # fake data: pls ignore the value
-        assert pf1.timeline == ["Release 1.0", "Sprint 1 (1.0)"]
-        assert pf1.projectArea == ["Release 1.0", "Sprint 1 (1.0)"]
-
-        # PlannedFor1
+        # PlannedFor2
         raw_content = utils_test.plannedfor2
         pf2 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
                                    "iterations/_DbGcwHUwEeKicpXBddtqNA"]),
@@ -458,6 +444,14 @@ class TestRTCClient:
                                    "iterations/_00J9ocfiEd6yW_0tvNlbrw"]),
                          myrtcclient,
                          xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
+        assert str(pf1) == "Release 1.0"
+        assert pf1.identifier == "1.0"
+        assert pf1.startDate == "2009-11-02T06:00:00.000Z"
+        assert pf1.endDate == "2009-12-12T06:00:00.000Z"
+        # fake data: pls ignore the value
+        assert pf1.timeline == ["Release 1.0", "Sprint 1 (1.0)"]
+        assert pf1.projectArea == ["Release 1.0", "Sprint 1 (1.0)"]
+
         assert plannedfors == [pf1]
 
         # test for invalid projectarea id
@@ -477,18 +471,19 @@ class TestRTCClient:
 
     def test_get_plannedfor_unarchived(self, myrtcclient,
                                        mock_get_plannedfors, mocker):
+        # test for a plannedfor which is archived
+        with pytest.raises(NotFound):
+            myrtcclient.getPlannedFor("Release 1.0")
+
         plannedfor = myrtcclient.getPlannedFor("Sprint 1 (1.0)")
 
+        # Plannedfor2
         raw_content = utils_test.plannedfor2
         pf2 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
                                    "iterations/_DbGcwHUwEeKicpXBddtqNA"]),
                          myrtcclient,
                          xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
         assert plannedfor == pf2
-
-        # test for a plannedfor which is archived
-        with pytest.raises(NotFound):
-            myrtcclient.getPlannedFor("Release 1.0")
 
         # test invalid names
         invalid_names = [None, "", False]
@@ -518,6 +513,17 @@ class TestRTCClient:
         with pytest.raises(NotFound):
             myrtcclient.getPlannedFor("Sprint 1 (1.0)",
                                       archived=True)
+
+        plannedfor = myrtcclient.getPlannedFor("Release 1.0",
+                                               archived=True)
+
+        # Plannedfor1
+        raw_content = utils_test.plannedfor1
+        pf1 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
+                                   "iterations/_00J9ocfiEd6yW_0tvNlbrw"]),
+                         myrtcclient,
+                         xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
+        assert plannedfor == pf1
 
         # test invalid names
         invalid_names = [None, "", False]
@@ -738,3 +744,168 @@ class TestRTCClient:
         with pytest.raises(NotFound):
             myrtcclient.getPriority("fake_priority_name",
                                     projectarea_id=pa_id)
+
+    @pytest.fixture
+    def mock_get_foundins(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("foundins.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_foundins_unarchived(self, myrtcclient,
+                                     mock_get_foundins, mocker):
+        foundins = myrtcclient.getFoundIns()
+
+        # Foundin2
+        raw_content = utils_test.foundin2
+        f2 = FoundIn("/".join(["http://test.url:9443/jazz/resource",
+                               "itemOid/com.ibm.team.workitem.Deliverable",
+                               "_vztkUOW3Ed6ThJa-QCz7dg"]),
+                     myrtcclient,
+                     xmltodict.parse(raw_content).get("rtc_cm:Deliverable"))
+        assert str(f2) == "Sprint2"
+        assert f2.filtered == "false"
+        assert f2.modified == "2015-07-21T01:46:12.096Z"
+        assert f2.artifact is None
+        assert f2.archived == "false"
+        assert f2.created is None
+        assert f2.description is None
+        # fake data: pls ignore the value
+        assert f2.projectArea == ["Sprint1", "Sprint2"]
+        assert f2.modifiedBy == "tester2@email.com"
+
+        assert foundins == [f2]
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getFoundIns(projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        foundins = myrtcclient.getFoundIns(projectarea_id=pa_id)
+        assert foundins == [f2]
+
+    def test_get_foundins_archived(self, myrtcclient,
+                                   mock_get_foundins, mocker):
+        foundins = myrtcclient.getFoundIns(archived=True)
+
+        # Foundin1
+        raw_content = utils_test.foundin1
+        f1 = FoundIn("/".join(["http://test.url:9443/jazz/resource",
+                               "itemOid/com.ibm.team.workitem.Deliverable",
+                               "_Hx5_wKOlEeKPvqjjtP1sGw"]),
+                     myrtcclient,
+                     xmltodict.parse(raw_content).get("rtc_cm:Deliverable"))
+        assert str(f1) == "Sprint1"
+        assert f1.filtered == "true"
+        assert f1.modified == "2009-11-05T11:36:00.596Z"
+        assert f1.artifact is None
+        assert f1.archived == "true"
+        assert f1.created is None
+        assert f1.description is None
+        # fake data: pls ignore the value
+        assert f1.projectArea == ["Sprint1", "Sprint2"]
+        assert f1.modifiedBy == "tester1@email.com"
+
+        assert foundins == [f1]
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getFoundIns(projectarea_id="fake_id",
+                                    archived=True)
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_0qMJUMfiEd6yW_0tvNlbrw"
+        foundins = myrtcclient.getFoundIns(projectarea_id=pa_id,
+                                           archived=True)
+        assert foundins == [f1]
+
+    def test_get_foundin_unarchived(self, myrtcclient,
+                                    mock_get_foundins, mocker):
+        # test for a foundin which is archived
+        with pytest.raises(NotFound):
+            myrtcclient.getFoundIn("Sprint1")
+
+        foundin = myrtcclient.getFoundIn("Sprint2")
+
+        # Foundin2
+        raw_content = utils_test.foundin2
+        f2 = FoundIn("/".join(["http://test.url:9443/jazz/resource",
+                               "itemOid/com.ibm.team.workitem.Deliverable",
+                               "_vztkUOW3Ed6ThJa-QCz7dg"]),
+                     myrtcclient,
+                     xmltodict.parse(raw_content).get("rtc_cm:Deliverable"))
+
+        assert foundin == f2
+
+        # test invalid names
+        invalid_names = [None, "", False]
+        for invalid_name in invalid_names:
+            with pytest.raises(BadValue):
+                myrtcclient.getFoundIn(invalid_name,
+                                       projectarea_id="fake_id")
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getFoundIn("Sprint2",
+                                   projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        foundin = myrtcclient.getFoundIn("Sprint2",
+                                         projectarea_id=pa_id)
+        assert foundin == f2
+
+    def test_get_foundin_archived(self, myrtcclient,
+                                  mock_get_foundins, mocker):
+        # test for a foundin which is unarchived
+        with pytest.raises(NotFound):
+            myrtcclient.getFoundIn("Sprint2",
+                                   archived=True)
+
+        # Foundin1
+        raw_content = utils_test.foundin1
+        f1 = FoundIn("/".join(["http://test.url:9443/jazz/resource",
+                               "itemOid/com.ibm.team.workitem.Deliverable",
+                               "_Hx5_wKOlEeKPvqjjtP1sGw"]),
+                     myrtcclient,
+                     xmltodict.parse(raw_content).get("rtc_cm:Deliverable"))
+
+        # test invalid names
+        invalid_names = [None, "", False]
+        for invalid_name in invalid_names:
+            with pytest.raises(BadValue):
+                myrtcclient.getFoundIn(invalid_name,
+                                       projectarea_id="fake_id",
+                                       archived=True)
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getFoundIn("Sprint1",
+                                   projectarea_id="fake_id",
+                                   archived=True)
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_0qMJUMfiEd6yW_0tvNlbrw"
+        foundin = myrtcclient.getFoundIn("Sprint1",
+                                         projectarea_id=pa_id,
+                                         archived=True)
+        assert foundin == f1
