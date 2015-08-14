@@ -1205,3 +1205,32 @@ class TestRTCClient:
     def test_update_workitem(self, myrtcclient):
         # TODO
         pass
+
+    def test_check_itemtype(self, myrtcclient, mock_get_pas, mocker):
+        # test for invalid ProjectArea ids
+        invalid_ids = [None, "", False]
+        for invalid_id in invalid_ids:
+            checked_result = myrtcclient.checkType("fake_name",
+                                                   projectarea_id=invalid_id)
+            assert checked_result is False
+
+        # test for undefined ProjectArea ids
+        invalid_ids = ["fake_id1", "fake_id2"]
+        for invalid_id in invalid_ids:
+            checked_result = myrtcclient.checkType("fake_name",
+                                                   projectarea_id=invalid_id)
+            assert checked_result is False
+
+        # test for valid ProjectArea id
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        mocked_get = mocker.patch("rtcclient.project_area.ProjectArea."
+                                  "getItemType")
+        mocked_get.return_value = True
+        checked_result = myrtcclient.checkType("valid_name",
+                                               projectarea_id=pa_id)
+        assert checked_result is True
+
+        mocked_get.return_value = False
+        checked_result = myrtcclient.checkType("valid_name",
+                                               projectarea_id=pa_id)
+        assert checked_result is False
