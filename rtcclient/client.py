@@ -20,7 +20,7 @@ class RTCClient(RTCBase):
     Tips: You can also customize your preferred properties to be returned
     by specified `returned_properties` when the called methods contain
     this optional parameter, which can also GREATLY IMPROVE the performance
-    of this client especially for getting and querying lots of Workitems.
+    of this client especially when getting and querying lots of Workitems.
 
     Important Note: `returned_properties` is an advanced parameter, the
     returned properties can be found in `ClassInstance.field_alias.values()`,
@@ -677,7 +677,7 @@ class RTCClient(RTCBase):
                                 workitem_id=workitem_id,
                                 raw_data=workitem_raw)
 
-        except ValueError:
+        except (ValueError, TypeError):
             excp_msg = "Please input a valid workitem id"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -733,7 +733,8 @@ class RTCClient(RTCBase):
                                                   page_size="100",
                                                   returned_properties=rp,
                                                   archived=archived)
-            workitems_list.extend(workitems)
+            if workitems is not None:
+                workitems_list.extend(workitems)
 
         if not workitems_list:
             self.log.warning("Cannot find a workitem in the ProjectAreas "
