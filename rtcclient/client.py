@@ -686,7 +686,7 @@ class RTCClient(RTCBase):
             raise exception.NotFound("Not found <Workitem %s>", workitem_id)
 
     def getWorkitems(self, projectarea_id=None, projectarea_name=None,
-                     returned_properties=None):
+                     returned_properties=None, archived=False):
         """Get all <Workitem> objects by projectarea's id or name
 
         If both projectarea_id and projectarea_name are None, all the workitems
@@ -701,6 +701,7 @@ class RTCClient(RTCBase):
         :param projectarea_name: the project area name
         :param returned_properties: the returned properties that you want
             Refer to class `RTCClient` for more explanations
+        :param archived: whether the Workitems are archived
         :return: a list contains all the `Workitem <Workitem>` objects
         :rtype: list
         """
@@ -730,7 +731,8 @@ class RTCClient(RTCBase):
             workitems = self._get_paged_resources("Workitem",
                                                   projectarea_id=projarea_id,
                                                   page_size="100",
-                                                  returned_properties=rp)
+                                                  returned_properties=rp,
+                                                  archived=archived)
             workitems_list.extend(workitems)
 
         if not workitems_list:
