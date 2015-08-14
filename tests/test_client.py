@@ -1168,3 +1168,40 @@ class TestRTCClient:
         workitems = myrtcclient.getWorkitems(projectarea_id="other_valid_id",
                                              archived=True)
         assert workitems is None
+
+    def test_list_fields(self, myrtcclient):
+        fields = myrtcclient.listFields(utils_test.template_name)
+        fields_set = set(["severity", "title", "teamArea",
+                          "description", "filedAgainst", "priority",
+                          "ownedBy", "plannedFor"])
+        assert fields == fields_set
+
+    def test_list_fields_from_workitem(self, myrtcclient,
+                                       mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.workitem1_raw
+        mocked_get.return_value = mock_resp
+
+        fields = myrtcclient.listFieldsFromWorkitem(161,
+                                                    keep=False)
+        assert fields == set(["priority", "severity", "title", "teamArea",
+                              "description", "ownedBy", "filedAgainst"])
+
+        fields = myrtcclient.listFieldsFromWorkitem(161,
+                                                    keep=True)
+        assert fields == set(["description",
+                              "title"])
+
+    def test_create_workitem(self, myrtcclient):
+        # TODO
+        pass
+
+    def test_copy_workitem(self, myrtcclient):
+        # TODO
+        pass
+
+    def test_update_workitem(self, myrtcclient):
+        # TODO
+        pass

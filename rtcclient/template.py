@@ -3,6 +3,7 @@ import logging
 import xmltodict
 import os
 import jinja2
+import jinja2.meta
 from rtcclient import exception
 from rtcclient import _search_path
 

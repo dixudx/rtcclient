@@ -1,6 +1,7 @@
 import pytest
 from rtcclient.client import RTCClient
 import requests
+from utils_test import _search_path
 
 
 @pytest.fixture(scope="function")
@@ -14,4 +15,5 @@ def rtcclient(mocker):
 
     return RTCClient(url="http://test.url:9443/jazz",
                      username="user",
-                     password="password")
+                     password="password",
+                     searchpath=_search_path)

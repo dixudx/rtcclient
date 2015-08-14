@@ -85,3 +85,5 @@ workitem2 = (xmltodict.parse(read_fixture("workitems.xml"))
 workitem2_origin = OrderedDict()
 workitem2_origin["oslc_cm:ChangeRequest"] = workitem2
 workitem2_raw = xmltodict.unparse(workitem2_origin)
+
+template_name = "issue_example.template"

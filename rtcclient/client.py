@@ -630,6 +630,13 @@ class RTCClient(RTCBase):
     def listFields(self, template):
         """List all the attributes to be rendered from the template file
 
+        :param template: The template to render.
+            The template is actually a file, which is usually generated
+            by `Template.getTemplate()` and can also be modified by user
+            accordingly.
+        :return: a set contains all the needed attributes
+        :rtype: set
+
         More detals, please refer to `Templater.listFieldsFromWorkitem`
         """
 
@@ -644,9 +651,6 @@ class RTCClient(RTCBase):
 
         return self.templater.listFieldsFromWorkitem(copied_from,
                                                      keep=keep)
-
-    def listProperties(self):
-        pass
 
     def getWorkitem(self, workitem_id, returned_properties=None):
         """Get <Workitem> object by its id/number
