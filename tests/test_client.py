@@ -467,3 +467,72 @@ class TestRTCClient:
         plannedfors = myrtcclient.getPlannedFors(projectarea_id=pa_id,
                                                  archived=True)
         assert plannedfors == [pf1]
+
+    def test_get_plannedfor_unarchived(self, myrtcclient,
+                                       mock_get_plannedfors, mocker):
+        plannedfor = myrtcclient.getPlannedFor("Sprint 1 (1.0)")
+
+        raw_content = utils_test.plannedfor2
+        pf2 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
+                                   "iterations/_DbGcwHUwEeKicpXBddtqNA"]),
+                         myrtcclient,
+                         xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
+        assert plannedfor == pf2
+
+        # test for a plannedfor which is archived
+        with pytest.raises(NotFound):
+            myrtcclient.getPlannedFor("Release 1.0")
+
+        # test invalid names
+        invalid_names = [None, "", False]
+        for invalid_name in invalid_names:
+            with pytest.raises(BadValue):
+                myrtcclient.getPlannedFor(invalid_name,
+                                          projectarea_id="fake_id")
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getPlannedFor("Sprint 1 (1.0)",
+                                      projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        plannedfor = myrtcclient.getPlannedFor("Sprint 1 (1.0)",
+                                               projectarea_id=pa_id)
+        assert plannedfor == pf2
+
+    def test_get_plannedfor_archived(self, myrtcclient,
+                                     mock_get_plannedfors, mocker):
+        # test for a plannedfor which is unarchived
+        with pytest.raises(NotFound):
+            myrtcclient.getPlannedFor("Sprint 1 (1.0)",
+                                      archived=True)
+
+        # test invalid names
+        invalid_names = [None, "", False]
+        for invalid_name in invalid_names:
+            with pytest.raises(BadValue):
+                myrtcclient.getPlannedFor(invalid_name,
+                                          projectarea_id="fake_id",
+                                          archived=True)
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getPlannedFor("Release 1.0",
+                                      projectarea_id="fake_id",
+                                      archived=True)
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        with pytest.raises(NotFound):
+            myrtcclient.getPlannedFor("Release 1.0",
+                                      projectarea_id=pa_id,
+                                      archived=True)
