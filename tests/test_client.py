@@ -47,11 +47,11 @@ class TestRTCClient:
                                          mocker):
         projectareas = myrtcclient.getProjectAreas(archived=False)
 
-        raw_content = utils_test.pa2
+        # ProjectArea2
         pa = ProjectArea("/".join(["http://test.url:9443/jazz/oslc",
                                    "projectareas/_CuZu0HUwEeKicpXBddtqNA"]),
                          myrtcclient,
-                         xmltodict.parse(raw_content).get("rtc_cm:Project"))
+                         utils_test.pa2)
         assert projectareas == [pa]
         assert str(pa) == "ProjectArea2"
 
@@ -68,11 +68,11 @@ class TestRTCClient:
                                        mocker):
         projectareas = myrtcclient.getProjectAreas(archived=True)
 
-        raw_content = utils_test.pa1
+        # ProjectArea1
         pa = ProjectArea("/".join(["http://test.url:9443/jazz/oslc",
                                    "projectareas/_0qMJUMfiEd6yW_0tvNlbrw"]),
                          myrtcclient,
-                         xmltodict.parse(raw_content).get("rtc_cm:Project"))
+                         utils_test.pa1)
         assert projectareas == [pa]
         assert str(pa) == "ProjectArea1"
 
@@ -89,12 +89,11 @@ class TestRTCClient:
         pa = myrtcclient.getProjectArea(projectarea_name="ProjectArea2",
                                         archived=False)
 
-        raw_content = utils_test.pa2
         url = "/".join(["http://test.url:9443/jazz/oslc",
                         "projectareas/_CuZu0HUwEeKicpXBddtqNA"])
         assert pa == ProjectArea(url,
                                  myrtcclient,
-                                 xmltodict.parse(raw_content))
+                                 utils_test.pa2)
         assert str(pa) == "ProjectArea2"
 
     def test_get_projectarea_exception(self, myrtcclient, mock_get_pas):
@@ -123,24 +122,22 @@ class TestRTCClient:
         pa = myrtcclient.getProjectArea(projectarea_name="ProjectArea1",
                                         archived=True)
 
-        raw_content = utils_test.pa1
         url = "/".join(["http://test.url:9443/jazz/oslc",
                         "projectareas/_0qMJUMfiEd6yW_0tvNlbrw"])
         assert pa == ProjectArea(url,
                                  myrtcclient,
-                                 xmltodict.parse(raw_content))
+                                 utils_test.pa1)
         assert str(pa) == "ProjectArea1"
 
     def test_get_projectarea_byid(self, myrtcclient, mock_get_pas):
         pa_id = "_CuZu0HUwEeKicpXBddtqNA"
         pa = myrtcclient.getProjectAreaByID(projectarea_id=pa_id,
                                             archived=False)
-        raw_content = utils_test.pa2
         url = "/".join(["http://test.url:9443/jazz/oslc",
                         "projectareas/_CuZu0HUwEeKicpXBddtqNA"])
         assert pa == ProjectArea(url,
                                  myrtcclient,
-                                 xmltodict.parse(raw_content))
+                                 utils_test.pa2)
         assert str(pa) == "ProjectArea2"
 
     def test_get_projectarea_id(self, myrtcclient, mock_get_pas):
@@ -265,23 +262,21 @@ class TestRTCClient:
                                       mocker):
         teamareas = myrtcclient.getTeamAreas()
 
-        # Team1
-        raw_content = utils_test.ta1
+        # TeamArea1
         ta1 = TeamArea("/".join(["http://test.url:9443/jazz/oslc",
                                  "teamareas/_ECYfMHUwEeKicpXBddtqNA"]),
                        myrtcclient,
-                       xmltodict.parse(raw_content).get("rtc_cm:Team"))
+                       utils_test.ta1)
         assert str(ta1) == "Team1"
         # fake data: pls ignore the value
         assert ta1.members == ["Team1", "Team2"]
         assert ta1.administrators == ["Team1", "Team2"]
 
-        # Team2
-        raw_content = utils_test.ta2
+        # TeamArea2
         ta2 = TeamArea("/".join(["http://test.url:9443/jazz/oslc",
                                  "teamareas/_XazXEPbZEeGWkpg5MjeYZQ"]),
                        myrtcclient,
-                       xmltodict.parse(raw_content).get("rtc_cm:Team"))
+                       utils_test.ta2)
         assert str(ta2) == "Team2"
         # fake data: pls ignore the value
         assert ta2.members == ["Team1", "Team2"]
@@ -326,11 +321,11 @@ class TestRTCClient:
     def test_get_teamarea_unarchived(self, myrtcclient, mock_get_tas, mocker):
         ta = myrtcclient.getTeamArea("Team1")
 
-        raw_content = utils_test.ta1
+        # TeamArea1
         ta1 = TeamArea("/".join(["http://test.url:9443/jazz/oslc",
                                  "teamareas/_ECYfMHUwEeKicpXBddtqNA"]),
                        myrtcclient,
-                       xmltodict.parse(raw_content).get("rtc_cm:Team"))
+                       utils_test.ta1)
         assert ta == ta1
 
         # test invalid names
@@ -406,11 +401,10 @@ class TestRTCClient:
         plannedfors = myrtcclient.getPlannedFors()
 
         # PlannedFor2
-        raw_content = utils_test.plannedfor2
         pf2 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
                                    "iterations/_DbGcwHUwEeKicpXBddtqNA"]),
                          myrtcclient,
-                         xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
+                         utils_test.plannedfor2)
         assert str(pf2) == "Sprint 1 (1.0)"
         assert pf2.identifier == "1.0 S1"
         assert pf2.startDate == "2013-02-12T06:00:00.000Z"
@@ -439,11 +433,10 @@ class TestRTCClient:
         plannedfors = myrtcclient.getPlannedFors(archived=True)
 
         # PlannedFor1
-        raw_content = utils_test.plannedfor1
         pf1 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
                                    "iterations/_00J9ocfiEd6yW_0tvNlbrw"]),
                          myrtcclient,
-                         xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
+                         utils_test.plannedfor1)
         assert str(pf1) == "Release 1.0"
         assert pf1.identifier == "1.0"
         assert pf1.startDate == "2009-11-02T06:00:00.000Z"
@@ -478,11 +471,10 @@ class TestRTCClient:
         plannedfor = myrtcclient.getPlannedFor("Sprint 1 (1.0)")
 
         # Plannedfor2
-        raw_content = utils_test.plannedfor2
         pf2 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
                                    "iterations/_DbGcwHUwEeKicpXBddtqNA"]),
                          myrtcclient,
-                         xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
+                         utils_test.plannedfor2)
         assert plannedfor == pf2
 
         # test invalid names
@@ -518,11 +510,10 @@ class TestRTCClient:
                                                archived=True)
 
         # Plannedfor1
-        raw_content = utils_test.plannedfor1
         pf1 = PlannedFor("/".join(["http://test.url:9443/jazz/oslc",
                                    "iterations/_00J9ocfiEd6yW_0tvNlbrw"]),
                          myrtcclient,
-                         xmltodict.parse(raw_content).get("rtc_cm:Iteration"))
+                         utils_test.plannedfor1)
         assert plannedfor == pf1
 
         # test invalid names
@@ -565,13 +556,12 @@ class TestRTCClient:
             myrtcclient.getSeverities()
 
         # Severity1
-        raw_content = utils_test.severity1
         url1 = "/".join(["http://test.url:9443/jazz/oslc",
                          "enumerations/_CuZu0HUwEeKicpXBddtqNA",
                          "severity/severity.literal.l1"])
         s1 = Severity(url1,
                       myrtcclient,
-                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+                      utils_test.severity1)
         assert str(s1) == "Unclassified"
         assert s1.url == url1
         assert s1.identifier == "severity.literal.l1"
@@ -583,13 +573,12 @@ class TestRTCClient:
         assert s1.iconUrl == icon_url
 
         # Severity2
-        raw_content = utils_test.severity2
         url2 = "/".join(["http://test.url:9443/jazz/oslc",
                          "enumerations/_CuZu0HUwEeKicpXBddtqNA",
                          "severity/severity.literal.l2"])
         s2 = Severity(url2,
                       myrtcclient,
-                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+                      utils_test.severity2)
         assert str(s2) == "Normal"
         assert s2.url == url2
         assert s2.identifier == "severity.literal.l2"
@@ -633,13 +622,12 @@ class TestRTCClient:
                                            projectarea_id=pa_id)
 
         # Severity1
-        raw_content = utils_test.severity1
         url1 = "/".join(["http://test.url:9443/jazz/oslc",
                          "enumerations/_CuZu0HUwEeKicpXBddtqNA",
                          "severity/severity.literal.l1"])
         s1 = Severity(url1,
                       myrtcclient,
-                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+                      utils_test.severity1)
 
         assert severity == s1
 
@@ -663,13 +651,12 @@ class TestRTCClient:
             myrtcclient.getPriorities()
 
         # Priority1
-        raw_content = utils_test.priority1
         url1 = "/".join(["http://test.url:9443/jazz/oslc",
                          "enumerations/_CuZu0HUwEeKicpXBddtqNA",
                          "priority/priority.literal.l01"])
         p1 = Priority(url1,
                       myrtcclient,
-                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+                      utils_test.priority1)
         assert str(p1) == "Unassigned"
         assert p1.url == url1
         assert p1.identifier == "priority.literal.l01"
@@ -681,13 +668,12 @@ class TestRTCClient:
         assert p1.iconUrl == icon_url
 
         # Priority2
-        raw_content = utils_test.priority2
         url2 = "/".join(["http://test.url:9443/jazz/oslc",
                          "enumerations/_CuZu0HUwEeKicpXBddtqNA",
                          "priority/priority.literal.l11"])
         p2 = Priority(url2,
                       myrtcclient,
-                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+                      utils_test.priority2)
         assert str(p2) == "High"
         assert p2.url == url2
         assert p2.identifier == "priority.literal.l11"
@@ -730,13 +716,12 @@ class TestRTCClient:
                                            projectarea_id=pa_id)
 
         # Priority1
-        raw_content = utils_test.priority1
         url1 = "/".join(["http://test.url:9443/jazz/oslc",
                          "enumerations/_CuZu0HUwEeKicpXBddtqNA",
                          "priority/priority.literal.l01"])
         p1 = Priority(url1,
                       myrtcclient,
-                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+                      utils_test.priority1)
 
         assert priority == p1
 
@@ -759,12 +744,11 @@ class TestRTCClient:
         foundins = myrtcclient.getFoundIns()
 
         # Foundin2
-        raw_content = utils_test.foundin2
         f2 = FoundIn("/".join(["http://test.url:9443/jazz/resource",
                                "itemOid/com.ibm.team.workitem.Deliverable",
                                "_vztkUOW3Ed6ThJa-QCz7dg"]),
                      myrtcclient,
-                     xmltodict.parse(raw_content).get("rtc_cm:Deliverable"))
+                     utils_test.foundin2)
         assert str(f2) == "Sprint2"
         assert f2.filtered == "false"
         assert f2.modified == "2015-07-21T01:46:12.096Z"
@@ -796,12 +780,11 @@ class TestRTCClient:
         foundins = myrtcclient.getFoundIns(archived=True)
 
         # Foundin1
-        raw_content = utils_test.foundin1
         f1 = FoundIn("/".join(["http://test.url:9443/jazz/resource",
                                "itemOid/com.ibm.team.workitem.Deliverable",
                                "_Hx5_wKOlEeKPvqjjtP1sGw"]),
                      myrtcclient,
-                     xmltodict.parse(raw_content).get("rtc_cm:Deliverable"))
+                     utils_test.foundin1)
         assert str(f1) == "Sprint1"
         assert f1.filtered == "true"
         assert f1.modified == "2009-11-05T11:36:00.596Z"
@@ -839,12 +822,11 @@ class TestRTCClient:
         foundin = myrtcclient.getFoundIn("Sprint2")
 
         # Foundin2
-        raw_content = utils_test.foundin2
         f2 = FoundIn("/".join(["http://test.url:9443/jazz/resource",
                                "itemOid/com.ibm.team.workitem.Deliverable",
                                "_vztkUOW3Ed6ThJa-QCz7dg"]),
                      myrtcclient,
-                     xmltodict.parse(raw_content).get("rtc_cm:Deliverable"))
+                     utils_test.foundin2)
 
         assert foundin == f2
 
@@ -878,12 +860,11 @@ class TestRTCClient:
                                    archived=True)
 
         # Foundin1
-        raw_content = utils_test.foundin1
         f1 = FoundIn("/".join(["http://test.url:9443/jazz/resource",
                                "itemOid/com.ibm.team.workitem.Deliverable",
                                "_Hx5_wKOlEeKPvqjjtP1sGw"]),
                      myrtcclient,
-                     xmltodict.parse(raw_content).get("rtc_cm:Deliverable"))
+                     utils_test.foundin1)
 
         # test invalid names
         invalid_names = [None, "", False]
@@ -924,12 +905,11 @@ class TestRTCClient:
         filedagainsts = myrtcclient.getFiledAgainsts()
 
         # Filedagainst2
-        raw_content = utils_test.filedagainst2
         fa2 = FiledAgainst("/".join(["http://test.url:9443/jazz/resource",
                                      "itemOid/com.ibm.team.workitem.Category",
                                      "_XcFwgfbZEeGWkpg5MjeYZQ"]),
                            myrtcclient,
-                           xmltodict.parse(raw_content).get("rtc_cm:Category"))
+                           utils_test.filedagainst2)
 
         assert str(fa2) == "Category 1"
         assert fa2.hierarchicalName == "Category 1"
@@ -960,12 +940,11 @@ class TestRTCClient:
         filedagainsts = myrtcclient.getFiledAgainsts(archived=True)
 
         # Filedagainst1
-        raw_content = utils_test.filedagainst1
         fa1 = FiledAgainst("/".join(["http://test.url:9443/jazz/resource",
                                      "itemOid/com.ibm.team.workitem.Category",
                                      "_D5dMsHUwEeKicpXBddtqNA"]),
                            myrtcclient,
-                           xmltodict.parse(raw_content).get("rtc_cm:Category"))
+                           utils_test.filedagainst1)
 
         assert str(fa1) == "Unassigned"
         assert fa1.hierarchicalName == "Unassigned"
@@ -1002,12 +981,11 @@ class TestRTCClient:
         filedagainst = myrtcclient.getFiledAgainst("Category 1")
 
         # Filedagainst2
-        raw_content = utils_test.filedagainst2
         fa2 = FiledAgainst("/".join(["http://test.url:9443/jazz/resource",
                                      "itemOid/com.ibm.team.workitem.Category",
                                      "_XcFwgfbZEeGWkpg5MjeYZQ"]),
                            myrtcclient,
-                           xmltodict.parse(raw_content).get("rtc_cm:Category"))
+                           utils_test.filedagainst2)
 
         assert filedagainst == fa2
 
@@ -1041,12 +1019,11 @@ class TestRTCClient:
                                         archived=True)
 
         # Filedagainst1
-        raw_content = utils_test.filedagainst1
         fa1 = FiledAgainst("/".join(["http://test.url:9443/jazz/resource",
                                      "itemOid/com.ibm.team.workitem.Category",
                                      "_D5dMsHUwEeKicpXBddtqNA"]),
                            myrtcclient,
-                           xmltodict.parse(raw_content).get("rtc_cm:Category"))
+                           utils_test.filedagainst1)
 
         # test invalid names
         invalid_names = [None, "", False]
