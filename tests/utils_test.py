@@ -104,3 +104,23 @@ http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.II
 </rtc_cm:iconUrl>
 </rtc_cm:Literal>
 """
+
+priority1 = """
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/priority/priority.literal.l01">
+<dc:identifier>priority.literal.l01</dc:identifier>
+<dc:title>Unassigned</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/unassigned.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+"""
+
+priority2 = """
+<rtc_cm:Literal rdf:resource="http://test.url:9443/jazz/oslc/enumerations/_CuZu0HUwEeKicpXBddtqNA/priority/priority.literal.l11">
+<dc:identifier>priority.literal.l11</dc:identifier>
+<dc:title>High</dc:title>
+<rtc_cm:iconUrl>
+http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.IImageContentService/processattachment/_CuZu0HUwEeKicpXBddtqNA/enumeration/high.gif
+</rtc_cm:iconUrl>
+</rtc_cm:Literal>
+"""

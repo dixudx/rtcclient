@@ -3,7 +3,7 @@ import requests
 import pytest
 import utils_test
 from rtcclient.project_area import ProjectArea, TeamArea, Member, PlannedFor
-from rtcclient.project_area import Severity
+from rtcclient.project_area import Severity, Priority
 import xmltodict
 from rtcclient.exception import BadValue, NotFound, RTCException, EmptyAttrib
 
@@ -640,4 +640,101 @@ class TestRTCClient:
         # test for None
         with pytest.raises(NotFound):
             myrtcclient.getSeverity("fake_severity_name",
+                                    projectarea_id=pa_id)
+
+    @pytest.fixture
+    def mock_get_priorities(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("priorities.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_priorities(self, myrtcclient,
+                            mock_get_priorities, mocker):
+        with pytest.raises(EmptyAttrib):
+            myrtcclient.getPriorities()
+
+        # Priority1
+        raw_content = utils_test.priority1
+        url1 = "/".join(["http://test.url:9443/jazz/oslc",
+                         "enumerations/_CuZu0HUwEeKicpXBddtqNA",
+                         "priority/priority.literal.l01"])
+        p1 = Priority(url1,
+                      myrtcclient,
+                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+        assert str(p1) == "Unassigned"
+        assert p1.url == url1
+        assert p1.identifier == "priority.literal.l01"
+        icon_url = "".join(["http://test.url:9443/jazz/service/",
+                            "com.ibm.team.workitem.common.internal.model.",
+                            "IImageContentService/processattachment/",
+                            "_CuZu0HUwEeKicpXBddtqNA/enumeration/",
+                            "unassigned.gif"])
+        assert p1.iconUrl == icon_url
+
+        # Priority2
+        raw_content = utils_test.priority2
+        url2 = "/".join(["http://test.url:9443/jazz/oslc",
+                         "enumerations/_CuZu0HUwEeKicpXBddtqNA",
+                         "priority/priority.literal.l11"])
+        p2 = Priority(url2,
+                      myrtcclient,
+                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+        assert str(p2) == "High"
+        assert p2.url == url2
+        assert p2.identifier == "priority.literal.l11"
+        icon_url = "".join(["http://test.url:9443/jazz/service/",
+                            "com.ibm.team.workitem.common.internal.",
+                            "model.IImageContentService/processattachment/",
+                            "_CuZu0HUwEeKicpXBddtqNA/enumeration/high.gif"])
+        assert p2.iconUrl == icon_url
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getPriorities(projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        priorities = myrtcclient.getPriorities(projectarea_id=pa_id)
+        assert priorities == [p1, p2]
+
+    def test_get_priority(self, myrtcclient,
+                          mock_get_priorities, mocker):
+        with pytest.raises(EmptyAttrib):
+            myrtcclient.getPriority("Unassigned")
+
+        # test for invalid projectarea id
+        mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
+                                          "checkProjectAreaID")
+        mocked_check_pa_id.return_value = False
+        with pytest.raises(BadValue):
+            myrtcclient.getPriority("Unassigned",
+                                    projectarea_id="fake_id")
+
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        priority = myrtcclient.getPriority("Unassigned",
+                                           projectarea_id=pa_id)
+
+        # Priority1
+        raw_content = utils_test.priority1
+        url1 = "/".join(["http://test.url:9443/jazz/oslc",
+                         "enumerations/_CuZu0HUwEeKicpXBddtqNA",
+                         "priority/priority.literal.l01"])
+        p1 = Priority(url1,
+                      myrtcclient,
+                      xmltodict.parse(raw_content).get("rtc_cm:Literal"))
+
+        assert priority == p1
+
+        # test for None
+        with pytest.raises(NotFound):
+            myrtcclient.getPriority("fake_priority_name",
                                     projectarea_id=pa_id)
