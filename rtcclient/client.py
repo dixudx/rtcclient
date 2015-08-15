@@ -114,7 +114,7 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <ProjectArea %s>", projectarea_name)
-        if not projectarea_name:
+        if not isinstance(projectarea_name, str) or not projectarea_name:
             excp_msg = "Please specify a valid ProjectArea name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -146,7 +146,7 @@ class RTCClient(RTCBase):
 
         self.log.debug("Try to get <ProjectArea> by its id: %s",
                        projectarea_id)
-        if not projectarea_id:
+        if not isinstance(projectarea_id, str) or not projectarea_id:
             excp_msg = "Please specify a valid ProjectArea ID"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -194,7 +194,7 @@ class RTCClient(RTCBase):
         """
 
         projectarea_ids = list()
-        if projectarea_name:
+        if projectarea_name and isinstance(projectarea_name, str):
             projectarea_id = self.getProjectAreaID(projectarea_name,
                                                    archived=archived)
             projectarea_ids.append(projectarea_id)
@@ -255,7 +255,7 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <TeamArea %s>", teamarea_name)
-        if not teamarea_name:
+        if not isinstance(teamarea_name, str) or not teamarea_name:
             excp_msg = "Please specify a valid TeamArea name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -305,6 +305,12 @@ class RTCClient(RTCBase):
 
     def getOwnedBy(self, email, projectarea_id=None,
                    projectarea_name=None):
+
+        if not isinstance(email, str) or "@" not in email:
+            excp_msg = "Please specify a valid email address name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
         parse_result = urlparse.urlparse(self.url)
         new_path = "/".join(["/jts/users",
                              urlquote(email)])
@@ -333,7 +339,7 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <PlannedFor %s>", plannedfor_name)
-        if not plannedfor_name:
+        if not isinstance(plannedfor_name, str) or not plannedfor_name:
             excp_msg = "Please specify a valid PlannedFor name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -395,7 +401,7 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <Severity %s>", severity_name)
-        if not severity_name:
+        if not isinstance(severity_name, str) or not severity_name:
             excp_msg = "Please specify a valid Severity name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -450,7 +456,7 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <Priority %s>", priority_name)
-        if not priority_name:
+        if not isinstance(priority_name, str) or not priority_name:
             excp_msg = "Please specify a valid Priority name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -504,7 +510,7 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <FoundIn %s>", foundin_name)
-        if not foundin_name:
+        if not isinstance(foundin_name, str) or not foundin_name:
             excp_msg = "Please specify a valid PlannedFor name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -558,7 +564,7 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <FiledAgainst %s>", filedagainst_name)
-        if not filedagainst_name:
+        if not isinstance(filedagainst_name, str) or not filedagainst_name:
             excp_msg = "Please specify a valid FiledAgainst name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -568,10 +574,10 @@ class RTCClient(RTCBase):
                                     archived=archived)
 
         if fas is not None:
-            for filedggainst in fas:
-                if filedggainst.title == filedagainst_name:
-                    self.log.info("Find <FiledAgainst %s>", filedggainst)
-                    return filedggainst
+            for filedagainst in fas:
+                if filedagainst.title == filedagainst_name:
+                    self.log.info("Find <FiledAgainst %s>", filedagainst)
+                    return filedagainst
 
         error_msg = "No FiledAgainst named %s" % filedagainst_name
         self.log.error(error_msg)
@@ -630,6 +636,13 @@ class RTCClient(RTCBase):
     def listFields(self, template):
         """List all the attributes to be rendered from the template file
 
+        :param template: The template to render.
+            The template is actually a file, which is usually generated
+            by `Template.getTemplate()` and can also be modified by user
+            accordingly.
+        :return: a set contains all the needed attributes
+        :rtype: set
+
         More detals, please refer to `Templater.listFieldsFromWorkitem`
         """
 
@@ -644,9 +657,6 @@ class RTCClient(RTCBase):
 
         return self.templater.listFieldsFromWorkitem(copied_from,
                                                      keep=keep)
-
-    def listProperties(self):
-        pass
 
     def getWorkitem(self, workitem_id, returned_properties=None):
         """Get <Workitem> object by its id/number
@@ -708,7 +718,7 @@ class RTCClient(RTCBase):
 
         workitems_list = list()
         projectarea_ids = list()
-        if not projectarea_id:
+        if not isinstance(projectarea_id, str) or not projectarea_id:
             pa_ids = self.getProjectAreaIDs(projectarea_name)
             if pa_ids is None:
                 self.log.warning("Stop getting workitems because of "
@@ -767,7 +777,7 @@ class RTCClient(RTCBase):
         :rtype: workitem.Workitem
         """
 
-        if not projectarea_id:
+        if not isinstance(projectarea_id, str) or not projectarea_id:
             projectarea = self.getProjectArea(projectarea_name)
             projectarea_id = projectarea.id
         else:

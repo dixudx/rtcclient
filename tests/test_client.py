@@ -55,6 +55,9 @@ class TestRTCClient:
                          utils_test.pa2)
         assert projectareas == [pa]
         assert str(pa) == "ProjectArea2"
+        assert pa.description == "Demo for test: Project Area Two"
+        assert pa.initialized == "true"
+        assert pa.archived == "false"
 
         # test for None
         mock_cmd = "rtcclient.client.RTCClient._get_paged_resources"
@@ -76,6 +79,9 @@ class TestRTCClient:
                          utils_test.pa1)
         assert projectareas == [pa]
         assert str(pa) == "ProjectArea1"
+        assert pa.description == "Demo for test: Project Area One"
+        assert pa.initialized == "true"
+        assert pa.archived == "true"
 
         # test for None
         mock_cmd = "rtcclient.client.RTCClient._get_paged_resources"
@@ -99,7 +105,7 @@ class TestRTCClient:
 
     def test_get_projectarea_exception(self, myrtcclient, mock_get_pas):
         # test for invalid names
-        invalid_names = [None, "", False]
+        invalid_names = [None, "", False, True]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 myrtcclient.getProjectArea(projectarea_name=invalid_name,
@@ -152,7 +158,7 @@ class TestRTCClient:
 
     def test_get_projectarea_id_exception(self, myrtcclient, mock_get_pas):
         # test for invalid names
-        invalid_names = [None, "", False]
+        invalid_names = [None, "", False, True]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 myrtcclient.getProjectAreaID(projectarea_name=invalid_name,
@@ -175,7 +181,7 @@ class TestRTCClient:
 
     def test_get_projectarea_byid_exception(self, myrtcclient, mock_get_pas):
         # test for invalid names
-        invalid_ids = [None, "", False]
+        invalid_ids = [None, "", False, True]
         for invalid_id in invalid_ids:
             with pytest.raises(BadValue):
                 myrtcclient.getProjectAreaByID(projectarea_id=invalid_id,
@@ -223,7 +229,7 @@ class TestRTCClient:
 
     def test_get_projectarea_ids_exception(self, myrtcclient):
         # test for invlaid names
-        invalid_names = ["", False]
+        invalid_names = ["", False, True]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 myrtcclient.getProjectAreaIDs(projectarea_name=invalid_name,
@@ -330,7 +336,7 @@ class TestRTCClient:
         assert ta == ta1
 
         # test invalid names
-        invalid_names = [None, "", False]
+        invalid_names = [None, "", False, True]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 myrtcclient.getTeamArea(invalid_name,
@@ -357,7 +363,7 @@ class TestRTCClient:
                                     archived=True)
 
         # test invalid names
-        invalid_names = [None, "", False]
+        invalid_names = [None, "", False, True]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 myrtcclient.getTeamArea(invalid_name,
@@ -387,6 +393,12 @@ class TestRTCClient:
         assert member == Member(url,
                                 myrtcclient)
         assert member.email == "tester1@email.com"
+
+        # test invalid emails
+        invalid_emails = [None, "", False, True, "test%40email.com"]
+        for invalid_email in invalid_emails:
+            with pytest.raises(BadValue):
+                myrtcclient.getOwnedBy(invalid_email)
 
     @pytest.fixture
     def mock_get_plannedfors(self, mocker):
@@ -479,7 +491,7 @@ class TestRTCClient:
         assert plannedfor == pf2
 
         # test invalid names
-        invalid_names = [None, "", False]
+        invalid_names = [None, "", False, True]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 myrtcclient.getPlannedFor(invalid_name,
@@ -518,7 +530,7 @@ class TestRTCClient:
         assert plannedfor == pf1
 
         # test invalid names
-        invalid_names = [None, "", False]
+        invalid_names = [None, "", False, True]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 myrtcclient.getPlannedFor(invalid_name,
@@ -605,6 +617,13 @@ class TestRTCClient:
 
     def test_get_severity(self, myrtcclient,
                           mock_get_severities, mocker):
+        # test invalid names
+        invalid_names = [None, "", False, True]
+        for invalid_name in invalid_names:
+            with pytest.raises(BadValue):
+                myrtcclient.getSeverity(invalid_name,
+                                        projectarea_id="fake_id")
+
         with pytest.raises(EmptyAttrib):
             myrtcclient.getSeverity("Unclassified")
 
@@ -699,6 +718,13 @@ class TestRTCClient:
 
     def test_get_priority(self, myrtcclient,
                           mock_get_priorities, mocker):
+        # test invalid names
+        invalid_names = [None, "", False, True]
+        for invalid_name in invalid_names:
+            with pytest.raises(BadValue):
+                myrtcclient.getPriority(invalid_name,
+                                        projectarea_id="fake_id")
+
         with pytest.raises(EmptyAttrib):
             myrtcclient.getPriority("Unassigned")
 
@@ -832,7 +858,7 @@ class TestRTCClient:
         assert foundin == f2
 
         # test invalid names
-        invalid_names = [None, "", False]
+        invalid_names = [None, "", False, True]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 myrtcclient.getFoundIn(invalid_name,
@@ -991,7 +1017,7 @@ class TestRTCClient:
         assert filedagainst == fa2
 
         # test invalid names
-        invalid_names = [None, "", False]
+        invalid_names = [None, "", False, True]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 myrtcclient.getFiledAgainst(invalid_name,
@@ -1027,7 +1053,7 @@ class TestRTCClient:
                            utils_test.filedagainst1)
 
         # test invalid names
-        invalid_names = [None, "", False]
+        invalid_names = [None, "", False, True]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 myrtcclient.getFiledAgainst(invalid_name,
@@ -1168,3 +1194,69 @@ class TestRTCClient:
         workitems = myrtcclient.getWorkitems(projectarea_id="other_valid_id",
                                              archived=True)
         assert workitems is None
+
+    def test_list_fields(self, myrtcclient):
+        fields = myrtcclient.listFields(utils_test.template_name)
+        fields_set = set(["severity", "title", "teamArea",
+                          "description", "filedAgainst", "priority",
+                          "ownedBy", "plannedFor"])
+        assert fields == fields_set
+
+    def test_list_fields_from_workitem(self, myrtcclient,
+                                       mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.workitem1_raw
+        mocked_get.return_value = mock_resp
+
+        fields = myrtcclient.listFieldsFromWorkitem(161,
+                                                    keep=False)
+        assert fields == set(["priority", "severity", "title", "teamArea",
+                              "description", "ownedBy", "filedAgainst"])
+
+        fields = myrtcclient.listFieldsFromWorkitem(161,
+                                                    keep=True)
+        assert fields == set(["description",
+                              "title"])
+
+    def test_create_workitem(self, myrtcclient):
+        # TODO
+        pass
+
+    def test_copy_workitem(self, myrtcclient):
+        # TODO
+        pass
+
+    def test_update_workitem(self, myrtcclient):
+        # TODO
+        pass
+
+    def test_check_itemtype(self, myrtcclient, mock_get_pas, mocker):
+        # test for invalid ProjectArea ids
+        invalid_ids = [None, "", False, True]
+        for invalid_id in invalid_ids:
+            checked_result = myrtcclient.checkType("fake_name",
+                                                   projectarea_id=invalid_id)
+            assert checked_result is False
+
+        # test for undefined ProjectArea ids
+        invalid_ids = ["fake_id1", "fake_id2"]
+        for invalid_id in invalid_ids:
+            checked_result = myrtcclient.checkType("fake_name",
+                                                   projectarea_id=invalid_id)
+            assert checked_result is False
+
+        # test for valid ProjectArea id
+        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        mocked_get = mocker.patch("rtcclient.project_area.ProjectArea."
+                                  "getItemType")
+        mocked_get.return_value = True
+        checked_result = myrtcclient.checkType("valid_name",
+                                               projectarea_id=pa_id)
+        assert checked_result is True
+
+        mocked_get.return_value = False
+        checked_result = myrtcclient.checkType("valid_name",
+                                               projectarea_id=pa_id)
+        assert checked_result is False

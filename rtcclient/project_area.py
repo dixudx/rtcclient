@@ -15,7 +15,7 @@ class ProjectArea(FieldBase):
     def __str__(self):
         return self.title
 
-    def __initialize(self):
+    def _initialize(self):
         """Request to get response"""
 
         self.log.error("For ProjectArea, raw_data is mandatory")
@@ -85,6 +85,8 @@ class ProjectArea(FieldBase):
         :rtype: list
         """
 
+        self.log.warning("Currently RTC cannot correctly list all the "
+                         "members that belong to the ProjectArea")
         rp = returned_properties
         return self.rtc_obj._get_paged_resources("Member",
                                                  projectarea_id=self.id,
@@ -101,7 +103,17 @@ class ProjectArea(FieldBase):
         :rtype: project_area.Member
         """
 
+        if not isinstance(email, str) or "@" not in email:
+            excp_msg = "Please specify a valid email address name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
         members = self.getMembers(returned_properties=returned_properties)
+        self.log.warning("Some members that do exist in or belong to"
+                         "the ProjectArea may cannot be retrieved")
+        self.log.warning("This is an existing bug of RTC")
+
+        self.log.debug("Try to get Member whose email is %s>", email)
         if members is not None:
             for member in members:
                 if member.email == email:
@@ -141,13 +153,19 @@ class ProjectArea(FieldBase):
         :rtype: project_area.ItemType
         """
 
+        if not isinstance(title, str) or not title:
+            excp_msg = "Please specify a valid email address name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
         itemtypes = self.getItemTypes(returned_properties=returned_properties)
+        self.log.debug("Try to get <ItemType %s>", title)
         if itemtypes is not None:
-            if title in itemtypes:
-                itemtype = itemtypes[title]
-                self.log.info("Get <ItemType %s> in <ProjectArea %s>",
-                              itemtype, self)
-                return itemtype
+            for itemtype in itemtypes:
+                if itemtype.title == title:
+                    self.log.info("Get <ItemType %s> in <ProjectArea %s>",
+                                  itemtype, self)
+                    return itemtype
 
         excp_msg = "No itemtype's name is %s in <ProjectArea %s>" % (title,
                                                                      self)
@@ -181,8 +199,15 @@ class ProjectArea(FieldBase):
         :rtype: project_area.Administrator
         """
 
+        if not isinstance(email, str) or "@" not in email:
+            excp_msg = "Please specify a valid email address name"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
         rp = returned_properties
         administrators = self.getAdministrators(returned_properties=rp)
+        self.log.debug("Try to get Administrator whose email is %s",
+                       email)
         if administrators is not None:
             for administrator in administrators:
                 if administrator.email == email:

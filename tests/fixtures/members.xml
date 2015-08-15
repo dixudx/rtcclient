@@ -9,15 +9,15 @@
 </rtc_cm:User>
 <rtc_cm:User rdf:resource="http://test.url:9443/jts/users/tester2%40email.com">
 <rtc_cm:userId>tester2@email.com</rtc_cm:userId>
-<dc:title>ALEXANDER AMIES</dc:title>
+<dc:title>tester2</dc:title>
 <rtc_cm:emailAddress>mailto:tester2%40email.com</rtc_cm:emailAddress>
 <rtc_cm:photo/>
 <dc:modified>2013-04-22T06:24:34.661Z</dc:modified>
 <rtc_cm:modifiedBy rdf:resource="http://test.url:9443/jts/users/ADMIN"/>
 </rtc_cm:User>
 <rtc_cm:User rdf:resource="http://test.url:9443/jts/users/tester3%40email.com">
-<rtc_cm:userId>tester3%40email.com</rtc_cm:userId>
-<dc:title>Chris Muse</dc:title>
+<rtc_cm:userId>tester3@email.com</rtc_cm:userId>
+<dc:title>tester3</dc:title>
 <rtc_cm:emailAddress>mailto:tester3%40email.com</rtc_cm:emailAddress>
 <rtc_cm:photo/>
 <dc:modified>2010-05-13T20:34:05.138Z</dc:modified>

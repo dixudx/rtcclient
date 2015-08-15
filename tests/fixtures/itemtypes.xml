@@ -9,7 +9,7 @@ http://test.url:9443/jazz/service/com.ibm.team.workitem.common.internal.model.II
 <rtc_cm:category>defect_task</rtc_cm:category>
 <rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
 </rtc_cm:Type>
-<rtc_cm:Type rdf:resource="http://test.url:9443/jazz/oslc/types/_CuZu0HUwEeKicpXBddtqNA/task_new">
+<rtc_cm:Type rdf:resource="http://test.url:9443/jazz/oslc/types/_CuZu0HUwEeKicpXBddtqNA/task">
 <dc:identifier>task</dc:identifier>
 <dc:title>Task</dc:title>
 <rtc_cm:iconUrl>
