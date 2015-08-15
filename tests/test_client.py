@@ -1084,27 +1084,11 @@ class TestRTCClient:
         mock_resp.content = utils_test.workitem1_raw
         mocked_get.return_value = mock_resp
 
-        # test for invalid workitem id
-        invalid_ids = [None, '']
-        for invalid_id in invalid_ids:
-            with pytest.raises(BadValue):
-                myrtcclient.getWorkitem(invalid_id)
-
-        # test for valid workitem id
-        workitem = myrtcclient.getWorkitem(161)
-
         # Workitem1
         workitem1 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
                              myrtcclient,
                              workitem_id=161,
                              raw_data=utils_test.workitem1)
-        assert workitem == workitem1
-
-        workitem11 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
-                              myrtcclient,
-                              raw_data=utils_test.workitem1)
-        assert workitem1 == workitem11
-
         assert workitem1.identifier == "161"
         assert workitem1.archived == "false"
         assert workitem1.browser is None
@@ -1130,6 +1114,24 @@ class TestRTCClient:
         # skip other attributes with rdf:resource
         assert workitem1.filedAgainst == "input title here for 161"
         assert workitem1.comments == "input title here for 161"
+
+        # test for invalid workitem id
+        invalid_ids = [None, "", True, False]
+        for invalid_id in invalid_ids:
+            with pytest.raises(BadValue):
+                myrtcclient.getWorkitem(invalid_id)
+
+        # test for valid workitem id
+        workitem = myrtcclient.getWorkitem(161)
+        assert workitem == workitem1
+
+        workitem11 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
+                              myrtcclient,
+                              raw_data=utils_test.workitem1)
+        assert workitem1 == workitem11
+
+        workitem = myrtcclient.getWorkitem("161")
+        assert workitem == workitem1
 
     @pytest.fixture
     def mock_get_workitems(self, mocker):

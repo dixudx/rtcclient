@@ -22,7 +22,8 @@ class Query(RTCBase):
         return self.rtc_obj
 
     def queryWorkitems(self, query_str, projectarea_id=None,
-                       projectarea_name=None, returned_properties=None):
+                       projectarea_name=None, returned_properties=None,
+                       archived=False):
         """Query workitems with the query string in a certain ProjectArea
 
         At least either of `projectarea_id` and `projectarea_name` is given
@@ -32,6 +33,7 @@ class Query(RTCBase):
         :param projectarea_name: the project area name
         :param returned_properties: the returned properties that you want
             Refer to class `RTCClient` for more explanations
+        :param archived: whether the Workitems are archived
         :return: a list contains the queried <Workitem> objects
         :rtype: list
         """
@@ -50,4 +52,5 @@ class Query(RTCBase):
                                           projectarea_id=pa_id,
                                           customized_attr=query_str,
                                           page_size="100",
-                                          returned_properties=rp))
+                                          returned_properties=rp,
+                                          archived=archived))

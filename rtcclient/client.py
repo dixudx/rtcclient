@@ -661,7 +661,7 @@ class RTCClient(RTCBase):
     def getWorkitem(self, workitem_id, returned_properties=None):
         """Get <Workitem> object by its id/number
 
-        :param workitem_id: the workitem number (integer)
+        :param workitem_id: the workitem number (integer or string)
         :param returned_properties: the returned properties that you want
             Refer to class `RTCClient` for more explanations
         :return: :class:`Workitem <Workitem>` object
@@ -669,23 +669,29 @@ class RTCClient(RTCBase):
         """
 
         try:
-            if int(workitem_id):
-                workitem_url = "/".join([self.url,
-                                         "oslc/workitems/%s" % workitem_id])
-                if returned_properties is not None:
-                    workitem_url = "".join([workitem_url,
-                                            "?oslc_cm.properties=",
-                                            urlquote(returned_properties)])
-                resp = self.get(workitem_url,
-                                verify=False,
-                                headers=self.headers)
-                raw_data = xmltodict.parse(resp.content)
-                workitem_raw = raw_data["oslc_cm:ChangeRequest"]
+            if isinstance(workitem_id, bool):
+                raise ValueError()
+            if isinstance(workitem_id, str):
+                workitem_id = int(workitem_id)
+            if not isinstance(workitem_id, int):
+                raise ValueError()
 
-                return Workitem(workitem_url,
-                                self,
-                                workitem_id=workitem_id,
-                                raw_data=workitem_raw)
+            workitem_url = "/".join([self.url,
+                                     "oslc/workitems/%s" % workitem_id])
+            if returned_properties is not None:
+                workitem_url = "".join([workitem_url,
+                                        "?oslc_cm.properties=",
+                                        urlquote(returned_properties)])
+            resp = self.get(workitem_url,
+                            verify=False,
+                            headers=self.headers)
+            raw_data = xmltodict.parse(resp.content)
+            workitem_raw = raw_data["oslc_cm:ChangeRequest"]
+
+            return Workitem(workitem_url,
+                            self,
+                            workitem_id=workitem_id,
+                            raw_data=workitem_raw)
 
         except (ValueError, TypeError):
             excp_msg = "Please input a valid workitem id"
@@ -1161,3 +1167,27 @@ class RTCClient(RTCBase):
                                 self,
                                 raw_data=entry)
         return resource
+
+    def queryWorkitems(self, query_str, projectarea_id=None,
+                       projectarea_name=None, returned_properties=None,
+                       archived=False):
+        """Query workitems with the query string in a certain ProjectArea
+
+        At least either of `projectarea_id` and `projectarea_name` is given
+
+        :param query_str: a valid query string
+        :param projectarea_id: the project area id
+        :param projectarea_name: the project area name
+        :param returned_properties: the returned properties that you want
+            Refer to class `RTCClient` for more explanations
+        :param archived: whether the Workitems are archived
+        :return: a list contains the queried <Workitem> objects
+        :rtype: list
+        """
+
+        rp = returned_properties
+        return self.query.queryWorkitems(query_str=query_str,
+                                         projectarea_id=projectarea_id,
+                                         projectarea_name=projectarea_name,
+                                         returned_properties=rp,
+                                         archived=archived)
