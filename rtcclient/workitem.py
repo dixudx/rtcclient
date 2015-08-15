@@ -50,7 +50,12 @@ class Workitem(FieldBase):
 
         # check the validity of comment id
         try:
-            comment_id = int(comment_id)
+            if isinstance(comment_id, bool):
+                raise ValueError()
+            if isinstance(comment_id, str):
+                comment_id = int(comment_id)
+            if not isinstance(comment_id, int):
+                raise ValueError()
         except (ValueError, TypeError):
             raise exception.BadValue("Please input valid comment id")
 
@@ -87,15 +92,17 @@ class Workitem(FieldBase):
 </rdf:RDF>
 '''
 
+        comments_url = (self.raw_data.get("rtc_cm:comments")
+                                     .get("@oslc_cm:collref"))
         headers = copy.deepcopy(self.rtc_obj.headers)
-        resp = self.get(self.comments,
+        resp = self.get(comments_url,
                         verify=False,
                         headers=headers)
 
         raw_data = xmltodict.parse(resp.content)
 
         total_cnt = raw_data["oslc_cm:Collection"]["@oslc_cm:totalCount"]
-        comment_url = "/".join([self.comments,
+        comment_url = "/".join([comments_url,
                                 total_cnt])
 
         comment_msg = origin_comment.format(comment_url, msg)
@@ -104,7 +111,7 @@ class Workitem(FieldBase):
         headers['Accept'] = 'application/rdf+xml'
         headers["OSLC-Core-Version"] = "2.0"
         headers['If-Match'] = resp.headers.get('etag')
-        req_url = "/".join([self.comments,
+        req_url = "/".join([comments_url,
                             "oslc:comment"])
 
         resp = self.post(req_url,
@@ -169,7 +176,7 @@ class Workitem(FieldBase):
         """
 
         self.log.debug("Try to get <Action %s>", action_name)
-        if not action_name:
+        if not isinstance(action_name, str) or not action_name:
             excp_msg = "Please specify a valid action name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
