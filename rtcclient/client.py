@@ -693,7 +693,7 @@ class RTCClient(RTCBase):
                             workitem_id=workitem_id,
                             raw_data=workitem_raw)
 
-        except (ValueError, TypeError):
+        except ValueError:
             excp_msg = "Please input a valid workitem id"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)

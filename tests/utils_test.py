@@ -87,6 +87,7 @@ workitem2_origin["oslc_cm:ChangeRequest"] = workitem2
 workitem2_raw = xmltodict.unparse(workitem2_origin)
 
 template_name = "issue_example.template"
+template_raw = read_fixture(template_name)
 
 member1 = (xmltodict.parse(read_fixture("members.xml"))
                     .get("oslc_cm:Collection")

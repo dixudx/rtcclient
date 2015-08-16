@@ -1106,12 +1106,12 @@ class TestRTCClient:
         assert workitem1.modified == "2010-02-16T16:04:00.244Z"
         assert workitem1.resolved == "2010-02-16T16:03:59.164Z"
         assert workitem1.startDate is None
-        assert workitem1.plannedFor is None
         assert workitem1.title == "input title here for 161"
 
         # fake data: ignore these
         # just list two attributes here
         # skip other attributes with rdf:resource
+        assert workitem1.plannedFor == "input title here for 161"
         assert workitem1.filedAgainst == "input title here for 161"
         assert workitem1.comments == "input title here for 161"
 
@@ -1215,7 +1215,8 @@ class TestRTCClient:
         fields = myrtcclient.listFieldsFromWorkitem(161,
                                                     keep=False)
         assert fields == set(["priority", "severity", "title", "teamArea",
-                              "description", "ownedBy", "filedAgainst"])
+                              "description", "ownedBy", "filedAgainst",
+                              "plannedFor"])
 
         fields = myrtcclient.listFieldsFromWorkitem(161,
                                                     keep=True)
