@@ -52,7 +52,7 @@ description for test demo
 <rtc_cm:resolvedBy rdf:resource="http://test.url:9443/jts/users/tester2%40email.com"/>
 <rtc_cm:startDate/>
 <dc:title>input title here for 161</dc:title>
-<rtc_cm:plannedFor/>
+<rtc_cm:plannedFor rdf:resource="http://test.url:9443/jazz/oslc/iterations/_0O1M0GOPEd-6mcIqsmW3Jg"/>
 <rtc_cm:timeSpent/>
 <dc:type rdf:resource="http://test.url:9443/jazz/oslc/types/_CuZu0HUwEeKicpXBddtqNA/task"/>
 <rtc_cm:teamArea rdf:resource="http://test.url:9443/jazz/oslc/teamareas/_XazXEPbZEeGWkpg5MjeYZQ"/>

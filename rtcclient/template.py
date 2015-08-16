@@ -57,8 +57,13 @@ class Templater(RTCBase):
         :rtype: string
         """
 
-        temp = self.environment.get_template(template)
-        return temp.render(**kwargs)
+        try:
+            temp = self.environment.get_template(template)
+            return temp.render(**kwargs)
+        except AttributeError:
+            err_msg = "Invalid value for 'template'"
+            self.log.error(err_msg)
+            raise exception.BadValue(err_msg)
 
     def renderFromWorkitem(self, copied_from, keep=False,
                            encoding="UTF-8", **kwargs):
@@ -116,9 +121,14 @@ class Templater(RTCBase):
         :rtype: set
         """
 
-        temp_source = self.environment.loader.get_source(self.environment,
-                                                         template)
-        return self.listFieldsFromSource(temp_source)
+        try:
+            temp_source = self.environment.loader.get_source(self.environment,
+                                                             template)
+            return self.listFieldsFromSource(temp_source)
+        except AttributeError:
+            err_msg = "Invalid value for 'template'"
+            self.log.error(err_msg)
+            raise exception.BadValue(err_msg)
 
     def listFieldsFromWorkitem(self, copied_from, keep=False):
         """List all the attributes to be rendered directly from some
@@ -184,6 +194,18 @@ class Templater(RTCBase):
             * string object: if `template_name` is not specified
             * write the template to file `template_name`
         """
+
+        try:
+            if isinstance(copied_from, bool):
+                raise ValueError()
+            if isinstance(copied_from, str):
+                copied_from = int(copied_from)
+            if not isinstance(copied_from, int):
+                raise ValueError()
+        except ValueError:
+            err_msg = "Please input a valid workitem id you want to copy from"
+            self.log.error(err_msg)
+            raise exception.BadValue(err_msg)
 
         self.log.info("Fetch the template from <Workitem %s> with [keep]=%s",
                       copied_from, keep)
@@ -323,12 +345,22 @@ class Templater(RTCBase):
         :param encoding (default is "UTF-8"): refer to `Template.getTemplate`
         """
 
+        if not hasattr(workitems, "__iter__"):
+            error_msg = "Input parameter 'workitems' is not iterable"
+            self.log.error(error_msg)
+            raise exception.BadValue(error_msg)
+
         if template_names is not None:
+            if not hasattr(template_names, "__iter__"):
+                error_msg = "Input parameter 'template_names' is not iterable"
+                self.log.error(error_msg)
+                raise exception.BadValue(error_msg)
+
             if len(workitems) != len(template_names):
-                self.log.error("Parameters workitems and template_names have "
-                               "different length")
-                raise exception.BadValue("Mismatched length for parameters "
-                                         "workitems and template_names")
+                error_msg = "".join(["Input parameters 'workitems' and ",
+                                     "'template_names' have different length"])
+                self.log.error(error_msg)
+                raise exception.BadValue(error_msg)
 
         for index, wk_id in enumerate(workitems):
             try:

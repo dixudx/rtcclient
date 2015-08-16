@@ -92,6 +92,7 @@ class Workitem(FieldBase):
 </rdf:RDF>
 '''
 
+        # TODO: verify url here
         comments_url = (self.raw_data.get("rtc_cm:comments")
                                      .get("@oslc_cm:collref"))
         headers = copy.deepcopy(self.rtc_obj.headers)
