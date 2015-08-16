@@ -17,11 +17,8 @@ to here_.
 
 This library can help you:
 
-* Interacts with an RTC server to retrieve objects which contain the detailed
-information/configuration, including Project Areas, Team Areas, Workitems,
-etc
-* Creates all kinds of Workitems through self-customized templates or
-Copies from some existing Workitems
+* Interacts with an RTC server to retrieve objects which contain the detailed information/configuration, including Project Areas, Team Areas, Workitems, etc
+* Creates all kinds of Workitems through self-customized templates or Copies from some existing Workitems
 * Add comments to the retrieved Workitems
 * Query Workitems using specified filtered rules
 * Logs all the activities and messages during your operation
@@ -61,7 +58,7 @@ Example
 RTCClient is intended to map the objects in RTC (e.g. Project Areas,
 Team Areas, Workitems) into easily managed Python objects:
 
-... code-block:: python
+.. code-block:: python
 
     >>> from rtcclient.client import RTCClient
     >>> url = "https://your_domain:9443/jazz"
