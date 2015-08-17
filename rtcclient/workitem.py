@@ -9,6 +9,8 @@ from requests.exceptions import HTTPError
 class Workitem(FieldBase):
     log = logging.getLogger("workitem.Workitem")
 
+    OSLC_CR_RDF = "application/rdf+xml"
+
     def __init__(self, url, rtc_obj, workitem_id=None, raw_data=None):
         self.identifier = workitem_id
         FieldBase.__init__(self, url, rtc_obj, raw_data)
@@ -92,7 +94,6 @@ class Workitem(FieldBase):
 </rdf:RDF>
 '''
 
-        # TODO: verify url here
         comments_url = (self.raw_data.get("rtc_cm:comments")
                                      .get("@oslc_cm:collref"))
         headers = copy.deepcopy(self.rtc_obj.headers)
@@ -108,10 +109,10 @@ class Workitem(FieldBase):
 
         comment_msg = origin_comment.format(comment_url, msg)
 
-        headers['Content-type'] = 'application/rdf+xml'
-        headers['Accept'] = 'application/rdf+xml'
+        headers["Content-Type"] = self.OSLC_CR_RDF
+        headers["Accept"] = self.OSLC_CR_RDF
         headers["OSLC-Core-Version"] = "2.0"
-        headers['If-Match'] = resp.headers.get('etag')
+        headers["If-Match"] = resp.headers.get("etag")
         req_url = "/".join([comments_url,
                             "oslc:comment"])
 
@@ -125,7 +126,7 @@ class Workitem(FieldBase):
         raw_data = xmltodict.parse(resp.content)
         return Comment(comment_url,
                        self.rtc_obj,
-                       raw_data=raw_data["rtc_cm:Comment"])
+                       raw_data=raw_data["rdf:RDF"]["rdf:Description"])
 
     def addSubscribers(self, subscribers):
         """Add subscribers for this workitem
