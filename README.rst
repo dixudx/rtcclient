@@ -65,6 +65,8 @@ Team Areas, Workitems) into easily managed Python objects:
     >>> username = "your_username"
     >>> password = "your_password"
     >>> myclient = RTCClient(url, username, password)
+    # it will be faster if returned properties is specified
+    # see in below query example
     >>> wk = myclient.getWorkitem(123456) # get a workitem whose id is 123456
     # get all workitems
     # If both projectarea_id and projectarea_name are None, all the workitems
