@@ -208,7 +208,7 @@ class RTCClient(RTCBase):
 
         :param projectarea_id: the project area id
         :param archived: whether the ProjectArea is archived
-        :return True or False
+        :return: True or False
         :rtype: bool
         """
 
