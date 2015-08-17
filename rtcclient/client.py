@@ -57,12 +57,12 @@ class RTCClient(RTCBase):
         TODO: for invalid username or password,
             rtc cannot return the right code
         """
-        _headers = {"Content-Type": RTCBase.CONTENT_XML}
+        _headers = {"Content-Type": self.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
                         headers=_headers)
 
-        _headers["Content-Type"] = RTCBase.CONTENT_URL_ENCODED
+        _headers["Content-Type"] = self.CONTENT_URL_ENCODED
         _headers["Cookie"] = resp.headers.get("set-cookie")
         credentials = urlencode({"j_username": self.username,
                                  "j_password": self.password})
@@ -77,7 +77,7 @@ class RTCClient(RTCBase):
                         headers=_headers)
 
         _headers["Cookie"] = resp.headers.get("set-cookie")
-        _headers["Accept"] = RTCBase.CONTENT_XML
+        _headers["Accept"] = self.CONTENT_XML
         return _headers
 
     def getProjectAreas(self, archived=False,
@@ -870,7 +870,7 @@ class RTCClient(RTCBase):
 
     def _createWorkitem(self, url_post, workitem_raw):
         headers = copy.deepcopy(self.headers)
-        headers['Content-Type'] = RTCClient.OSLC_CR_XML
+        headers['Content-Type'] = self.OSLC_CR_XML
 
         resp = self.post(url_post, verify=False,
                          headers=headers, data=workitem_raw)
