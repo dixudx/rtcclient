@@ -53,16 +53,13 @@ class RTCClient(RTCBase):
         return self
 
     def _get_headers(self):
-        """
-        TODO: for invalid username or password,
-            rtc cannot return the right code
-        """
-        _headers = {"Content-Type": RTCBase.CONTENT_XML}
+        # TODO: for invalid username or password,
+        _headers = {"Content-Type": self.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
                         headers=_headers)
 
-        _headers["Content-Type"] = RTCBase.CONTENT_URL_ENCODED
+        _headers["Content-Type"] = self.CONTENT_URL_ENCODED
         _headers["Cookie"] = resp.headers.get("set-cookie")
         credentials = urlencode({"j_username": self.username,
                                  "j_password": self.password})
@@ -77,7 +74,7 @@ class RTCClient(RTCBase):
                         headers=_headers)
 
         _headers["Cookie"] = resp.headers.get("set-cookie")
-        _headers["Accept"] = RTCBase.CONTENT_XML
+        _headers["Accept"] = self.CONTENT_XML
         return _headers
 
     def getProjectAreas(self, archived=False,
@@ -91,7 +88,6 @@ class RTCClient(RTCBase):
             Refer to class `RTCClient` for more explanations
         :return: A list contains all the <ProjectArea> objects
         :rtype: list
-        pass
         """
 
         rp = returned_properties
@@ -110,7 +106,6 @@ class RTCClient(RTCBase):
         :param projectarea_name: the project area name
         :return: :class:`ProjectArea <ProjectArea>` object
         :rtype: project_area.ProjectArea
-        pass
         """
 
         self.log.debug("Try to get <ProjectArea %s>", projectarea_name)
@@ -141,7 +136,6 @@ class RTCClient(RTCBase):
             Refer to class `RTCClient` for more explanations
         :return: :class:`ProjectArea <ProjectArea>` object
         :rtype: project_area.ProjectArea
-        pass
         """
 
         self.log.debug("Try to get <ProjectArea> by its id: %s",
@@ -170,7 +164,6 @@ class RTCClient(RTCBase):
         :param archived: whether the ProjectArea is archived
         :return :class `string` object
         :rtype: string
-        pass
         """
 
         self.log.debug("Get the ProjectArea id by its name: %s",
@@ -865,12 +858,9 @@ class RTCClient(RTCBase):
                                                    description=description)
         return self._createWorkitem(wi_url_post, wi_raw)
 
-    def updateWorkitem(self):
-        pass
-
     def _createWorkitem(self, url_post, workitem_raw):
         headers = copy.deepcopy(self.headers)
-        headers['Content-Type'] = RTCClient.OSLC_CR_XML
+        headers['Content-Type'] = self.OSLC_CR_XML
 
         resp = self.post(url_post, verify=False,
                          headers=headers, data=workitem_raw)

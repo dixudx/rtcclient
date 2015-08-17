@@ -1,0 +1,96 @@
+CHANGES
+=======
+
+* update README cfg
+* remove redundancy and minor update
+* fix bug: add Comment
+* fix typos of README
+* update README
+* add tests for class templater and minor update
+* add tests for class workitem
+* fix add comment bug due to base class refactor
+* update to enable getting workitem with valid str(int_value)
+* add tests for query
+* enable querying archived workitems
+* add tests for class projectarea
+* enhance parameter type checking for client
+* add tests for checking workitem type
+* fix jinja2.meta import error & add tests for listing fields
+* add tests for workitems
+* fix bug: getting none workitems
+* enable getting archived workitems
+* refactor getting variables
+* add tests for filedagainsts
+* add tests for foundins
+* add tests for priority
+* add tests for severity
+* add tests for single plannedfor
+* add tests for plannedfors
+* fix getOwnedBy bug and add its test
+* add tests for teamareas
+* fix base class bug
+* add more tests including exception for projectareas
+* fix pep8 errors in test_client.py
+* add tests for projectareas
+* add test fixtures
+* add serveral fixture xmls
+* add fixtures for client
+* add test for headers
+* minor update tests
+* update templates folder
+* add tests for base class
+* fix pep8 format
+* add tox.ini and test-requirements.txt
+* add archived param & enable returned_properties
+* update query example to use returned_properties
+* enable preferred properties for query results
+* minor fix query bug
+* add an example for query
+* refactor query method
+* fix typos
+* remove redundance and update methods on Comment
+* implement getting attribute value
+* minor fix and api update
+* add new class for projectarea and minor update
+* add examples/templates
+* implement creatWorkitem
+* add several new classes in project_area
+* update to enable creating workitem
+* update class Templater to list needed attributes
+* update Template to support render
+* add template
+* minor update on ItemType and ProjectAreaID
+* fix query bug
+* update ItemType
+* finish getWorkitems
+* fix add comment bug
+* minor update
+* add an example on how to add comment
+* refactor base class and update
+* minor update validate url
+* minor change addComment return value
+* minor fix status code
+* add method to addComment
+* fix getWorkitem and minor update FieldBase class
+* add needed files for packaging
+* update log level
+* updates on api
+* add admins
+* minor update updateWorkitem
+* add class scheme and add method to create workitem
+* update description and base class
+* refactor base and add state class
+* add workitem actions
+* add method for single role and member
+* initialize method in workitem and update query
+* add members and roles
+* add method to handle project area
+* update client apis
+* add null methods for workitem
+* add methods for project area
+* add several rtc components modules
+* refactor base class
+* update base class and query
+* add base class and client
+* initial project
+* Initial commit

@@ -11,10 +11,8 @@ class RTCBase(object):
     log = logging.getLogger("base.RTCBase")
 
     CONTENT_XML = "text/xml"
-    CONTENT_JSON = "application/json"
     CONTENT_URL_ENCODED = "application/x-www-form-urlencoded"
     OSLC_CR_XML = "application/x-oslc-cm-change-request+xml"
-    OSLC_CR_JSON = "application/x-oslc-cm-change-request+json"
 
     def __init__(self, url):
         self.url = self.validate_url(url)
@@ -217,11 +215,15 @@ class FieldBase(RTCBase):
             self.field_alias[attr] = key
 
             if isinstance(value, OrderedDict):
-                value = value.values()[0]
-                try:
-                    value = self.__get_rdf_resource_title(value)
-                except (exception.RTCException, Exception):
-                    self.log.error("Unable to handle %s", value)
+                value_text = value.get("#text")
+                if value_text is not None:
+                    value = value_text
+                else:
+                    value = value.values()[0]
+                    try:
+                        value = self.__get_rdf_resource_title(value)
+                    except (exception.RTCException, Exception):
+                        self.log.error("Unable to handle %s", value)
             self.setattr(attr, value)
 
     def __get_rdf_resource_title(self, rdf_url):

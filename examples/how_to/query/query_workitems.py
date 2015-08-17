@@ -1,9 +1,11 @@
 from rtcclient.client import RTCClient
-from rtcclient.utils import setup_logging
+from rtcclient.utils import setup_basic_logging
 
 
 if __name__ == "__main__":
-    setup_logging()
+    # you can remove this if you don't need logging
+    # default logging for console output
+    setup_basic_logging()
 
     url = "https://your_domain:9443/jazz"
     username = "your_username"
