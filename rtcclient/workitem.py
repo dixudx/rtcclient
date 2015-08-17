@@ -18,19 +18,6 @@ class Workitem(FieldBase):
     def __str__(self):
         return str(self.identifier)
 
-    def update(self, new_workitem, state=None):
-
-        # TODO
-
-        # if state:
-        #     action = self.getAction(self.contextId, action_name)
-        #     update_url = "".join([self.url,
-        #                           "?_action=%s" % action.title])
-        # else:
-        #     update_url = self.url
-
-        pass
-
     def getComments(self):
         """Get all <Comment> objects
 
@@ -128,15 +115,6 @@ class Workitem(FieldBase):
                        self.rtc_obj,
                        raw_data=raw_data["rdf:RDF"]["rdf:Description"])
 
-    def addSubscribers(self, subscribers):
-        """Add subscribers for this workitem
-
-        :param subscribers: subscribers list
-        :return: True or False
-        :rtype: bool
-        """
-        pass
-
     def getSubscribers(self):
         """Get subscribers of this workitem
 
@@ -147,12 +125,6 @@ class Workitem(FieldBase):
         return self.rtc_obj._get_paged_resources("Subscribers",
                                                  workitem_id=self.identifier,
                                                  page_size="10")
-
-    def updateField(self, field):
-        pass
-
-    def getFields(self):
-        pass
 
     def getActions(self):
         """Get all the actions of this workitem
