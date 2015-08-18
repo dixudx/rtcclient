@@ -33,16 +33,19 @@ class Templater(RTCBase):
 
         :param template: The template to render.
             The template is actually a file, which is usually generated
-            by `Template.getTemplate()` and can also be modified by user
+            by :class:`Templater.getTemplate()` and can also be modified by user
             accordingly.
         :param kwargs: The kwargs dict used to fill the template.
             These two parameter are mandatory:
+
                 * description
                 * title
 
             Some of below parameters (which may not be included in some
             customized workitem type ) are mandatory if `keep` (parameter in
-            `Template.getTemplate`) is set to False; optional for otherwise
+            :class:`Templater.getTemplate`) is set to False;
+            optional for otherwise
+
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
@@ -51,9 +54,9 @@ class Templater(RTCBase):
                 * filedAgainst(Filed Against)
 
             Actually all these needed keywords/attributes/fields can be
-            retrieved by `Template.listFields`
+            retrieved by :class:`Template.listFields`
 
-        :return: a string object
+        :return: the string object
         :rtype: string
         """
 
@@ -67,13 +70,14 @@ class Templater(RTCBase):
 
     def renderFromWorkitem(self, copied_from, keep=False,
                            encoding="UTF-8", **kwargs):
-        """Render the template directly from some to-be-copied workitem
-        without saving to a file
+        """Render the template directly from some to-be-copied
+        :class:`Workitem` without saving to a file
 
-        :param copied_from: the to-be-copied workitem id
+        :param copied_from: the to-be-copied :class:`Workitem` id
         :param keep (default is False): If True, some of the below fields
-            will remain unchangeable with the to-be-copied workitem.
+            will remain unchangeable with the to-be-copied :class:`Workitem`.
             otherwise for False
+
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
@@ -83,12 +87,14 @@ class Templater(RTCBase):
         :param encoding (default is "UTF-8"): coding format
         :param kwargs: The kwargs dict used to fill the template
             These two parameter are mandatory:
+
                 * description
                 * title
 
             Some of below parameters (which may not be included in some
             customized workitem type ) are mandatory if `keep` is set to
             False; optional for otherwise
+
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
@@ -97,9 +103,9 @@ class Templater(RTCBase):
                 * filedAgainst(Filed Against)
 
             Actually all these needed keywords/attributes/fields can be
-            retrieved by `Template.listFieldsFromWorkitem`
+            retrieved by :class:`Template.listFieldsFromWorkitem`
 
-        :return: the string
+        :return: the string object
         :rtype: string
         """
 
@@ -115,7 +121,7 @@ class Templater(RTCBase):
 
         :param template: The template to render.
             The template is actually a file, which is usually generated
-            by `Template.getTemplate()` and can also be modified by user
+            by :class:`Templater.getTemplate()` and can also be modified by user
             accordingly.
         :return: a set contains all the needed attributes
         :rtype: set
@@ -132,13 +138,15 @@ class Templater(RTCBase):
 
     def listFieldsFromWorkitem(self, copied_from, keep=False):
         """List all the attributes to be rendered directly from some
-        to-be-copied workitem
+        to-be-copied :class:`Workitem`
 
-        :param copied_from: the to-be-copied workitem id
+        :param copied_from: the to-be-copied :class:`Workitem` id
         :param keep (default is False): If True, some of below parameters
-            (which will not be included in some customized workitem type )
-            will remain unchangeable with the to-be-copied workitem.
+            (which will not be included in some customized
+            :class:`Workitem` type ) will remain unchangeable with the
+            to-be-copied :class:`Workitem`.
             otherwise for False
+
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
@@ -170,19 +178,21 @@ class Templater(RTCBase):
 
     def getTemplate(self, copied_from, template_name=None,
                     template_folder=None, keep=False, encoding="UTF-8"):
-        """Get template from some to-be-copied workitem
+        """Get template from some to-be-copied :class:`Workitem`
 
         The resulting XML document is returned as a string, but if
         `template_name` (a string value) is specified,
         it is written there instead.
 
-        :param copied_from: the to-be-copied workitem id
+        :param copied_from: the to-be-copied :class:`Workitem` id
         :param template_name: the template file name
         :param template_folder: the folder to store template file
         :param keep (default is False): If True, some of below parameters
-            (which may not be included in some customized workitem type )
-            will remain unchangeable with the to-be-copied workitem.
+            (which may not be included in some customized
+            :class:`Workitem` type ) will remain unchangeable with the
+            to-be-copied :class:`Workitem`.
             otherwise for False
+
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
@@ -191,7 +201,8 @@ class Templater(RTCBase):
                 * filedAgainst(Filed Against)
         :param encoding (default is "UTF-8"): coding format
         :return:
-            * string object: if `template_name` is not specified
+
+            * a string object: if `template_name` is not specified
             * write the template to file `template_name`
         """
 
@@ -331,18 +342,21 @@ class Templater(RTCBase):
 
     def getTemplates(self, workitems, template_folder=None,
                      template_names=None, keep=False, encoding="UTF-8"):
-        """Get templates from a group of to-be-copied workitems and write
-        them to files named after the names in `template_names` respectively.
+        """Get templates from a group of to-be-copied :class:`Workitems` and
+        write them to files named after the names in `template_names`
+        respectively.
 
         :param workitems: a list/tuple/set contains the IDs of
-            some to-be-copied workitems
+            some to-be-copied :class:`Workitems`
         :param template_names: a list/tuple/set contains the template file
-            names from copied workitems.
-            If None, the file names will be named after the workitem ID with
-            ".template" as a postfix
-        :param template_folder: refer to `Template.getTemplate`
-        :param keep (default is False): refer to `Template.getTemplate`
-        :param encoding (default is "UTF-8"): refer to `Template.getTemplate`
+            names from copied :class:`Workitems`.
+            If None, the file names will be named after the :class:`Workitem`
+            ID with ".template" as a postfix
+        :param template_folder: refer to :class:`Templater.getTemplate`
+        :param keep (default is False): refer to
+            :class:`Templater.getTemplate`
+        :param encoding (default is "UTF-8"): refer to
+            :class:`Templater.getTemplate`
         """
 
         if not hasattr(workitems, "__iter__"):

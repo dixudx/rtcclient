@@ -1,6 +1,9 @@
 rtcclient
 =========
 
+.. image:: https://readthedocs.org/projects/rtcclient/?badge=latest
+    :target: https://pypi.python.org/pypi/rtcclient
+
 A Python-based Client/API for Rational Team Concert (RTC)
 
 About this library

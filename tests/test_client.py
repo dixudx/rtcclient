@@ -2,8 +2,9 @@ from rtcclient.client import RTCClient
 import requests
 import pytest
 import utils_test
-from rtcclient.project_area import ProjectArea, TeamArea, Member, PlannedFor
-from rtcclient.project_area import Severity, Priority, FoundIn, FiledAgainst
+from rtcclient.project_area import ProjectArea
+from rtcclient.models import Severity, Priority, FoundIn, FiledAgainst
+from rtcclient.models import TeamArea, Member, PlannedFor
 import xmltodict
 from rtcclient.workitem import Workitem
 from rtcclient.exception import BadValue, NotFound, RTCException, EmptyAttrib

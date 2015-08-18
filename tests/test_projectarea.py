@@ -1,7 +1,8 @@
 import requests
 import pytest
 import utils_test
-from rtcclient.project_area import ProjectArea, Member, ItemType, Administrator
+from rtcclient.project_area import ProjectArea
+from rtcclient.models import Member, ItemType, Administrator
 from rtcclient.exception import BadValue, NotFound, EmptyAttrib
 
 
