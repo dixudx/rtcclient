@@ -2,7 +2,8 @@ import requests
 import pytest
 import utils_test
 from rtcclient.exception import BadValue, NotFound
-from rtcclient.workitem import Workitem, Comment, Action
+from rtcclient.workitem import Workitem
+from rtcclient.models import Comment, Action
 
 
 class TestWorkitem:

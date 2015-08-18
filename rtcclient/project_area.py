@@ -1,8 +1,8 @@
 from rtcclient.base import FieldBase
 import xmltodict
-from rtcclient import urlunquote
 import logging
 from rtcclient import exception
+from rtcclient.models import Role
 
 
 class ProjectArea(FieldBase):
@@ -219,87 +219,3 @@ class ProjectArea(FieldBase):
                                                                       self)
         self.log.error(msg)
         raise exception.NotFound(msg)
-
-
-class Role(FieldBase):
-    log = logging.getLogger("project_area.Role")
-
-    def __str__(self):
-        return self.label
-
-
-class Member(FieldBase):
-    log = logging.getLogger("project_area.Member")
-
-    def __init__(self, url, rtc_obj, raw_data=None):
-        FieldBase.__init__(self, url, rtc_obj, raw_data=raw_data)
-        # add a new attribute mainly for the un-recorded member use
-        self.email = urlunquote(self.url.split("/")[-1])
-
-    def __str__(self):
-        if hasattr(self, "title"):
-            return self.title
-        return self.email
-
-    def _initialize(self):
-        pass
-
-    def __initialize(self):
-        pass
-
-
-class Administrator(Member):
-    log = logging.getLogger("project_area.Administrator")
-
-
-class ProjectAdmin(Member):
-    log = logging.getLogger("project_area.ProjectAdmin")
-
-
-class ItemType(FieldBase):
-    log = logging.getLogger("project_area.ItemType")
-
-    def __str__(self):
-        return self.title
-
-
-class TeamArea(FieldBase):
-    log = logging.getLogger("project_area.TeamArea")
-
-    def __str__(self):
-        return self.title
-
-
-class PlannedFor(FieldBase):
-    log = logging.getLogger("project_area.PlannedFor")
-
-    def __str__(self):
-        return self.title
-
-
-class FiledAgainst(FieldBase):
-    log = logging.getLogger("project_area.FiledAgainst")
-
-    def __str__(self):
-        return self.title
-
-
-class FoundIn(FieldBase):
-    log = logging.getLogger("project_area.FoundIn")
-
-    def __str__(self):
-        return self.title
-
-
-class Severity(FieldBase):
-    log = logging.getLogger("project_area.Severity")
-
-    def __str__(self):
-        return self.title
-
-
-class Priority(FieldBase):
-    log = logging.getLogger("project_area.Priority")
-
-    def __str__(self):
-        return self.title

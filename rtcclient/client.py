@@ -1,10 +1,11 @@
 from rtcclient.base import RTCBase
 import xmltodict
 from rtcclient import exception
-from rtcclient.project_area import ProjectArea, TeamArea, Member, Administrator
-from rtcclient.project_area import PlannedFor, FiledAgainst, FoundIn
-from rtcclient.project_area import Severity, Priority, ItemType
-from rtcclient.workitem import Workitem, Comment, Action
+from rtcclient.project_area import ProjectArea
+from rtcclient.workitem import Workitem
+from rtcclient.models import TeamArea, Member, Administrator, PlannedFor
+from rtcclient.models import Severity, Priority, ItemType
+from rtcclient.models import FiledAgainst, FoundIn, Comment, Action
 import logging
 from rtcclient import urlparse, urlquote, urlencode, OrderedDict
 import copy
