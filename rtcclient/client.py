@@ -162,7 +162,7 @@ class RTCClient(RTCBase):
 
         :param projectarea_name: the project area name
         :param archived: whether the ProjectArea is archived
-        :return :class `string` object
+        :return: :class `string` object
         :rtype: string
         """
 

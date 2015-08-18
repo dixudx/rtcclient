@@ -37,12 +37,14 @@ class Templater(RTCBase):
             accordingly.
         :param kwargs: The kwargs dict used to fill the template.
             These two parameter are mandatory:
+
                 * description
                 * title
 
             Some of below parameters (which may not be included in some
             customized workitem type ) are mandatory if `keep` (parameter in
             `Template.getTemplate`) is set to False; optional for otherwise
+
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
@@ -74,6 +76,7 @@ class Templater(RTCBase):
         :param keep (default is False): If True, some of the below fields
             will remain unchangeable with the to-be-copied workitem.
             otherwise for False
+
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
@@ -83,12 +86,14 @@ class Templater(RTCBase):
         :param encoding (default is "UTF-8"): coding format
         :param kwargs: The kwargs dict used to fill the template
             These two parameter are mandatory:
+
                 * description
                 * title
 
             Some of below parameters (which may not be included in some
             customized workitem type ) are mandatory if `keep` is set to
             False; optional for otherwise
+
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
@@ -99,7 +104,7 @@ class Templater(RTCBase):
             Actually all these needed keywords/attributes/fields can be
             retrieved by `Template.listFieldsFromWorkitem`
 
-        :return: the string
+        :return: a string object
         :rtype: string
         """
 
@@ -139,6 +144,7 @@ class Templater(RTCBase):
             (which will not be included in some customized workitem type )
             will remain unchangeable with the to-be-copied workitem.
             otherwise for False
+
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
@@ -183,6 +189,7 @@ class Templater(RTCBase):
             (which may not be included in some customized workitem type )
             will remain unchangeable with the to-be-copied workitem.
             otherwise for False
+
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
                 * plannedFor(Planned For)
@@ -191,7 +198,8 @@ class Templater(RTCBase):
                 * filedAgainst(Filed Against)
         :param encoding (default is "UTF-8"): coding format
         :return:
-            * string object: if `template_name` is not specified
+
+            * a string object: if `template_name` is not specified
             * write the template to file `template_name`
         """
 
