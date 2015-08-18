@@ -1,5 +1,5 @@
 Client
 ======
 
-.. automodule:: rtcclient.client
+.. autoclass:: rtcclient.client.RTCClient
    :members:

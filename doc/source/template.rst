@@ -1,5 +1,5 @@
 Template
 ========
 
-.. automodule:: rtcclient.template
+.. autoclass:: rtcclient.template.Templater
    :members:

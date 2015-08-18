@@ -1,5 +1,5 @@
 Query
 =====
 
-.. automodule:: rtcclient.query
+.. autoclass:: rtcclient.query.Query
    :members:

@@ -1,5 +1,6 @@
 ProjectArea
 ===========
 
-.. automodule:: rtcclient.project_area
+
+.. autoclass:: rtcclient.project_area.ProjectArea
    :members:

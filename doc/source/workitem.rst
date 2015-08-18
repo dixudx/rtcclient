@@ -1,5 +1,5 @@
 Workitem
 ========
 
-.. automodule:: rtcclient.workitem
+.. autoclass:: rtcclient.workitem.Workitem
    :members:
