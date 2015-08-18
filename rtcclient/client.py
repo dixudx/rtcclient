@@ -16,12 +16,13 @@ from rtcclient.query import Query
 
 
 class RTCClient(RTCBase):
-    """A wrapped class for RTC Client
+    """A wrapped class for `RTC Client`
 
     Tips: You can also customize your preferred properties to be returned
-    by specified `returned_properties` when the called methods contain
+    by specified `returned_properties` when the called methods have
     this optional parameter, which can also GREATLY IMPROVE the performance
-    of this client especially when getting and querying lots of Workitems.
+    of this client especially when getting or querying lots of
+    :class:`Workitems`.
 
     Important Note: `returned_properties` is an advanced parameter, the
     returned properties can be found in `ClassInstance.field_alias.values()`,
@@ -80,14 +81,15 @@ class RTCClient(RTCBase):
 
     def getProjectAreas(self, archived=False,
                         returned_properties=None):
-        """Get all <ProjectArea> objects
+        """Get all :class:`ProjectArea` objects
 
-        If no ProjectAreas are retrieved, None is returned.
+        If no :class:`ProjectArea` is retrieved, `None` is returned.
 
-        :param archived: whether the ProjectAreas are archived
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: A list contains all the <ProjectArea> objects
+        :param archived (default is False): whether the :class:`ProjectArea`
+            is archived
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: A list that contains all the :class:`ProjectArea` objects
         :rtype: list
         """
 
@@ -99,13 +101,14 @@ class RTCClient(RTCBase):
 
     def getProjectArea(self, projectarea_name, archived=False,
                        returned_properties=None):
-        """Get <ProjectArea> object by its name
+        """Get :class:`ProjectArea` object by its name
 
-        :param archived: whether the ProjectArea is archived
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :param projectarea_name: the project area name
-        :return: :class:`ProjectArea <ProjectArea>` object
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`ProjectArea`
+            is archived
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: the :class:`ProjectArea` object
         :rtype: project_area.ProjectArea
         """
 
@@ -129,13 +132,14 @@ class RTCClient(RTCBase):
 
     def getProjectAreaByID(self, projectarea_id, archived=False,
                            returned_properties=None):
-        """Get <ProjectArea> object by its id
+        """Get :class:`ProjectArea` object by its id
 
-        :param projectarea_id: the project area id
-        :param archived: whether the ProjectArea is archived
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: :class:`ProjectArea <ProjectArea>` object
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param archived (default is False): whether the :class:`ProjectArea`
+            is archived
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: the :class:`ProjectArea` object
         :rtype: project_area.ProjectArea
         """
 
@@ -159,11 +163,12 @@ class RTCClient(RTCBase):
         raise exception.NotFound("No ProjectArea's ID is %s" % projectarea_id)
 
     def getProjectAreaID(self, projectarea_name, archived=False):
-        """Get <ProjectArea> id by projectarea name
+        """Get :class:`ProjectArea` id by its name
 
-        :param projectarea_name: the project area name
-        :param archived: whether the ProjectArea is archived
-        :return: :class `string` object
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`ProjectArea`
+            is archived
+        :return: the :class:`string` object
         :rtype: string
         """
 
@@ -176,14 +181,15 @@ class RTCClient(RTCBase):
         raise exception.NotFound("No ProjectArea named %s" % projectarea_name)
 
     def getProjectAreaIDs(self, projectarea_name=None, archived=False):
-        """Get all <ProjectArea> ID(s) by projectarea name
+        """Get all :class:`ProjectArea` ID(s) by :class:`ProjectArea` name
 
-        If `projectarea_name` is None, all the ProjectArea IDs
+        If `projectarea_name` is `None`, all the :class:`ProjectArea` IDs
         will be returned.
 
-        :param projectarea_name: the project area name
-        :param archived: whether the ProjectAreas are archived
-        :return: a list contains all the ProjectArea IDs
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`ProjectArea`
+            is archived
+        :return: a list that contains all the :class:`ProjectArea` IDs
         :rtype: list
         """
 
@@ -205,11 +211,12 @@ class RTCClient(RTCBase):
         return projectarea_ids
 
     def checkProjectAreaID(self, projectarea_id, archived=False):
-        """Check the validity of <ProjectArea> ID
+        """Check the validity of :class:`ProjectArea` ID
 
-        :param projectarea_id: the project area id
-        :param archived: whether the ProjectArea is archived
-        :return: True or False
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param archived (default is False): whether the :class:`ProjectArea`
+            is archived
+        :return: `True` or `False`
         :rtype: bool
         """
 
@@ -232,20 +239,23 @@ class RTCClient(RTCBase):
     def getTeamArea(self, teamarea_name, projectarea_id=None,
                     projectarea_name=None, archived=False,
                     returned_properties=None):
-        """Get <TeamArea> object by TeamArea name
+        """Get :class:`TeamArea` object by its name
 
-        If ProjectArea id or name is specified, then the matched TeamArea in
-        that ProjectArea will be returned.
-        Otherwise, return the first found TeamArea with that name.
+        If :class:`ProjectArea` id or name is specified,
+        then the matched :class:`TeamArea` in that :class:`ProjectArea`
+        will be returned.
+        Otherwise, only return the first found :class:`TeamArea` with
+        that name.
 
-        :param teamarea_name: the TeamArea name
-        :param projectarea_id: the ProjectArea id
-        :param projectarea_name: the ProjectArea name
-        :param archived: whether the TeamArea is archived
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: the `TeamArea <TeamArea>` object
-        :rtype: projectarea.TeamArea
+        :param teamarea_name: the :class:`TeamArea` name
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`TeamArea`
+            is archived
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: the :class:`TeamArea <TeamArea>` object
+        :rtype: models.TeamArea
         """
 
         self.log.debug("Try to get <TeamArea %s>", teamarea_name)
@@ -271,19 +281,22 @@ class RTCClient(RTCBase):
 
     def getTeamAreas(self, projectarea_id=None, projectarea_name=None,
                      archived=False, returned_properties=None):
-        """Get all <TeamArea> objects by projectarea's id or name
+        """Get all :class:`TeamArea` objects by :class:`ProjectArea`'s
+        id or name
 
-        If both `projectarea_id` and `projectarea_name` are None,
-        all the TeamAreas in all ProjectAreas will be returned.
+        If both `projectarea_id` and `projectarea_name` are `None`,
+        all the :class:`TeamAreas` in all :class:`ProjectAreas`
+        will be returned.
 
-        If no TeamAreas are retrieved, None is returned.
+        If no :class:`TeamAreas` are retrieved, `None` is returned.
 
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :param archived: whether the TeamAreas are archived
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: a list contains all the `TeamArea <TeamArea>` objects
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`TeamAreas`
+            are archived
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: a list that contains all the :class:`TeamArea` objects
         :rtype: list
         """
 
@@ -320,16 +333,17 @@ class RTCClient(RTCBase):
     def getPlannedFor(self, plannedfor_name, projectarea_id=None,
                       projectarea_name=None, archived=False,
                       returned_properties=None):
-        """Get <PlannedFor> object by PlannedFor name
+        """Get :class:`PlannedFor` object by its name
 
-        :param plannedfor_name: the PlannedFor name
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :param archived: whether the PlannedFor is archived
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: the `PlannedFor <PlannedFor>` object
-        :rtype: projectarea.PlannedFor
+        :param plannedfor_name: the :class:`PlannedFor` name
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`PlannedFor`
+            is archived
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: the :class:`PlannedFor` object
+        :rtype: models.PlannedFor
         """
 
         self.log.debug("Try to get <PlannedFor %s>", plannedfor_name)
@@ -355,19 +369,22 @@ class RTCClient(RTCBase):
 
     def getPlannedFors(self, projectarea_id=None, projectarea_name=None,
                        archived=False, returned_properties=None):
-        """Get all <PlannedFor> objects by projectarea's id or name
+        """Get all :class:`PlannedFor` objects by :class:`ProjectArea`'s
+        id or name
 
         If both `projectarea_id` and `projectarea_name` are None,
-        all the PlannedFors in all ProjectAreas will be returned.
+        all the :class:`PlannedFors` in all :class:`ProjectAreas` will
+        be returned.
 
-        If no PlannedFors are retrieved, None is returned.
+        If no :class:`PlannedFors` are retrieved, `None` is returned.
 
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :param archived: whether the PlannedFors are archived
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: a list contains all the `PlannedFor <PlannedFor>` objects
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`PlannedFors`
+            are archived
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: a list that contains all the :class:`PlannedFor` objects
         :rtype: list
         """
 
@@ -383,15 +400,15 @@ class RTCClient(RTCBase):
 
     def getSeverity(self, severity_name, projectarea_id=None,
                     projectarea_name=None):
-        """Get <Severity> object by Severity name
+        """Get :class:`Severity` object by its name
 
         At least either of `projectarea_id` and `projectarea_name` is given
 
-        :param severity_name: the Severity name
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :return: the `Severity <Severity>` object
-        :rtype: projectarea.Severity
+        :param severity_name: the :class:`Severity` name
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :return: the :class:`Severity` object
+        :rtype: models.Severity
         """
 
         self.log.debug("Try to get <Severity %s>", severity_name)
@@ -413,15 +430,16 @@ class RTCClient(RTCBase):
         raise exception.NotFound("No Severity named %s" % severity_name)
 
     def getSeverities(self, projectarea_id=None, projectarea_name=None):
-        """Get all <Severity> objects by projectarea's id or name
+        """Get all :class:`Severity` objects by :class:`ProjectArea`'s
+        id or name
 
         At least either of `projectarea_id` and `projectarea_name` is given
 
-        If no Severities are retrieved, None is returned.
+        If no :class:`Severity` is retrieved, `None` is returned.
 
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :return: a list contains all the `Severity <Severity>` objects
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :return: a list that contains all the :class:`Severity` objects
         :rtype: list
         """
 
@@ -438,15 +456,15 @@ class RTCClient(RTCBase):
 
     def getPriority(self, priority_name, projectarea_id=None,
                     projectarea_name=None):
-        """Get <Priority> object by Priority name
+        """Get :class:`Priority` object by its name
 
         At least either of `projectarea_id` and `projectarea_name` is given
 
-        :param priority_name: the Priority name
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :return: the `Priority <Priority>` object
-        :rtype: projectarea.Priority
+        :param priority_name: the :class:`Priority` name
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :return: the :class:`Priority` object
+        :rtype: models.Priority
         """
 
         self.log.debug("Try to get <Priority %s>", priority_name)
@@ -468,15 +486,16 @@ class RTCClient(RTCBase):
         raise exception.NotFound("No Priority named %s" % priority_name)
 
     def getPriorities(self, projectarea_id=None, projectarea_name=None):
-        """Get all <Priority> objects by projectarea's id or name
+        """Get all :class:`Priority` objects by :class:`ProjectArea`'s
+        id or name
 
         At least either of `projectarea_id` and `projectarea_name` is given.
 
-        If no Priorities are retrieved, None is returned.
+        If no :class:`Priority` is retrieved, `None` is returned.
 
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :return: a list contains all the `Priority <Priority>` objects
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :return: a list contains all the :class:`Priority` objects
         :rtype: list
         """
 
@@ -493,14 +512,15 @@ class RTCClient(RTCBase):
 
     def getFoundIn(self, foundin_name, projectarea_id=None,
                    projectarea_name=None, archived=False):
-        """Get <FoundIn> object by FoundIn name
+        """Get :class:`FoundIn` object by its name
 
-        :param foundin_name: the FoundIn name
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :param archived: whether the FoundIn is archived
-        :return: the `FoundIn <FoundIn>` object
-        :rtype: projectarea.FoundIn
+        :param foundin_name: the :class:`FoundIn` name
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`FoundIn`
+            is archived
+        :return: the :class:`FoundIn` object
+        :rtype: models.FoundIn
         """
 
         self.log.debug("Try to get <FoundIn %s>", foundin_name)
@@ -524,17 +544,19 @@ class RTCClient(RTCBase):
 
     def getFoundIns(self, projectarea_id=None, projectarea_name=None,
                     archived=False):
-        """Get all <FoundIn> objects by projectarea's id or name
+        """Get all :class:`FoundIn` objects by :class:`ProjectArea`'s id or name
 
-        If both `projectarea_id` and `projectarea_name` are None,
-        all the FoundIns in all ProjectAreas will be returned.
+        If both `projectarea_id` and `projectarea_name` are `None`,
+        all the :class:`FoundIns` in all :class:`ProjectAreas` will be
+        returned.
 
-        If no FoundIns are retrieved, None is returned.
+        If no :class:`FoundIns` are retrieved, `None` is returned.
 
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :param archived: whether the FoundIns are archived
-        :return: a list contains all the `FoundIn <FoundIn>` objects
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`FoundIns`
+            are archived
+        :return: a list that contains all the :class:`FoundIn` objects
         :rtype: list
         """
 
@@ -547,14 +569,15 @@ class RTCClient(RTCBase):
 
     def getFiledAgainst(self, filedagainst_name, projectarea_id=None,
                         projectarea_name=None, archived=False):
-        """Get <FiledAgainst> object by FiledAgainst name
+        """Get :class:`FiledAgainst` object by its name
 
-        :param filedagainst_name: the FiledAgainst name
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :param archived: whether the FiledAgainst is archived
-        :return: the `FiledAgainst <FiledAgainst>` object
-        :rtype: projectarea.FiledAgainst
+        :param filedagainst_name: the :class:`FiledAgainst` name
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`FiledAgainst`
+            is archived
+        :return: the :class:`FiledAgainst` object
+        :rtype: models.FiledAgainst
         """
 
         self.log.debug("Try to get <FiledAgainst %s>", filedagainst_name)
@@ -579,17 +602,20 @@ class RTCClient(RTCBase):
 
     def getFiledAgainsts(self, projectarea_id=None, projectarea_name=None,
                          archived=False):
-        """Get all <FiledAgainst> objects by projectarea's id or name
+        """Get all :class:`FiledAgainst` objects by :class:`ProjectArea`'s
+        id or name
 
-        If both `projectarea_id` and `projectarea_name` are None,
-        all the FiledAgainsts in all ProjectAreas will be returned.
+        If both `projectarea_id` and `projectarea_name` are `None`,
+        all the :class:`FiledAgainsts` in all :class:`ProjectAreas` will
+        be returned.
 
-        If no FiledAgainsts are retrieved, None is returned.
+        If no :class:`FiledAgainsts` are retrieved, `None` is returned.
 
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :param archived: whether the FiledAgainsts are archived
-        :return: a list contains all the `FiledAgainst <FiledAgainst>` objects
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param archived (default is False): whether the :class:`FiledAgainsts`
+            are archived
+        :return: a list that contains all the :class:`FiledAgainst` objects
         :rtype: list
         """
 
@@ -602,9 +628,9 @@ class RTCClient(RTCBase):
 
     def getTemplate(self, copied_from, template_name=None,
                     template_folder=None, keep=False, encoding="UTF-8"):
-        """Get template from some to-be-copied workitem
+        """Get template from some to-be-copied :class:`Workitem`
 
-        More detals, please refer to `Templater.getTemplate`
+        More details, please refer to :class:`Templater.getTemplate`
         """
 
         return self.templater.getTemplate(copied_from,
@@ -615,10 +641,11 @@ class RTCClient(RTCBase):
 
     def getTemplates(self, workitems, template_folder=None,
                      template_names=None, keep=False, encoding="UTF-8"):
-        """Get templates from a group of to-be-copied workitems and write
-        them to files named after the names in `template_names` respectively.
+        """Get templates from a group of to-be-copied :class:`Workitems`
+        and write them to files named after the names in `template_names`
+        respectively.
 
-        More detals, please refer to `Templater.getTemplate`
+        More details, please refer to :class:`Templater.getTemplates`
         """
 
         self.templater.getTemplates(workitems,
@@ -632,33 +659,34 @@ class RTCClient(RTCBase):
 
         :param template: The template to render.
             The template is actually a file, which is usually generated
-            by `Template.getTemplate()` and can also be modified by user
-            accordingly.
-        :return: a set contains all the needed attributes
+            by :class:`Templater.getTemplate()` and can also be modified by
+            user accordingly.
+        :return: a set that contains all the needed attributes
         :rtype: set
 
-        More detals, please refer to `Templater.listFieldsFromWorkitem`
+        More details, please refer to :class:`Templater.listFieldsFromWorkitem`
         """
 
         return self.templater.listFields(template)
 
     def listFieldsFromWorkitem(self, copied_from, keep=False):
         """List all the attributes to be rendered directly from some
-        to-be-copied workitem
+        to-be-copied :class:`Workitem`
 
-        More detals, please refer to `Templater.listFieldsFromWorkitem`
+        More details, please refer to :class:`Templater.listFieldsFromWorkitem`
         """
 
         return self.templater.listFieldsFromWorkitem(copied_from,
                                                      keep=keep)
 
     def getWorkitem(self, workitem_id, returned_properties=None):
-        """Get <Workitem> object by its id/number
+        """Get :class:`Workitem` object by its id/number
 
-        :param workitem_id: the workitem number (integer or string)
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: :class:`Workitem <Workitem>` object
+        :param workitem_id: the :class:`Workitem` number
+            (integer or string)
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: the :class:`Workitem` object
         :rtype: workitem.Workitem
         """
 
@@ -697,22 +725,25 @@ class RTCClient(RTCBase):
 
     def getWorkitems(self, projectarea_id=None, projectarea_name=None,
                      returned_properties=None, archived=False):
-        """Get all <Workitem> objects by projectarea's id or name
+        """Get all :class:`Workitem` objects by :class:`ProjectArea`'s id
+        or name
 
-        If both projectarea_id and projectarea_name are None, all the workitems
-        in all ProjectAreas will be returned.
+        If both `projectarea_id` and `projectarea_name` are `None`,
+        all the :class:`Workitems` in all :class:`ProjectAreas` will be
+        returned.
 
-        If no Workitems are retrieved, None is returned.
+        If no :class:`Workitems` are retrieved, `None` is returned.
 
         You can also customize your preferred properties to be returned
         by specified `returned_properties`
 
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :param archived: whether the Workitems are archived
-        :return: a list contains all the `Workitem <Workitem>` objects
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :param archived (default is False): whether the :class:`Workitems`
+            are archived
+        :return: a list that contains all the :class:`Workitem` objects
         :rtype: list
         """
 
@@ -756,24 +787,26 @@ class RTCClient(RTCBase):
                        projectarea_id=None, projectarea_name=None,
                        template=None, copied_from=None, keep=False,
                        **kwargs):
-        """Create a workitem
+        """Create a :class:`Workitem`
 
-        :param item_type: the type of the workitem (e.g. task/defect/issue)
-        :param title: the title of the new created workitem
-        :param description: the description of the new created workitem
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
+        :param item_type: the type of the :class:`Workitem`
+            (e.g. task/defect/issue)
+        :param title: the title of the new created :class:`Workitem`
+        :param description: the description of the new created
+            :class:`Workitem`
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
         :param template: The template to render.
             The template is actually a file, which is usually generated
-            by `Template.getTemplate()` and can also be modified by user
-            accordingly.
-        :param copied_from: the to-be-copied workitem id
-        :param keep: refer to `keep` in `Templater.getTemplate`
-            only works when `template` is not specified
+            by :class:`Template.getTemplate()` and can also be modified by
+            user accordingly.
+        :param copied_from: the to-be-copied :class:`Workitem` id
+        :param keep: refer to `keep` in :class:`Templater.getTemplate`.
+            Only works when `template` is not specified
         :param \*\*kwargs: Optional/mandatory arguments when creating a new
-            workitem. More details, please refer to `kwargs` in
-            `Templater.render`
-        :return: :class:`Workitem <Workitem>` object
+            :class:`Workitem`. More details, please refer to `kwargs` in
+            :class:`Templater.render`
+        :return: the :class:`Workitem` object
         :rtype: workitem.Workitem
         """
 
@@ -823,15 +856,17 @@ class RTCClient(RTCBase):
 
     def copyWorkitem(self, copied_from, title=None, description=None,
                      prefix=None):
-        """Create a workitem by copying from an existing one
+        """Create a :class:`Workitem` by copying from an existing one
 
-        :param copied_from: the to-be-copied workitem id
-        :param title: the new workitem title.
-            If None, will copy that from to-be-copied workitem
-        :param description: the new workitem description.
-            If None, will copy that from to-be-copied workitem
+        :param copied_from: the to-be-copied :class:`Workitem` id
+        :param title: the new :class:`Workitem` title.
+            If `None`, will copy that from to-be-copied :class:`Workitem`
+        :param description: the new :class:`Workitem` description.
+            If `None`, will copy that from to-be-copied :class:`Workitem`
         :param prefix: used to add a prefix to the copied title and
             description
+        :return: the :class:`Workitem` object
+        :rtype: workitem.Workitem
         """
 
         copied_wi = self.getWorkitem(copied_from)
@@ -926,11 +961,12 @@ class RTCClient(RTCBase):
             self.log.debug("No missing parameters")
 
     def checkType(self, item_type, projectarea_id):
-        """Check the validity of workitem type
+        """Check the validity of :class:`Workitem` type
 
-        :param item_type: the type of the workitem (e.g. Story/Defect/Epic)
-        :param projectarea_id: the project area id
-        :return: True or False
+        :param item_type: the type of the :class:`Workitem`
+            (e.g. Story/Defect/Epic)
+        :param projectarea_id: the :class:`ProjectArea` id
+        :return: `True` or `False`
         :rtype: bool
         """
 
@@ -1162,17 +1198,19 @@ class RTCClient(RTCBase):
     def queryWorkitems(self, query_str, projectarea_id=None,
                        projectarea_name=None, returned_properties=None,
                        archived=False):
-        """Query workitems with the query string in a certain ProjectArea
+        """Query :class:`Workitems` with the query string in a certain
+        :class:`ProjectArea`
 
         At least either of `projectarea_id` and `projectarea_name` is given
 
         :param query_str: a valid query string
-        :param projectarea_id: the project area id
-        :param projectarea_name: the project area name
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :param archived: whether the Workitems are archived
-        :return: a list contains the queried <Workitem> objects
+        :param projectarea_id: the :class:`ProjectArea` id
+        :param projectarea_name: the :class:`ProjectArea` name
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :param archived (default is False): whether the :class:`Workitems`
+            are archived
+        :return: a list that contains the queried :class:`Workitem` objects
         :rtype: list
         """
 

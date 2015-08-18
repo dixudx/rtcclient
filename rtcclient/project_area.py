@@ -22,11 +22,11 @@ class ProjectArea(FieldBase):
         raise exception.EmptyAttrib("Please input raw_data")
 
     def getRoles(self):
-        """Get all Role objects in this project area
+        """Get all :class:`Role` objects in this :class:`ProjectArea`
 
-        If no Roles are retrieved, None is returned.
+        If no :class:`Roles` are retrieved, `None` is returned.
 
-        :return: a list contains all `Role <Role>` objects
+        :return: a list that contains all :class:`Role` objects
         :rtype: list
         """
 
@@ -54,11 +54,11 @@ class ProjectArea(FieldBase):
         return roles_list
 
     def getRole(self, label):
-        """Get the Role object by the label name
+        """Get the :class:`Role` object by the label name
 
-        :param label: the role label name
-        :return: :class:`Role <Role>` object
-        :rtype: project_area.Role
+        :param label: the :class:`Role` label name
+        :return: the :class:`Role` object
+        :rtype: models.Role
         """
 
         roles = self.getRoles()
@@ -75,13 +75,13 @@ class ProjectArea(FieldBase):
         raise exception.NotFound(excp_msg)
 
     def getMembers(self, returned_properties=None):
-        """Get all the Member objects in this project area
+        """Get all the :class:`Member` objects in this :class:`ProjectArea`
 
-        If no Members are retrieved, None is returned.
+        If no :class:`Members` are retrieved, `None` is returned.
 
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: a list contains all `Member <Member>` objects
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: a list that contains all :class:`Member` objects
         :rtype: list
         """
 
@@ -94,13 +94,13 @@ class ProjectArea(FieldBase):
                                                  returned_properties=rp)
 
     def getMember(self, email, returned_properties=None):
-        """Get the Member object by the email address
+        """Get the :class:`Member` object by the email address
 
         :param email: the email addr (e.g. somebody@gmail.com)
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: :class:`Member <Member>` object
-        :rtype: project_area.Member
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: the :class:`Member` object
+        :rtype: models.Member
         """
 
         if not isinstance(email, str) or "@" not in email:
@@ -127,13 +127,13 @@ class ProjectArea(FieldBase):
         raise exception.NotFound(excp_msg)
 
     def getItemTypes(self, returned_properties=None):
-        """Get all the ItemType objects in this project area
+        """Get all the :clas:`ItemType` objects in this :class:`ProjectArea`
 
-        If no ItemTypes are retrieved, None is returned.
+        If no :class:`ItemTypes` are retrieved, `None` is returned.
 
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: a list contains all `ItemType <ItemType>` objects
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: a list that contains all `ItemType` objects
         :rtype: list
         """
 
@@ -144,13 +144,13 @@ class ProjectArea(FieldBase):
                                                  returned_properties=rp)
 
     def getItemType(self, title, returned_properties=None):
-        """Get the ItemType object by the title
+        """Get the :class:`ItemType` object by the title
 
         :param title: the title (e.g. Story/Epic/..)
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: :class:`ItemType <ItemType>` object
-        :rtype: project_area.ItemType
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: :class:`ItemType` object
+        :rtype: models.ItemType
         """
 
         if not isinstance(title, str) or not title:
@@ -173,13 +173,14 @@ class ProjectArea(FieldBase):
         raise exception.NotFound(excp_msg)
 
     def getAdministrators(self, returned_properties=None):
-        """Get all the Administrator objects in this project area
+        """Get all the :class:`Administrator` objects in this
+        :class:`ProjectArea`
 
-        If no Administrators are retrieved, None is returned.
+        If no :class:`Administrators` are retrieved, `None` is returned.
 
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: a list contains all `Administrator <Administrator>` objects
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: a list that contains all :class:`Administrator` objects
         :rtype: list
         """
 
@@ -190,13 +191,13 @@ class ProjectArea(FieldBase):
                                                  returned_properties=rp)
 
     def getAdministrator(self, email, returned_properties=None):
-        """Get the <Administrator> object by the email address
+        """Get the :class:`Administrator` object by the email address
 
         :param email: the email addr (e.g. somebody@gmail.com)
-        :param returned_properties: the returned properties that you want
-            Refer to class `RTCClient` for more explanations
-        :return: :class:`Administrator <Administrator>` object
-        :rtype: project_area.Administrator
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`RTCClient` for more explanations
+        :return: the :class:`Administrator` object
+        :rtype: models.Administrator
         """
 
         if not isinstance(email, str) or "@" not in email:
