@@ -127,13 +127,13 @@ class ProjectArea(FieldBase):
         raise exception.NotFound(excp_msg)
 
     def getItemTypes(self, returned_properties=None):
-        """Get all the :clas:`ItemType` objects in this :class:`ProjectArea`
+        """Get all the :class:`ItemType` objects in this :class:`ProjectArea`
 
         If no :class:`ItemTypes` are retrieved, `None` is returned.
 
         :param returned_properties: the returned properties that you want.
             Refer to :class:`RTCClient` for more explanations
-        :return: a list that contains all `ItemType` objects
+        :return: a list that contains all :class:`ItemTypes` objects
         :rtype: list
         """
 

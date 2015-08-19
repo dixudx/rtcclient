@@ -8,6 +8,11 @@ from rtcclient.models import Comment
 
 
 class Workitem(FieldBase):
+    """A wrapped class for managing all related resources in
+    a :class:`Workitem`
+
+    """
+
     log = logging.getLogger("workitem.Workitem")
 
     OSLC_CR_RDF = "application/rdf+xml"
@@ -20,9 +25,9 @@ class Workitem(FieldBase):
         return str(self.identifier)
 
     def getComments(self):
-        """Get all <Comment> objects
+        """Get all :class:`Comment` objects in this :class:`Workitem`
 
-        :return: a list contains all the `Comment <Comment>` objects
+        :return: a list contains all the :class:`Comment` objects
         :rtype: list
         """
 
@@ -31,11 +36,11 @@ class Workitem(FieldBase):
                                                  page_size="100")
 
     def getCommentByID(self, comment_id):
-        """Get <Comment> object by its id
+        """Get :class:`Comment` object by its id
 
-        :param comment_id: comment id (integer)
-        :return: `Comment <Comment>` object
-        :rtype: workitem.Comment
+        :param comment_id: :class:`Comment` id (integer or equivalent string)
+        :return: the :class:`Comment` object
+        :rtype: models.Comment
         """
 
         # check the validity of comment id
@@ -59,11 +64,11 @@ class Workitem(FieldBase):
             raise exception.BadValue("Comment %s does not exist" % comment_id)
 
     def addComment(self, msg=None):
-        """Add comment for this workitem
+        """Add a comment to this :class:`Workitem`
 
         :param msg: comment message
-        :return: :class:`Comment <Comment>` object
-        :rtype: workitem.Comment
+        :return: the :class:`Comment` object
+        :rtype: models.Comment
         """
 
         origin_comment = '''
@@ -117,9 +122,9 @@ class Workitem(FieldBase):
                        raw_data=raw_data["rdf:RDF"]["rdf:Description"])
 
     def getSubscribers(self):
-        """Get subscribers of this workitem
+        """Get subscribers of this :class:`Workitem`
 
-        :return: a list contains all the `Member <Member>` objects
+        :return: a list contains all the :class:`Member` objects
         :rtype: list
         """
 
@@ -128,9 +133,9 @@ class Workitem(FieldBase):
                                                  page_size="10")
 
     def getActions(self):
-        """Get all the actions of this workitem
+        """Get all :class:`Actions` of this :class:`Workitem`
 
-        :return: a list contains all the `Action <Action>` objects
+        :return: a list contains all the :class:`Action` objects
         :rtype: list
         """
 
@@ -143,11 +148,10 @@ class Workitem(FieldBase):
                                                  page_size="100")
 
     def getAction(self, action_name):
-        """Get <Action> object by its name
+        """Get a :class:`Action` object by its name
 
-        TODO: projectarea_id, workitem type
-        :return: :class:`Action <Action>` object
-        :rtype: workitem.Action
+        :return: the :class:`Action` object
+        :rtype: models.Action
         """
 
         self.log.debug("Try to get <Action %s>", action_name)
