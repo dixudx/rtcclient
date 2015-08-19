@@ -35,6 +35,7 @@ Contents:
    workitem
    query
    template
+   models
 
 Indices and tables
 ==================

@@ -16,7 +16,14 @@ from rtcclient.query import Query
 
 
 class RTCClient(RTCBase):
-    """A wrapped class for `RTC Client`
+    """A wrapped class for :class:`RTC Client`
+
+    :param url: the rtc url (e.g. https://your_domain:9443/jazz)
+    :param username: the rtc username
+    :param password: the rtc password
+    :param searchpath: the folder to store your templates.
+        If `None`, the default search path
+        (/your/site-packages/rtcclient/templates) will be loaded.
 
     Tips: You can also customize your preferred properties to be returned
     by specified `returned_properties` when the called methods have
@@ -27,25 +34,26 @@ class RTCClient(RTCBase):
     Important Note: `returned_properties` is an advanced parameter, the
     returned properties can be found in `ClassInstance.field_alias.values()`,
     e.g. `myworkitem1.field_alias.values()`. If you don't care the performance,
-    just leave it alone with None.
+    just leave it alone with `None`.
     """
 
     log = logging.getLogger("client.RTCClient")
 
-    def __init__(self, url, username, password, searchpath=_search_path):
+    def __init__(self, url, username, password, searchpath=None):
         """Initialization
 
-        :param url: the rtc url (example: https://your_domain:9443/jazz)
-        :param username: the rtc username
-        :param password: the rtc password
-        :param searchpath: the folder to store your templates
+        See params above
         """
 
         self.username = username
         self.password = password
         RTCBase.__init__(self, url)
         self.headers = self._get_headers()
-        self.templater = Templater(self, searchpath=searchpath)
+        if searchpath is None:
+            self.searchpath = _search_path
+        else:
+            self.searchpath = searchpath
+        self.templater = Templater(self, searchpath=self.searchpath)
         self.query = Query(self)
 
     def __str__(self):

@@ -11,6 +11,10 @@ class Role(FieldBase):
 
 
 class Member(FieldBase):
+    """The :class:`Member` in the :class:`ProjectArea`
+
+    """
+
     log = logging.getLogger("models.Member")
 
     def __init__(self, url, rtc_obj, raw_data=None):
