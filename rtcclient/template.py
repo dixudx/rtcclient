@@ -12,10 +12,11 @@ class Templater(RTCBase):
     """A wrapped class used to generate and render templates
     from some copied workitems
 
-    :param rtc_obj: the rtcclient object
+    :param rtc_obj: a reference to the
+        :class:`rtcclient.client.RTCClient` object
     :param searchpath: the folder to store your templates.
         If `None`, the default search path
-        (/your/site-packages/rtcclient/templates) will be loaded.
+        (/your/site-packages/rtcclient/templates) will be loaded automatically.
 
     """
 
@@ -43,8 +44,8 @@ class Templater(RTCBase):
 
         :param template: The template to render.
             The template is actually a file, which is usually generated
-            by :class:`Templater.getTemplate()` and can also be modified by user
-            accordingly.
+            by :class:`rtcclient.template.Templater.getTemplate`
+            and can also be modified by user accordingly.
         :param kwargs: The `kwargs` dict is used to fill the template.
             These two parameter are mandatory:
 
@@ -53,8 +54,8 @@ class Templater(RTCBase):
 
             Some of below parameters (which may not be included in some
             customized workitem type ) are mandatory if `keep` (parameter in
-            :class:`Templater.getTemplate`) is set to `False`;
-            Optional for otherwise.
+            :class:`rtcclient.template.Templater.getTemplate`) is set to
+            `False`; Optional for otherwise.
 
                 * teamArea (Team Area)
                 * ownedBy (Owned By)
@@ -64,7 +65,7 @@ class Templater(RTCBase):
                 * filedAgainst(Filed Against)
 
             Actually all these needed keywords/attributes/fields can be
-            retrieved by :class:`Templater.listFields`
+            retrieved by :class:`rtcclient.template.Templater.listFields`
 
         :return: the :class:`string` object
         :rtype: string
@@ -81,11 +82,13 @@ class Templater(RTCBase):
     def renderFromWorkitem(self, copied_from, keep=False,
                            encoding="UTF-8", **kwargs):
         """Render the template directly from some to-be-copied
-        :class:`Workitem` without saving to a file
+        :class:`rtcclient.workitem.Workitem` without saving to a file
 
-        :param copied_from: the to-be-copied :class:`Workitem` id
+        :param copied_from: the to-be-copied
+            :class:`rtcclient.workitem.Workitem` id
         :param keep (default is False): If `True`, some of the below fields
-            will remain unchangeable with the to-be-copied :class:`Workitem`.
+            will remain unchangeable with the to-be-copied
+            :class:`rtcclient.workitem.Workitem`.
             Otherwise for `False`.
 
                 * teamArea (Team Area)
@@ -113,7 +116,8 @@ class Templater(RTCBase):
                 * filedAgainst(Filed Against)
 
             Actually all these needed keywords/attributes/fields can be
-            retrieved by :class:`Template.listFieldsFromWorkitem`
+            retrieved by
+            :class:`rtcclient.template.Templater.listFieldsFromWorkitem`
 
         :return: the :class:`string` object
         :rtype: string
@@ -131,8 +135,8 @@ class Templater(RTCBase):
 
         :param template: The template to render.
             The template is actually a file, which is usually generated
-            by :class:`Templater.getTemplate()` and can also be modified by user
-            accordingly.
+            by :class:`rtcclient.template.Templater.getTemplate` and can also
+            be modified by user accordingly.
         :return: a :class:`set` contains all the needed attributes
         :rtype: set
         """
@@ -148,13 +152,15 @@ class Templater(RTCBase):
 
     def listFieldsFromWorkitem(self, copied_from, keep=False):
         """List all the attributes to be rendered directly from some
-        to-be-copied :class:`Workitem`
+        to-be-copied :class:`rtcclient.workitem.Workitem`
 
-        :param copied_from: the to-be-copied :class:`Workitem` id
+        :param copied_from: the to-be-copied
+            :class:`rtcclient.workitem.Workitem` id
         :param keep (default is False): If `True`, some of below parameters
             (which will not be included in some customized
-            :class:`Workitem` type ) will remain unchangeable with the
-            to-be-copied :class:`Workitem`.
+            :class:`rtcclient.workitem.Workitem` type ) will remain
+            unchangeable with the to-be-copied
+            :class:`rtcclient.workitem.Workitem`.
             Otherwise for `False`.
 
                 * teamArea (Team Area)
@@ -188,20 +194,23 @@ class Templater(RTCBase):
 
     def getTemplate(self, copied_from, template_name=None,
                     template_folder=None, keep=False, encoding="UTF-8"):
-        """Get template from some to-be-copied :class:`workitem.Workitem`
+        """Get template from some to-be-copied
+        :class:`rtcclient.workitem.Workitem`
 
         The resulting XML document is returned as a :class:`string`, but if
         `template_name` (a string value) is specified,
         it is written there instead.
 
-        :param copied_from: the to-be-copied :class:`Workitem` id (integer or
+        :param copied_from: the to-be-copied
+            :class:`rtcclient.workitem.Workitem` id (integer or
             equivalent string)
         :param template_name: the template file name
         :param template_folder: the folder to store template file
         :param keep (default is False): If `True`, some of below parameters
             (which may not be included in some customized
-            :class:`Workitem` type ) will remain unchangeable with the
-            to-be-copied :class:`Workitem`.
+            :class:`rtcclient.workitem.Workitem` type ) will remain
+            unchangeable with the to-be-copied
+            :class:`rtcclient.workitem.Workitem`.
             Otherwise for `False`.
 
                 * teamArea (Team Area)
@@ -364,12 +373,13 @@ class Templater(RTCBase):
         :param template_names: a :class:`list`/:class:`tuple`/:class:`set`
             contains the template file names for copied :class:`Workitems`.
             If `None`, the new template files will be named after the
-            :class:`Workitem` id with "`.template`" as a postfix
-        :param template_folder: refer to :class:`Templater.getTemplate`
+            :class:`rtcclient.workitem.Workitem` id with "`.template`" as a postfix
+        :param template_folder: refer to
+            :class:`rtcclient.template.Templater.getTemplate`
         :param keep (default is False): refer to
-            :class:`Templater.getTemplate`
+            :class:`rtcclient.template.Templater.getTemplate`
         :param encoding (default is "UTF-8"): refer to
-            :class:`Templater.getTemplate`
+            :class:`rtcclient.template.Templater.getTemplate`
         """
 
         if not hasattr(workitems, "__iter__"):

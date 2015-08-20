@@ -25,9 +25,11 @@ class Workitem(FieldBase):
         return str(self.identifier)
 
     def getComments(self):
-        """Get all :class:`Comment` objects in this :class:`Workitem`
+        """Get all :class:`rtcclient.models.Comment` objects in this
+        :class:`rtcclient.workitem.Workitem`
 
-        :return: a list contains all the :class:`Comment` objects
+        :return: a :class:`list` contains all the
+            :class:`rtcclient.models.Comment` objects
         :rtype: list
         """
 
@@ -36,11 +38,12 @@ class Workitem(FieldBase):
                                                  page_size="100")
 
     def getCommentByID(self, comment_id):
-        """Get :class:`Comment` object by its id
+        """Get :class:`rtcclient.models.Comment` object by its id
 
-        :param comment_id: :class:`Comment` id (integer or equivalent string)
-        :return: the :class:`Comment` object
-        :rtype: models.Comment
+        :param comment_id: :class:`rtcclient.models.Comment` id
+            (integer or equivalent string)
+        :return: the :class:`rtcclient.models.Comment` object
+        :rtype: rtcclient.models.Comment
         """
 
         # check the validity of comment id
@@ -64,11 +67,11 @@ class Workitem(FieldBase):
             raise exception.BadValue("Comment %s does not exist" % comment_id)
 
     def addComment(self, msg=None):
-        """Add a comment to this :class:`Workitem`
+        """Add a comment to this :class:`rtcclient.workitem.Workitem`
 
         :param msg: comment message
-        :return: the :class:`Comment` object
-        :rtype: models.Comment
+        :return: the :class:`rtcclient.models.Comment` object
+        :rtype: rtcclient.models.Comment
         """
 
         origin_comment = '''
@@ -122,9 +125,10 @@ class Workitem(FieldBase):
                        raw_data=raw_data["rdf:RDF"]["rdf:Description"])
 
     def getSubscribers(self):
-        """Get subscribers of this :class:`Workitem`
+        """Get subscribers of this :class:`rtcclient.workitem.Workitem`
 
-        :return: a list contains all the :class:`Member` objects
+        :return: a :class:`list` contains all the
+            :class:`rtcclient.models.Member` objects
         :rtype: list
         """
 
@@ -133,9 +137,11 @@ class Workitem(FieldBase):
                                                  page_size="10")
 
     def getActions(self):
-        """Get all :class:`Actions` of this :class:`Workitem`
+        """Get all :class:`rtcclient.models.Action` objects of this
+        :class:`rtcclient.workitem.Workitem`
 
-        :return: a list contains all the :class:`Action` objects
+        :return: a :class:`list` contains all the
+            :class:`rtcclient.models.Action` objects
         :rtype: list
         """
 
@@ -148,10 +154,10 @@ class Workitem(FieldBase):
                                                  page_size="100")
 
     def getAction(self, action_name):
-        """Get a :class:`Action` object by its name
+        """Get a :class:`rtcclient.models.Action` object by its name
 
-        :return: the :class:`Action` object
-        :rtype: models.Action
+        :return: the :class:`rtcclient.models.Action` object
+        :rtype: rtcclient.models.Action
         """
 
         self.log.debug("Try to get <Action %s>", action_name)
