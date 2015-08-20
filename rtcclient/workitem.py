@@ -8,9 +8,14 @@ from rtcclient.models import Comment
 
 
 class Workitem(FieldBase):
-    """A wrapped class for managing all related resources in
-    a :class:`Workitem`
+    """A wrapped class for managing all related resources of the workitem
 
+    :param url: the workitem url
+    :param rtc_obj: a reference to the
+        :class:`rtcclient.client.RTCClient` object
+    :param workitem_id (default is `None`): the id of the workitem, which
+        will be retrieved if not specified
+    :param raw_data: the raw data ( OrderedDict ) of the request response
     """
 
     log = logging.getLogger("workitem.Workitem")
@@ -25,8 +30,7 @@ class Workitem(FieldBase):
         return str(self.identifier)
 
     def getComments(self):
-        """Get all :class:`rtcclient.models.Comment` objects in this
-        :class:`rtcclient.workitem.Workitem`
+        """Get all :class:`rtcclient.models.Comment` objects in this workitem
 
         :return: a :class:`list` contains all the
             :class:`rtcclient.models.Comment` objects
@@ -38,10 +42,11 @@ class Workitem(FieldBase):
                                                  page_size="100")
 
     def getCommentByID(self, comment_id):
-        """Get :class:`rtcclient.models.Comment` object by its id
+        """Get the :class:`rtcclient.models.Comment` object by its id
 
-        :param comment_id: :class:`rtcclient.models.Comment` id
-            (integer or equivalent string)
+        Note: the comment id starts from 0
+
+        :param comment_id: the comment id (integer or equivalent string)
         :return: the :class:`rtcclient.models.Comment` object
         :rtype: rtcclient.models.Comment
         """
@@ -67,7 +72,7 @@ class Workitem(FieldBase):
             raise exception.BadValue("Comment %s does not exist" % comment_id)
 
     def addComment(self, msg=None):
-        """Add a comment to this :class:`rtcclient.workitem.Workitem`
+        """Add a comment to this workitem
 
         :param msg: comment message
         :return: the :class:`rtcclient.models.Comment` object
@@ -125,7 +130,7 @@ class Workitem(FieldBase):
                        raw_data=raw_data["rdf:RDF"]["rdf:Description"])
 
     def getSubscribers(self):
-        """Get subscribers of this :class:`rtcclient.workitem.Workitem`
+        """Get subscribers of this workitem
 
         :return: a :class:`list` contains all the
             :class:`rtcclient.models.Member` objects
@@ -137,8 +142,7 @@ class Workitem(FieldBase):
                                                  page_size="10")
 
     def getActions(self):
-        """Get all :class:`rtcclient.models.Action` objects of this
-        :class:`rtcclient.workitem.Workitem`
+        """Get all :class:`rtcclient.models.Action` objects of this workitem
 
         :return: a :class:`list` contains all the
             :class:`rtcclient.models.Action` objects
@@ -154,8 +158,9 @@ class Workitem(FieldBase):
                                                  page_size="100")
 
     def getAction(self, action_name):
-        """Get a :class:`rtcclient.models.Action` object by its name
+        """Get the :class:`rtcclient.models.Action` object by its name
 
+        :param action_name: the name/title of the action
         :return: the :class:`rtcclient.models.Action` object
         :rtype: rtcclient.models.Action
         """

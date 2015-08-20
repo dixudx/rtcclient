@@ -6,6 +6,15 @@ from rtcclient.models import Role
 
 
 class ProjectArea(FieldBase):
+    """A wrapped class to perform all the operations in a Project Area
+
+    :param url: the project area url
+    :param rtc_obj: a reference to the
+        :class:`rtcclient.client.RTCClient` object
+    :param raw_data: the raw data ( OrderedDict ) of the request response
+
+    """
+
     log = logging.getLogger("project_area.ProjectArea")
 
     def __init__(self, url, rtc_obj, raw_data):
@@ -58,7 +67,7 @@ class ProjectArea(FieldBase):
     def getRole(self, label):
         """Get the :class:`rtcclient.models.Role` object by the label name
 
-        :param label: the :class:`rtcclient.models.Role` label name
+        :param label: the label name of the role
         :return: the :class:`rtcclient.models.Role` object
         :rtype: :class:`rtcclient.models.Role`
         """
