@@ -410,7 +410,7 @@ class Templater(RTCBase):
                                  template_folder=template_folder,
                                  keep=keep,
                                  encoding=encoding)
-            except Exception, excp:
+            except Exception as excp:
                 self.log.error("Exception occurred when fetching"
                                "template from <Workitem %s>: %s",
                                str(wk_id), excp)

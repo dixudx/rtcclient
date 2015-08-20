@@ -727,7 +727,7 @@ class RTCClient(RTCBase):
             excp_msg = "Please input a valid workitem id"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
-        except Exception, excp:
+        except Exception as excp:
             self.log.error(excp)
             raise exception.NotFound("Not found <Workitem %s>", workitem_id)
 
@@ -947,7 +947,7 @@ class RTCClient(RTCBase):
                 keyword_obj = keyword_cls(kwargs[keyword],
                                           projectarea_id=projectarea_id)
                 kwargs[keyword] = keyword_obj.url
-            except Exception, excp:
+            except Exception as excp:
                 self.log.error(excp)
         return kwargs
 
