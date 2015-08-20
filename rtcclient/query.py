@@ -4,13 +4,15 @@ from rtcclient import urlquote
 
 
 class Query(RTCBase):
+    """A wrapped class to perform all query-related actions
+
+    :param rtc_obj: a reference to the rtc client object
+    """
+
     log = logging.getLogger("query:Query")
 
     def __init__(self, rtc_obj):
-        """Initialize <Query> object
-
-        :param rtc_obj: a ref to the rtc object
-        """
+        """Initialize <Query> object"""
 
         self.rtc_obj = rtc_obj
         RTCBase.__init__(self, self.rtc_obj.url)
@@ -24,19 +26,22 @@ class Query(RTCBase):
     def queryWorkitems(self, query_str, projectarea_id=None,
                        projectarea_name=None, returned_properties=None,
                        archived=False):
-        """Query :class:`Workitems` with the query string in a certain
-        :class:`ProjectArea`
+        """Query workitems with the query string in a certain
+        :class:`rtcclient.project_area.ProjectArea`
 
         At least either of `projectarea_id` and `projectarea_name` is given
 
         :param query_str: a valid query string
-        :param projectarea_id: the :class:`ProjectArea` id
-        :param projectarea_name: the :class:`ProjectArea` name
+        :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
+            id
+        :param projectarea_name: the
+            :class:`rtcclient.project_area.ProjectArea` name
         :param returned_properties: the returned properties that you want.
-            Refer to :class:`RTCClient` for more explanations
-        :param archived (default is False): whether the :class:`Workitems`
-            are archived
-        :return: a list that contains the queried :class:`Workitem` objects
+            Refer to :class:`rtcclient.client.RTCClient` for more explanations
+        :param archived (default is False): whether the
+            :class:`rtcclient.workitem.Workitem` is archived
+        :return: a :class:`list` that contains the queried
+            :class:`rtcclient.workitem.Workitem` objects
         :rtype: list
         """
 
