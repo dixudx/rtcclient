@@ -12,7 +12,8 @@ class Templater(RTCBase):
     """A wrapped class used to generate and render templates
     from some copied workitems
 
-    :param rtc_obj: a reference to the rtc client object
+    :param rtc_obj: a reference to the
+        :class:`rtcclient.client.RTCClient` object
     :param searchpath: the folder to store your templates.
         If `None`, the default search path
         (/your/site-packages/rtcclient/templates) will be loaded automatically.

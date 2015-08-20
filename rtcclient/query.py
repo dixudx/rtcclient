@@ -6,7 +6,8 @@ from rtcclient import urlquote
 class Query(RTCBase):
     """A wrapped class to perform all query-related actions
 
-    :param rtc_obj: a reference to the rtc client object
+    :param rtc_obj: a reference to the
+        :class:`rtcclient.client.RTCClient` object
     """
 
     log = logging.getLogger("query:Query")
