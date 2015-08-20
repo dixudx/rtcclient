@@ -31,8 +31,8 @@ class ProjectArea(FieldBase):
         raise exception.EmptyAttrib("Please input raw_data")
 
     def getRoles(self):
-        """Get all :class:`rtcclient.models.Role` objects in this
-        :class:`rtcclient.project_area.ProjectArea`
+        """Get all :class:`rtcclient.models.Role` objects in this project
+        area
 
         If no :class:`Roles` are retrieved, `None` is returned.
 
@@ -87,7 +87,7 @@ class ProjectArea(FieldBase):
 
     def getMembers(self, returned_properties=None):
         """Get all the :class:`rtcclient.models.Member` objects in this
-        :class:`rtcclient.project_area.ProjectArea`
+        project area
 
         If no :class:`Members` are retrieved, `None` is returned.
 
@@ -142,7 +142,7 @@ class ProjectArea(FieldBase):
 
     def getItemTypes(self, returned_properties=None):
         """Get all the :class:`rtcclient.models.ItemType` objects
-        in this :class:`rtcclient.project_area.ProjectArea`
+        in this project area
 
         If no :class:`ItemTypes` are retrieved, `None` is returned.
 
@@ -190,7 +190,7 @@ class ProjectArea(FieldBase):
 
     def getAdministrators(self, returned_properties=None):
         """Get all the :class:`rtcclient.models.Administrator` objects in this
-        :class:`rtcclient.project_area.ProjectArea`
+        project area
 
         If no :class:`Administrators` are retrieved,
         `None` is returned.
