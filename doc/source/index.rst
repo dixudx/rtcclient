@@ -24,7 +24,31 @@ This library can help you:
 * Logs all the activities and messages during your operation
 
 
-Contents:
+Important Links
+---------------
+
+* Support and bug-reports: https://github.com/dixudx/rtcclient/issues?q=is%3Aopen+sort%3Acomments-desc
+
+* Project source code: https://github.com/dixudx/rtcclient
+
+* Project documentation: https://readthedocs.org/projects/rtcclient/
+
+
+User Guide
+==========
+
+.. toctree::
+   :maxdepth: 2
+
+   introduction
+   workitem_attr
+   installation
+   quickstart
+   advanced_usage
+
+
+API Documentation
+=================
 
 .. toctree::
    :maxdepth: 2
@@ -36,6 +60,7 @@ Contents:
    query
    template
    models
+
 
 Indices and tables
 ==================
