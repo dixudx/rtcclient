@@ -6,6 +6,15 @@ from rtcclient.models import Role
 
 
 class ProjectArea(FieldBase):
+    """A wrapped class to perform all the operations in a Project Area
+
+    :param url: the project area url
+    :param rtc_obj: a reference to the
+        :class:`rtcclient.client.RTCClient` object
+    :param raw_data: the raw data ( OrderedDict ) of the request response
+
+    """
+
     log = logging.getLogger("project_area.ProjectArea")
 
     def __init__(self, url, rtc_obj, raw_data):
@@ -22,8 +31,8 @@ class ProjectArea(FieldBase):
         raise exception.EmptyAttrib("Please input raw_data")
 
     def getRoles(self):
-        """Get all :class:`rtcclient.models.Role` objects in this
-        :class:`rtcclient.project_area.ProjectArea`
+        """Get all :class:`rtcclient.models.Role` objects in this project
+        area
 
         If no :class:`Roles` are retrieved, `None` is returned.
 
@@ -58,7 +67,7 @@ class ProjectArea(FieldBase):
     def getRole(self, label):
         """Get the :class:`rtcclient.models.Role` object by the label name
 
-        :param label: the :class:`rtcclient.models.Role` label name
+        :param label: the label name of the role
         :return: the :class:`rtcclient.models.Role` object
         :rtype: :class:`rtcclient.models.Role`
         """
@@ -78,7 +87,7 @@ class ProjectArea(FieldBase):
 
     def getMembers(self, returned_properties=None):
         """Get all the :class:`rtcclient.models.Member` objects in this
-        :class:`rtcclient.project_area.ProjectArea`
+        project area
 
         If no :class:`Members` are retrieved, `None` is returned.
 
@@ -133,7 +142,7 @@ class ProjectArea(FieldBase):
 
     def getItemTypes(self, returned_properties=None):
         """Get all the :class:`rtcclient.models.ItemType` objects
-        in this :class:`rtcclient.project_area.ProjectArea`
+        in this project area
 
         If no :class:`ItemTypes` are retrieved, `None` is returned.
 
@@ -181,7 +190,7 @@ class ProjectArea(FieldBase):
 
     def getAdministrators(self, returned_properties=None):
         """Get all the :class:`rtcclient.models.Administrator` objects in this
-        :class:`rtcclient.project_area.ProjectArea`
+        project area
 
         If no :class:`Administrators` are retrieved,
         `None` is returned.
