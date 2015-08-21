@@ -43,7 +43,7 @@ https://github.com/dixudx/rtcclient/issues?q=is%3Aopen+sort%3Acomments-desc
 
 Project source code: https://github.com/dixudx/rtcclient
 
-Project documentation:
+Project documentation: https://readthedocs.org/projects/rtcclient/
 
 
 Installation
