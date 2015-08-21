@@ -38,10 +38,6 @@ class Administrator(Member):
     log = logging.getLogger("models.Administrator")
 
 
-class ProjectAdmin(Member):
-    log = logging.getLogger("models.ProjectAdmin")
-
-
 class ItemType(FieldBase):
     log = logging.getLogger("models.ItemType")
 
