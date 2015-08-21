@@ -4,6 +4,8 @@ import logging
 
 
 class Role(FieldBase):
+    """The role in the project area or team area"""
+
     log = logging.getLogger("models.Role")
 
     def __str__(self):
@@ -11,9 +13,7 @@ class Role(FieldBase):
 
 
 class Member(FieldBase):
-    """The :class:`Member` in the :class:`ProjectArea`
-
-    """
+    """The member in the project area"""
 
     log = logging.getLogger("models.Member")
 
@@ -35,10 +35,14 @@ class Member(FieldBase):
 
 
 class Administrator(Member):
+    """The administrator of the project area"""
+
     log = logging.getLogger("models.Administrator")
 
 
 class ItemType(FieldBase):
+    """The workitem type"""
+
     log = logging.getLogger("models.ItemType")
 
     def __str__(self):
@@ -46,6 +50,8 @@ class ItemType(FieldBase):
 
 
 class TeamArea(FieldBase):
+    """The team area"""
+
     log = logging.getLogger("models.TeamArea")
 
     def __str__(self):
@@ -53,6 +59,10 @@ class TeamArea(FieldBase):
 
 
 class PlannedFor(FieldBase):
+    """The project plannedfor defines a start and end date along with an
+    iteration breakdown
+    """
+
     log = logging.getLogger("models.PlannedFor")
 
     def __str__(self):
@@ -60,6 +70,10 @@ class PlannedFor(FieldBase):
 
 
 class FiledAgainst(FieldBase):
+    """Category that identifies the component or functional area that the
+    work item belongs to.
+    """
+
     log = logging.getLogger("models.FiledAgainst")
 
     def __str__(self):
@@ -67,6 +81,9 @@ class FiledAgainst(FieldBase):
 
 
 class FoundIn(FieldBase):
+    """Release in which the issue described in the work item was identified.
+    """
+
     log = logging.getLogger("models.FoundIn")
 
     def __str__(self):
@@ -74,6 +91,8 @@ class FoundIn(FieldBase):
 
 
 class Severity(FieldBase):
+    """Indication of the impact of the work item"""
+
     log = logging.getLogger("models.Severity")
 
     def __str__(self):
@@ -81,6 +100,8 @@ class Severity(FieldBase):
 
 
 class Priority(FieldBase):
+    """Ranked importance of a work item"""
+
     log = logging.getLogger("models.Priority")
 
     def __str__(self):
@@ -88,6 +109,8 @@ class Priority(FieldBase):
 
 
 class Action(FieldBase):
+    """The action to change the state of the workitem"""
+
     log = logging.getLogger("models.Action")
 
     def __str__(self):
@@ -95,6 +118,8 @@ class Action(FieldBase):
 
 
 class State(FieldBase):
+    """Status of the work item. For example, New, In Progress, or Resolved."""
+
     log = logging.getLogger("models.State")
 
     def __str__(self):
@@ -102,6 +127,8 @@ class State(FieldBase):
 
 
 class Comment(FieldBase):
+    """Comment about the work item"""
+
     log = logging.getLogger("models.Comment")
 
     def __init__(self, url, rtc_obj, raw_data=None):

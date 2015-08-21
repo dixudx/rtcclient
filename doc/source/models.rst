@@ -14,14 +14,8 @@ Models
    :members:
 
 
-.. autoclass:: rtcclient.models.ProjectAdmin
-   :members:
-
-
-
 .. autoclass:: rtcclient.models.ItemType
    :members:
-
 
 
 .. autoclass:: rtcclient.models.TeamArea
