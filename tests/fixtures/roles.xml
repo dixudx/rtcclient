@@ -1,0 +1,30 @@
+<jp06:roles xmlns:jp06="http://jazz.net/xmlns/prod/jazz/process/0.6/">
+<jp06:role>
+<jp06:url>
+http://test.url:9443/jazz/process/project-areas/_vsoCMN-TEd6VxeRBsGx82Q/roles/Product%20Owner
+</jp06:url>
+<jp06:id>Product Owner</jp06:id>
+<jp06:label>Product Owner</jp06:label>
+<jp06:description>
+The person responsible for managing the Product Backlog.
+</jp06:description>
+</jp06:role>
+<jp06:role>
+<jp06:url>
+http://test.url:9443/jazz/process/project-areas/_vsoCMN-TEd6VxeRBsGx82Q/roles/Test%20Team
+</jp06:url>
+<jp06:id>Test Team</jp06:id>
+<jp06:label>Test Team</jp06:label>
+<jp06:description>A member of the cross-functional team.</jp06:description>
+</jp06:role>
+<jp06:role>
+<jp06:url>
+http://test.url:9443/jazz/process/project-areas/_vsoCMN-TEd6VxeRBsGx82Q/roles/default
+</jp06:url>
+<jp06:id>default</jp06:id>
+<jp06:label>default</jp06:label>
+<jp06:description>
+The default role, implicitly assigned to each user. This role cannot be assigned, removed, or reordered.
+</jp06:description>
+</jp06:role>
+</jp06:roles>

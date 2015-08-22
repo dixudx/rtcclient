@@ -2,7 +2,7 @@ import requests
 import pytest
 import utils_test
 from rtcclient.project_area import ProjectArea
-from rtcclient.models import Member, ItemType, Administrator
+from rtcclient.models import Member, ItemType, Administrator, Role
 from rtcclient.exception import BadValue, NotFound, EmptyAttrib
 
 
@@ -36,6 +36,58 @@ class TestProjectArea:
         mocked_get.return_value = mock_resp
         return mocked_get
 
+    def test_get_roles(self, mypa, mock_get_roles, myrtcclient):
+        # Role1
+        role1_url = "/".join(["http://test.url:9443/jazz/process/project-areas",
+                              "_vsoCMN-TEd6VxeRBsGx82Q/roles/Product%20Owner"])
+        role1 = Role(role1_url,
+                     myrtcclient,
+                     utils_test.role1)
+        assert str(role1) == "Product Owner"
+        assert role1.url == role1_url
+        assert role1.id == "Product Owner"
+        assert role1.description == " ".join(["The person responsible for",
+                                              "managing the Product Backlog."])
+
+        # Role2
+        role2_url = "/".join(["http://test.url:9443/jazz/process/project-areas",
+                              "_vsoCMN-TEd6VxeRBsGx82Q/roles/Test%20Team"])
+        role2 = Role(role2_url,
+                     myrtcclient,
+                     utils_test.role2)
+
+        # Role3
+        role3_url = "/".join(["http://test.url:9443/jazz/process/project-areas",
+                              "_vsoCMN-TEd6VxeRBsGx82Q/roles/default"])
+        role3 = Role(role3_url,
+                     myrtcclient,
+                     utils_test.role3)
+
+        roles = mypa.getRoles()
+        assert roles == [role1, role2, role3]
+
+    def test_get_role(self, mypa, mock_get_roles, myrtcclient):
+        # invalid role labels
+        invalid_labels = ["", None, True, False]
+        for invalid_label in invalid_labels:
+            with pytest.raises(BadValue):
+                mypa.getRole(invalid_label)
+
+        # valid role label
+        role = mypa.getRole("Product Owner")
+
+        # Role1
+        role1_url = "/".join(["http://test.url:9443/jazz/process/project-areas",
+                              "_vsoCMN-TEd6VxeRBsGx82Q/roles/Product%20Owner"])
+        role1 = Role(role1_url,
+                     myrtcclient,
+                     utils_test.role1)
+        assert role == role1
+
+        # undefined role
+        with pytest.raises(NotFound):
+            mypa.getRole("fake_role")
+
     @pytest.fixture
     def mock_get_members(self, mocker):
         mocked_get = mocker.patch("requests.get")
@@ -46,7 +98,6 @@ class TestProjectArea:
         return mocked_get
 
     def test_get_members(self, mypa, mock_get_members, myrtcclient):
-        # TODO: verify retrieving all the members
 
         # Member1
         m1 = Member("http://test.url:9443/jts/users/tester1%40email.com",

@@ -128,3 +128,15 @@ action1 = (xmltodict.parse(read_fixture("actions.xml"))
 action2 = (xmltodict.parse(read_fixture("actions.xml"))
                     .get("oslc_cm:Collection")
                     .get("rtc_cm:Action")[1])
+
+role1 = (xmltodict.parse(read_fixture("roles.xml"))
+                  .get("jp06:roles")
+                  .get("jp06:role")[0])
+
+role2 = (xmltodict.parse(read_fixture("roles.xml"))
+                  .get("jp06:roles")
+                  .get("jp06:role")[1])
+
+role3 = (xmltodict.parse(read_fixture("roles.xml"))
+                  .get("jp06:roles")
+                  .get("jp06:role")[2])

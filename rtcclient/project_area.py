@@ -72,6 +72,11 @@ class ProjectArea(FieldBase):
         :rtype: :class:`rtcclient.models.Role`
         """
 
+        if not isinstance(label, str) or not label:
+            excp_msg = "Please specify a valid role label"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
+
         roles = self.getRoles()
         if roles is not None:
             for role in roles:
