@@ -1,4 +1,4 @@
-.. _wa:
+.. _workitemattrs:
 
 Workitem Attributes
 ===================
@@ -15,7 +15,7 @@ include validating an attribute value, or setting an attribute value that is
 based on other attribute values.
 
 All the attributes of the :class:`rtcclient.workitem.Workitem` can be accessed
-through dot notation and dictionary.
+through **dot notation** and **dictionary**.
 
 Table1. Built-in attributes
 
