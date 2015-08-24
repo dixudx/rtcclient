@@ -1,7 +1,7 @@
 .. _workitemattrs:
 
-Workitem Attributes
-===================
+Workitem Attributes [1]_
+========================
 
 Attributes identify the information that you want to capture when users create
 and modify work items. Attributes are similar to fields in records. Work item
@@ -16,6 +16,8 @@ based on other attribute values.
 
 All the attributes of the :class:`rtcclient.workitem.Workitem` can be accessed
 through **dot notation** and **dictionary**.
+
+.. _workitemattrs_table:
 
 Table1. Built-in attributes
 
@@ -105,3 +107,5 @@ Table1. Built-in attributes
 | Type               | Type        | type              | Type of work item. Commonly available types  |
 |                    |             |                   | are `Defect`, `Task`, and `Story`.           |
 +--------------------+-------------+-------------------+----------------------------------------------+
+
+.. [1] `Workitem Customization Overview <http://www-01.ibm.com/support/knowledgecenter/api/content/nl/en-us/SSYMRC_5.0.2/com.ibm.team.workitem.doc/topics/c_work_item_customization_overview.html>`_
