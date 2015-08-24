@@ -1,3 +1,5 @@
+.. _projectarea_api:
+
 ProjectArea
 ===========
 

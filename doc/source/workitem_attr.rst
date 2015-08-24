@@ -57,7 +57,7 @@ Table1. Built-in attributes
 |                    |             |                   | that team is responsible for responding to   |
 |                    |             |                   | the work item.                               |
 +--------------------+-------------+-------------------+----------------------------------------------+
-| Found In           | Deliverable |foundIn            | Release in which the issue described in the  |
+| Found In           | Deliverable | foundIn           | Release in which the issue described in the  |
 |                    |             |                   | work item was identified.                    |
 +--------------------+-------------+-------------------+----------------------------------------------+
 | Id                 | Integer     | identifier        | Identification number that is associated     |
