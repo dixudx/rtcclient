@@ -82,4 +82,8 @@ Note: here defects' state "default_workflow.state.s1" means "Closed".
 
     >>> query_str = 'dc:type="defect" and dc:modified>="12-02-2008T18:42:30"'
 
+**Example 3**: Query all the defects with tags "bvt" or "testautomation"
+
+    >>> query_str = 'dc:type="defect" and dc:subject in ["bvt", "testautomation"]'
+
 .. [2] `Change Management Query Syntax <http://open-services.net/bin/view/Main/CmQuerySyntaxV1>`_

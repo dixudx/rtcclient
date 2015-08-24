@@ -40,6 +40,7 @@ User Guide
 .. toctree::
    :maxdepth: 2
 
+   authors
    introduction
    workitem_attr
    installation
