@@ -55,7 +55,8 @@ You can get a workitem by calling
 :class:`rtcclient.workitem.Workitem.getWorkitem`. The attributes of a workitem
 can be accessed through **dot notation** and **dictionary**.
 
-Some common attributes are listed in :ref:`Table1. Built-in attributes <workitemattrs>`.
+Some common attributes are listed in
+:ref:`Table1. Built-in attributes <workitemattrs_table>`.
 
 For example,
 
@@ -94,9 +95,12 @@ About Returned Properties
 -------------------------
 
 You can also customize your preferred properties to be returned
-by specified **returned_properties** when the called methods have
+by specifying **returned_properties** when the called methods have
 this optional parameter, which can also **GREATLY IMPROVE** the performance
 of this client especially when getting or querying lots of workitems.
+
+For the meanings of these attributes, please refer to
+:ref:`Table1. Built-in attributes <workitemattrs_table>`.
 
 Important Note: **returned_properties** is an advanced parameter, the
 returned properties can be found in `instance_obj.field_alias.values()`,
@@ -162,11 +166,14 @@ just leave it alone with `None`.
 Note: these field aliases may differ due to the type of workitems. But most of
 the common-used attributes will stay unchanged.
 
-It will run faster if returned properties is specified. Because the client will
-only get/request the attributes you specified.
+The `returned_properties` is a string **composed by the above values with
+comma separated**.
+
+It will run faster if `returned_properties` is specified. Because the client
+will only get/request the attributes you specified.
 
     >>> returned_properties = "dc:title,dc:identifier,rtc_cm:state,rtc_cm:ownedBy"
-    # specify the returned properties: title, id, state, owner
+    # specify the returned properties: title, identifier, state, owner
     # This is optional. All properties will be returned if not specified
     >>> wk_rp = myclient.getWorkitem(123456,
                                      returned_properties=returned_properties)
@@ -226,7 +233,7 @@ in all project areas will be returned.
 Query Workitems
 ---------------
 
-After customizing your quety string, all the workitems meet the conditions
+After customizing your query string, all the workitems meet the conditions
 will be fetched.
 
     >>> myquery = myclient.query # query class
@@ -238,3 +245,6 @@ will be fetched.
     >>> queried_wis = myquery.queryWorkitems(query_str=myquerystr,
                                              projectarea_name=projectarea_name,
                                              returned_properties=returned_prop)
+
+More detailed and advanced syntax on querying, please refer to
+:ref:`query syntax <query_syntax>`.
