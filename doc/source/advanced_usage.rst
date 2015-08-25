@@ -70,7 +70,7 @@ your own query string.
 
 **Important Note**: For the `identifier` in :ref:`query syntax <query_syntax>`, please refer
 to :ref:`field alias <field_alias>` and
-:ref:`Table1. Built-in attributes <workitemattrs_table>`.
+:ref:`Built-in Attributes <workitemattrs_table>`.
 
 Here are several examples.
 
@@ -79,7 +79,9 @@ Here are several examples.
 Note: here defects' state "default_workflow.state.s1" means "Closed". This
 may vary in your customized workitem type.
 
-    >>> query_str = 'dc:type="defect" and rtc_cm:state!="default_workflow.state.s1" and dc:subject="bvt"'
+    >>> query_str = ('dc:type="defect" and '
+                     'rtc_cm:state!="default_workflow.state.s1" and '
+                     'dc:subject="bvt"')
 
 **Example 2**: Query all the defects which are modified after 18:42:30 on Dec. 02, 2008
 
@@ -93,9 +95,10 @@ Note: here defects' state "default_workflow.state.s1" means "Closed".
 
 **Example 4**: Query all the defects owned/created/modified by "tester@email.com"
 
-    >>> query_str = 'dc:type="defect" and rtc_cm:ownedBy="https://your_domain:9443/jts/users/tester@email.com"'
-    >>> query_str = 'dc:type="defect" and dc:creator="https://your_domain:9443/jts/users/tester@email.com"'
-    >>> query_str = 'dc:type="defect" and rtc_cm:modifiedBy="https://your_domain:9443/jts/users/tester@email.com"'
+    >>> user_url = "https://your_domain:9443/jts/users/tester@email.com"
+    >>> query_str = 'dc:type="defect" and rtc_cm:ownedBy="%s"' % user_url
+    >>> query_str = 'dc:type="defect" and dc:creator="%s"' % user_url
+    >>> query_str = 'dc:type="defect" and rtc_cm:modifiedBy="%s"' % user_url
 
 Note: please replace `your_domain` with your actual RTC server domain.
 

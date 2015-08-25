@@ -17,9 +17,13 @@ based on other attribute values.
 All the attributes of the :class:`rtcclient.workitem.Workitem` can be accessed
 through **dot notation** and **dictionary**.
 
+
 .. _workitemattrs_table:
 
-Table1. Built-in attributes
+Built-in Attributes
+-------------------
+
+Table1. Built-in Attributes
 
 +--------------------+-------------+-------------------+----------------------------------------------+
 | Name               | Type        | ID                | Description                                  |
@@ -83,6 +87,13 @@ Table1. Built-in attributes
 +--------------------+-------------+-------------------+----------------------------------------------+
 | Resolved By        | Contributor | resolvedBy        | User who resolved the work item.             |
 +--------------------+-------------+-------------------+----------------------------------------------+
+
+
+Table2. Built-in Attributes (cont'd)
+
++--------------------+-------------+-------------------+----------------------------------------------+
+| Name               | Type        | ID                | Description                                  |
++====================+=============+===================+==============================================+
 | Restricted Access  | UUID        | contextId         | Scope of access to the work item.            |
 +--------------------+-------------+-------------------+----------------------------------------------+
 | Severity           | Severity    | severity          | Indication of the impact of the work item.   |

@@ -62,7 +62,6 @@ class RTCClient(RTCBase):
         return self
 
     def _get_headers(self):
-        # TODO: for invalid username or password,
         _headers = {"Content-Type": self.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
@@ -77,6 +76,12 @@ class RTCClient(RTCBase):
                          data=credentials,
                          verify=False,
                          headers=_headers)
+
+        # authfailed
+        authfailed = resp.headers.get("x-com-ibm-team-repository-web-auth-msg")
+        if authfailed == "authfailed":
+            raise exception.RTCException("Authentication Failed: "
+                                         "Invalid username or password")
 
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
@@ -284,7 +289,6 @@ class RTCClient(RTCBase):
 
         if teamareas is not None:
             for teamarea in teamareas:
-                # TODO: check the title uniqueness
                 if teamarea.title == teamarea_name:
                     self.log.info("Find <TeamArea %s>", teamarea)
                     return teamarea
@@ -603,7 +607,8 @@ class RTCClient(RTCBase):
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the filedagainst is archived
+        :param archived (default is False): whether the filedagainst is
+            archived
         :return: the :class:`rtcclient.models.FiledAgainst` object
         :rtype: rtcclient.models.FiledAgainst
         """
@@ -642,7 +647,8 @@ class RTCClient(RTCBase):
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the filedagainsts are archived
+        :param archived (default is False): whether the filedagainsts are
+            archived
         :return: a :class:`list` that contains all the
             :class:`rtcclient.models.FiledAgainst` objects
         :rtype: list

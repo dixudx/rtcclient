@@ -5,25 +5,33 @@ import utils_test
 from rtcclient.project_area import ProjectArea
 from rtcclient.models import Severity, Priority, FoundIn, FiledAgainst
 from rtcclient.models import TeamArea, Member, PlannedFor
-import xmltodict
 from rtcclient.workitem import Workitem
 from rtcclient.exception import BadValue, NotFound, RTCException, EmptyAttrib
 
 
 def test_headers(mocker):
     mocked_get = mocker.patch("requests.get")
-    mocker_post = mocker.patch("requests.post")
+    mocked_post = mocker.patch("requests.post")
 
     mock_resp = mocker.MagicMock(spec=requests.Response)
     mock_resp.status_code = 200
-    mock_resp.headers = {"set-cookie": "cookie-id"}
+
     mocked_get.return_value = mock_resp
-    mocker_post.return_value = mock_resp
+    mocked_post.return_value = mock_resp
 
     expected_headers = {"Content-Type": "application/x-www-form-urlencoded",
                         "Cookie": "cookie-id",
                         "Accept": "text/xml"}
 
+    # auth failed
+    mock_resp.headers = {"set-cookie": "cookie-id",
+                         "x-com-ibm-team-repository-web-auth-msg": "authfailed"}
+    with pytest.raises(RTCException):
+        RTCClient(url="http://test.url:9443/jazz",
+                  username="user",
+                  password="password")
+
+    mock_resp.headers = {"set-cookie": "cookie-id"}
     client = RTCClient(url="http://test.url:9443/jazz",
                        username="user",
                        password="password")
