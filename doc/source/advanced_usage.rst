@@ -68,11 +68,16 @@ Compose your Query String
 Based on the above :ref:`query syntax <query_syntax>`, it is easy to compose
 your own query string.
 
+**Important Note**: For the `identifier` in :ref:`query syntax <query_syntax>`, please refer
+to :ref:`field alias <field_alias>` and
+:ref:`Table1. Built-in attributes <workitemattrs_table>`.
+
 Here are several examples.
 
 **Example 1**: Query all the defects with tags "bvt" whose state is not "Closed"
 
-Note: here defects' state "default_workflow.state.s1" means "Closed".
+Note: here defects' state "default_workflow.state.s1" means "Closed". This
+may vary in your customized workitem type.
 
     >>> query_str = 'dc:type="defect" and rtc_cm:state!="default_workflow.state.s1" and dc:subject="bvt"'
 
@@ -81,5 +86,38 @@ Note: here defects' state "default_workflow.state.s1" means "Closed".
 Note: here defects' state "default_workflow.state.s1" means "Closed".
 
     >>> query_str = 'dc:type="defect" and dc:modified>="12-02-2008T18:42:30"'
+
+**Example 3**: Query all the defects with tags "bvt" or "testautomation"
+
+    >>> query_str = 'dc:type="defect" and dc:subject in ["bvt", "testautomation"]'
+
+**Example 4**: Query all the defects owned/created/modified by "tester@email.com"
+
+    >>> query_str = 'dc:type="defect" and rtc_cm:ownedBy="https://your_domain:9443/jts/users/tester@email.com"'
+    >>> query_str = 'dc:type="defect" and dc:creator="https://your_domain:9443/jts/users/tester@email.com"'
+    >>> query_str = 'dc:type="defect" and rtc_cm:modifiedBy="https://your_domain:9443/jts/users/tester@email.com"'
+
+Note: please replace `your_domain` with your actual RTC server domain.
+
+**Example 5**: Query all the defects whose severity are "Critical"
+
+    >>> projectarea_name="My ProjectArea"
+    >>> severity = myclient.getSeverity("Critical",
+                                        projectarea_name=projectarea_name)
+    >>> query_str = 'dc:type="defect" and oslc_cm:severity="%s"' % severity.url
+
+**Example 6**: Query all the defects whose priority are "High"
+
+    >>> projectarea_name="My ProjectArea"
+    >>> priority = myclient.getPriority("High",
+                                        projectarea_name=projectarea_name)
+    >>> query_str = 'dc:type="defect" and oslc_cm:priority="%s"' % priority.url
+
+**Example 7**: Query all the defects whose FiledAgainst are "FiledAgainstDemo"
+
+    >>> projectarea_name="My ProjectArea"
+    >>> filedagainst = myclient.getFiledAgainst("FiledAgainstDemo",
+                                                projectarea_name=projectarea_name)
+    >>> query_str = 'dc:type="defect" and rtc_cm:filedAgainst="%s"' % filedagainst.url
 
 .. [2] `Change Management Query Syntax <http://open-services.net/bin/view/Main/CmQuerySyntaxV1>`_

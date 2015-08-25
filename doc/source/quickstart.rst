@@ -107,6 +107,8 @@ returned properties can be found in `instance_obj.field_alias.values()`,
 e.g. `myworkitem1.field_alias.values()`. If you don't care the performance,
 just leave it alone with `None`.
 
+.. _field_alias:
+
     >>> import pprint
     # print the field alias
     >>> pprint.pprint(wk2.field_alias, width=1)

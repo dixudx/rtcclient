@@ -1,3 +1,5 @@
+.. _template_api:
+
 Template
 ========
 

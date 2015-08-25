@@ -1,3 +1,5 @@
+.. _workitem_api:
+
 Workitem
 ========
 
