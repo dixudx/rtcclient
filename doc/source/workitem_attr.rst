@@ -19,7 +19,8 @@ through **dot notation** and **dictionary**.
 
 .. _workitemattrs_table:
 
-Table1. Built-in attributes
+Built-in Attributes
+-------------------
 
 +--------------------+-------------+-------------------+----------------------------------------------+
 | Name               | Type        | ID                | Description                                  |

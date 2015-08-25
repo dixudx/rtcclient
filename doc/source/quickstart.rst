@@ -56,7 +56,7 @@ You can get a workitem by calling
 can be accessed through **dot notation** and **dictionary**.
 
 Some common attributes are listed in
-:ref:`Table1. Built-in attributes <workitemattrs_table>`.
+:ref:`Built-in Attributes <workitemattrs_table>`.
 
 For example,
 
@@ -100,7 +100,7 @@ this optional parameter, which can also **GREATLY IMPROVE** the performance
 of this client especially when getting or querying lots of workitems.
 
 For the meanings of these attributes, please refer to
-:ref:`Table1. Built-in attributes <workitemattrs_table>`.
+:ref:`Built-in Attributes <workitemattrs_table>`.
 
 Important Note: **returned_properties** is an advanced parameter, the
 returned properties can be found in `instance_obj.field_alias.values()`,
