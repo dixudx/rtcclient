@@ -26,18 +26,12 @@ Get from the Source Code
 RTCClient is actively developed on GitHub, where the code is
 `always available <https://github.com/dixudx/rtcclient>`_.
 
-You can either clone the public repository::
+You can either clone the public repository and checkout released tags
+(e.g. tag 0.1.dev95)::
 
     $ git clone git://github.com/dixudx/rtcclient.git
-
-Download the `tarball <https://github.com/dixudx/rtcclient/tarball/master>`_::
-
-    $ curl -L https://github.com/dixudx/rtcclient/tarball/master -o rtcclient.tar.gz
-
-Or, download the `zipball <https://github.com/dixudx/rtcclient/zipball/master>`_::
-
-    $ curl -L https://github.com/dixudx/rtcclient/zipball/master -o rtcclient.zip
-
+    $ cd rtcclient
+    $ git checkout tags/0.1.dev95
 
 Once you have a copy of the source, you can embed it in your Python package,
 or install it into your site-packages easily::
