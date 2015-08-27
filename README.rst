@@ -2,6 +2,12 @@ rtcclient
 =========
 
 .. image:: https://readthedocs.org/projects/rtcclient/badge/?version=latest
+    :target: https://readthedocs.org/projects/rtcclient
+
+.. image:: https://img.shields.io/pypi/v/rtcclient.svg
+    :target: https://pypi.python.org/pypi/rtcclient
+
+.. image:: https://img.shields.io/pypi/dm/rtcclient.svg
     :target: https://pypi.python.org/pypi/rtcclient
 
 A Python-based Client/API for Rational Team Concert (RTC)
