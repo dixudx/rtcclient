@@ -1,6 +1,52 @@
 CHANGES
 =======
 
+0.2.0
+-----
+
+* add files/packages and build wheel in setup.cfg
+* update badges
+* update installation.rst
+* add exception for authfailed
+* split long tables
+* fix malformat of docs
+* update conf.py to enable autodoc in other directory
+* add several examples to advanced query usage
+* add an example for 'in' operator
+* add advanced usage on querying
+* update index.rst
+* remove unused refs
+* update doc for quick start
+* add tests for roles
+* update index and add quick start/advanced_usage
+* add doc for workitem attributes
+* add doc url in README and bdist wheel option
+* update models doc
+* add intro doc
+* remove unused class ProjectAdmin
+* add rst for installation
+* update docstring in client.py
+* update docs in client.py
+* minor update docstring in workitem
+* minor update docstring in workitem
+* fix exception syntax for python 3.3
+* minor update rtcclient ref
+* update docstring in template
+* update docstring in query
+* update docstrings in workitem
+* update docstrings in projectarea
+* update rst files and add models.rst
+* update docstring
+* extract models to models.py
+* update all rst files
+* update rst files
+* update docs
+* init doc
+
+v0.1.dev95
+----------
+
+* ready for release 0.1
 * update README cfg
 * remove redundancy and minor update
 * fix bug: add Comment
