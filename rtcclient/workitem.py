@@ -5,6 +5,7 @@ import copy
 from rtcclient import exception
 from requests.exceptions import HTTPError
 from rtcclient.models import Comment
+import six
 
 
 class Workitem(FieldBase):
@@ -25,6 +26,8 @@ class Workitem(FieldBase):
     def __init__(self, url, rtc_obj, workitem_id=None, raw_data=None):
         self.identifier = workitem_id
         FieldBase.__init__(self, url, rtc_obj, raw_data)
+        if self.identifier is None:
+            self.identifier = self.url.split("/")[-1]
 
     def __str__(self):
         return str(self.identifier)
@@ -55,7 +58,7 @@ class Workitem(FieldBase):
         try:
             if isinstance(comment_id, bool):
                 raise ValueError()
-            if isinstance(comment_id, str):
+            if isinstance(comment_id, six.string_types):
                 comment_id = int(comment_id)
             if not isinstance(comment_id, int):
                 raise ValueError()
@@ -166,7 +169,7 @@ class Workitem(FieldBase):
         """
 
         self.log.debug("Try to get <Action %s>", action_name)
-        if not isinstance(action_name, str) or not action_name:
+        if not isinstance(action_name, six.string_types) or not action_name:
             excp_msg = "Please specify a valid action name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -181,3 +184,19 @@ class Workitem(FieldBase):
 
         self.log.error("No Action named %s", action_name)
         raise exception.NotFound("No Action named %s" % action_name)
+
+    def getStates(self):
+        """Get all :class:`rtcclient.models.State` objects of this workitem
+
+        :return: a :class:`list` contains all the
+            :class:`rtcclient.models.State` objects
+        :rtype: list
+        """
+
+        cust_attr = (self.raw_data.get("rtc_cm:state")
+                         .get("@rdf:resource")
+                         .split("/")[-2])
+        return self.rtc_obj._get_paged_resources("State",
+                                                 projectarea_id=self.contextId,
+                                                 customized_attr=cust_attr,
+                                                 page_size="50")

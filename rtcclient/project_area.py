@@ -3,6 +3,7 @@ import xmltodict
 import logging
 from rtcclient import exception
 from rtcclient.models import Role
+import six
 
 
 class ProjectArea(FieldBase):
@@ -72,7 +73,7 @@ class ProjectArea(FieldBase):
         :rtype: :class:`rtcclient.models.Role`
         """
 
-        if not isinstance(label, str) or not label:
+        if not isinstance(label, six.string_types) or not label:
             excp_msg = "Please specify a valid role label"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -122,7 +123,7 @@ class ProjectArea(FieldBase):
         :rtype: rtcclient.models.Member
         """
 
-        if not isinstance(email, str) or "@" not in email:
+        if not isinstance(email, six.string_types) or "@" not in email:
             excp_msg = "Please specify a valid email address name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -174,7 +175,7 @@ class ProjectArea(FieldBase):
         :rtype: rtcclient.models.ItemType
         """
 
-        if not isinstance(title, str) or not title:
+        if not isinstance(title, six.string_types) or not title:
             excp_msg = "Please specify a valid email address name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -224,7 +225,7 @@ class ProjectArea(FieldBase):
         :rtype: rtcclient.models.Administrator
         """
 
-        if not isinstance(email, str) or "@" not in email:
+        if not isinstance(email, six.string_types) or "@" not in email:
             excp_msg = "Please specify a valid email address name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)

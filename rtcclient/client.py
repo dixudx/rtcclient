@@ -5,13 +5,14 @@ from rtcclient.project_area import ProjectArea
 from rtcclient.workitem import Workitem
 from rtcclient.models import TeamArea, Member, Administrator, PlannedFor
 from rtcclient.models import Severity, Priority, ItemType
-from rtcclient.models import FiledAgainst, FoundIn, Comment, Action
+from rtcclient.models import FiledAgainst, FoundIn, Comment, Action, State
 import logging
 from rtcclient import urlparse, urlquote, urlencode, OrderedDict
 import copy
 from rtcclient.template import Templater
 from rtcclient import _search_path
 from rtcclient.query import Query
+import six
 
 
 class RTCClient(RTCBase):
@@ -127,7 +128,8 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <ProjectArea %s>", projectarea_name)
-        if not isinstance(projectarea_name, str) or not projectarea_name:
+        if not isinstance(projectarea_name,
+                          six.string_types) or not projectarea_name:
             excp_msg = "Please specify a valid ProjectArea name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -160,7 +162,8 @@ class RTCClient(RTCBase):
 
         self.log.debug("Try to get <ProjectArea> by its id: %s",
                        projectarea_id)
-        if not isinstance(projectarea_id, str) or not projectarea_id:
+        if not isinstance(projectarea_id,
+                          six.string_types) or not projectarea_id:
             excp_msg = "Please specify a valid ProjectArea ID"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -210,7 +213,8 @@ class RTCClient(RTCBase):
         """
 
         projectarea_ids = list()
-        if projectarea_name and isinstance(projectarea_name, str):
+        if projectarea_name and isinstance(projectarea_name,
+                                           six.string_types):
             projectarea_id = self.getProjectAreaID(projectarea_name,
                                                    archived=archived)
             projectarea_ids.append(projectarea_id)
@@ -277,7 +281,8 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <TeamArea %s>", teamarea_name)
-        if not isinstance(teamarea_name, str) or not teamarea_name:
+        if not isinstance(teamarea_name,
+                          six.string_types) or not teamarea_name:
             excp_msg = "Please specify a valid TeamArea name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -332,7 +337,7 @@ class RTCClient(RTCBase):
     def getOwnedBy(self, email, projectarea_id=None,
                    projectarea_name=None):
 
-        if not isinstance(email, str) or "@" not in email:
+        if not isinstance(email, six.string_types) or "@" not in email:
             excp_msg = "Please specify a valid email address name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -367,7 +372,8 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <PlannedFor %s>", plannedfor_name)
-        if not isinstance(plannedfor_name, str) or not plannedfor_name:
+        if not isinstance(plannedfor_name,
+                          six.string_types) or not plannedfor_name:
             excp_msg = "Please specify a valid PlannedFor name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -435,7 +441,8 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <Severity %s>", severity_name)
-        if not isinstance(severity_name, str) or not severity_name:
+        if not isinstance(severity_name,
+                          six.string_types) or not severity_name:
             excp_msg = "Please specify a valid Severity name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -495,7 +502,8 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <Priority %s>", priority_name)
-        if not isinstance(priority_name, str) or not priority_name:
+        if not isinstance(priority_name,
+                          six.string_types) or not priority_name:
             excp_msg = "Please specify a valid Priority name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -554,7 +562,8 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <FoundIn %s>", foundin_name)
-        if not isinstance(foundin_name, str) or not foundin_name:
+        if not isinstance(foundin_name,
+                          six.string_types) or not foundin_name:
             excp_msg = "Please specify a valid PlannedFor name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -614,7 +623,8 @@ class RTCClient(RTCBase):
         """
 
         self.log.debug("Try to get <FiledAgainst %s>", filedagainst_name)
-        if not isinstance(filedagainst_name, str) or not filedagainst_name:
+        if not isinstance(filedagainst_name,
+                          six.string_types) or not filedagainst_name:
             excp_msg = "Please specify a valid FiledAgainst name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
@@ -732,7 +742,7 @@ class RTCClient(RTCBase):
         try:
             if isinstance(workitem_id, bool):
                 raise ValueError()
-            if isinstance(workitem_id, str):
+            if isinstance(workitem_id, six.string_types):
                 workitem_id = int(workitem_id)
             if not isinstance(workitem_id, int):
                 raise ValueError()
@@ -740,6 +750,11 @@ class RTCClient(RTCBase):
             workitem_url = "/".join([self.url,
                                      "oslc/workitems/%s" % workitem_id])
             if returned_properties is not None:
+                # retrieve project area info
+                contextId_str = "rtc_cm:contextId"
+                if contextId_str not in returned_properties:
+                    returned_properties += ",%s" % contextId_str
+
                 workitem_url = "".join([workitem_url,
                                         "?oslc_cm.properties=",
                                         urlquote(returned_properties)])
@@ -789,7 +804,8 @@ class RTCClient(RTCBase):
 
         workitems_list = list()
         projectarea_ids = list()
-        if not isinstance(projectarea_id, str) or not projectarea_id:
+        if not isinstance(projectarea_id,
+                          six.string_types) or not projectarea_id:
             pa_ids = self.getProjectAreaIDs(projectarea_name)
             if pa_ids is None:
                 self.log.warning("Stop getting workitems because of "
@@ -806,6 +822,12 @@ class RTCClient(RTCBase):
         self.log.warning("For a single ProjectArea, only latest 1000 "
                          "workitems can be fetched. "
                          "This may be a bug of Rational Team Concert")
+
+        if returned_properties is not None:
+            # retrieve project area info
+            contextId_str = "rtc_cm:contextId"
+            if contextId_str not in returned_properties:
+                returned_properties += ",%s" % contextId_str
 
         rp = returned_properties
         for projarea_id in projectarea_ids:
@@ -851,7 +873,8 @@ class RTCClient(RTCBase):
         :rtype: rtcclient.workitem.Workitem
         """
 
-        if not isinstance(projectarea_id, str) or not projectarea_id:
+        if not isinstance(projectarea_id,
+                          six.string_types) or not projectarea_id:
             projectarea = self.getProjectArea(projectarea_name)
             projectarea_id = projectarea.id
         else:
@@ -1053,11 +1076,13 @@ class RTCClient(RTCBase):
                                 "Administrator",
                                 "ItemType",
                                 "Action",
-                                "Query"]
+                                "Query",
+                                "State"]
         workitem_required = ["Comment",
                              "Subscriber"]
         customized_required = ["Action",
-                               "Query"]
+                               "Query",
+                               "State"]
 
         if resource_name in projectarea_required and not projectarea_id:
             self.log.error("No ProjectArea ID is specified")
@@ -1091,7 +1116,9 @@ class RTCClient(RTCBase):
                    "Action": "workflows/%s/actions/%s" % (projectarea_id,
                                                           customized_attr),
                    "Query": "".join(["contexts/%s/workitems" % projectarea_id,
-                                     "?oslc_cm.query=%s" % customized_attr])
+                                     "?oslc_cm.query=%s" % customized_attr]),
+                   "State": "workflows/%s/states/%s" % (projectarea_id,
+                                                        customized_attr)
                    }
 
         entry_map = {"TeamArea": "rtc_cm:Team",
@@ -1108,7 +1135,8 @@ class RTCClient(RTCBase):
                      "Comment": "rtc_cm:Comment",
                      "Subscriber": "rtc_cm:User",
                      "Action": "rtc_cm:Action",
-                     "Query": "oslc_cm:ChangeRequest"
+                     "Query": "oslc_cm:ChangeRequest",
+                     "State": "rtc_cm:Status"
                      }
 
         if resource_name not in res_map:
@@ -1125,7 +1153,7 @@ class RTCClient(RTCBase):
                                            page_size)
 
         if returned_properties is not None:
-            if not isinstance(returned_properties, str):
+            if not isinstance(returned_properties, six.string_types):
                 raise exception.BadValue("returned_properties is not a"
                                          "valid string")
             resource_url = "".join([resource_url,
