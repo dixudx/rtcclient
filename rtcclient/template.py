@@ -6,6 +6,7 @@ import jinja2
 import jinja2.meta
 from rtcclient import exception
 from rtcclient import _search_path
+import six
 
 
 class Templater(RTCBase):
@@ -230,7 +231,7 @@ class Templater(RTCBase):
         try:
             if isinstance(copied_from, bool):
                 raise ValueError()
-            if isinstance(copied_from, str):
+            if isinstance(copied_from, six.string_types):
                 copied_from = int(copied_from)
             if not isinstance(copied_from, int):
                 raise ValueError()

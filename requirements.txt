@@ -1,3 +1,4 @@
 xmltodict
 requests
 jinja2>=2.2
+six
