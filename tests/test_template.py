@@ -51,7 +51,7 @@ class TestTemplater:
 
     def test_get_template(self, mytemplater, mocker):
         # invalid template names
-        invalid_names = [None, True, False, ""]
+        invalid_names = [None, True, False, "", u""]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 mytemplater.getTemplate(invalid_name,
@@ -67,16 +67,18 @@ class TestTemplater:
         mock_resp.content = utils_test.workitem1_raw
         mocked_get.return_value = mock_resp
 
-        template_161 = mytemplater.getTemplate("161",
-                                               template_name=None,
-                                               template_folder=None,
-                                               keep=False,
-                                               encoding="UTF-8")
-        assert template_161 == utils_test.template_raw
+        copied_from_valid_names = [161, "161", u"161"]
+        for copied_from in copied_from_valid_names:
+            template_161 = mytemplater.getTemplate(copied_from,
+                                                   template_name=None,
+                                                   template_folder=None,
+                                                   keep=False,
+                                                   encoding="UTF-8")
+            assert template_161 == utils_test.template_raw
 
     def test_get_templates_exception(self, mytemplater):
         # invalid workitem ids
-        invalid_names = [None, True, False, "", "test"]
+        invalid_names = [None, True, False, "", u"", "test", u"test"]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 mytemplater.getTemplates(invalid_name,
@@ -86,7 +88,7 @@ class TestTemplater:
                                          encoding="UTF-8")
 
         # invalid template names
-        invalid_names = [True, False, "", "test"]
+        invalid_names = [True, False, "", u"", "test", u"test"]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 mytemplater.getTemplates(["valid_id_1", "valid_id_2"],

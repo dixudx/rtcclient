@@ -3,7 +3,7 @@ import pytest
 import utils_test
 from rtcclient.exception import BadValue, NotFound
 from rtcclient.workitem import Workitem
-from rtcclient.models import Comment, Action
+from rtcclient.models import Comment, Action, State
 
 
 class TestWorkitem:
@@ -80,17 +80,15 @@ class TestWorkitem:
                            myrtcclient,
                            raw_data=utils_test.comment2)
 
-        comment = workitem1.getCommentByID(0)
-        assert comment == comment1
+        comment_valid_ids = [0, "0", u"0"]
+        for comment_id in comment_valid_ids:
+            comment = workitem1.getCommentByID(comment_id)
+            assert comment == comment1
 
-        comment = workitem1.getCommentByID(1)
-        assert comment == comment2
-
-        comment = workitem1.getCommentByID("0")
-        assert comment == comment1
-
-        comment = workitem1.getCommentByID("1")
-        assert comment == comment2
+        comment_valid_ids = [1, "1", u"1"]
+        for comment_id in comment_valid_ids:
+            comment = workitem1.getCommentByID(comment_id)
+            assert comment == comment2
 
     def test_add_comment(self, myrtcclient, mocker, workitem1):
         # TODO: add comment test
@@ -153,7 +151,7 @@ class TestWorkitem:
     def get_test_action(self, myrtcclient, mock_get_actions,
                         workitem1):
         # test for invalid name
-        invalid_action_names = ["", None, True, False]
+        invalid_action_names = ["", u"", None, True, False]
         for invalid_action_name in invalid_action_names:
             with pytest.raises(BadValue):
                 workitem1.getAction(invalid_action_name)
@@ -175,13 +173,57 @@ class TestWorkitem:
                          raw_data=utils_test.action2)
 
         # test for valid name
-        action = workitem1.getAction("Close")
-        assert action == action1
+        action_valid_names = ["Close", u"Close"]
+        for action_name in action_valid_names:
+            action = workitem1.getAction(action_name)
+            assert action == action1
 
         # test for valid name
-        action = workitem1.getAction("Start Working")
-        assert action == action2
+        action_valid_names = ["Start Working", u"Start Working"]
+        for action_name in action_valid_names:
+            action = workitem1.getAction(action_name)
+            assert action == action2
 
         # test for fake name
-        with pytest.raises(NotFound):
-            workitem1.getAction("Fake_Action")
+        action_fake_names = ["Fake_Action", u"Fake_Action"]
+        for action_name in action_fake_names:
+            with pytest.raises(NotFound):
+                workitem1.getAction(action_name)
+
+    @pytest.fixture
+    def mock_get_states(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("states.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_states(self, myrtcclient, mock_get_states,
+                        workitem1):
+        # State1
+        state1_url = "/".join(["http://test.url:9443/jazz/oslc/workflows",
+                                "_CuZu0HUwEeKicpXBddtqNA/states",
+                                "default_workflow/default_workflow.state.s1"])
+        state1 = State(state1_url,
+                       myrtcclient,
+                       raw_data=utils_test.state1)
+        assert str(state1) == "Closed"
+        assert state1.title == "Closed"
+        assert state1.identifier == "default_workflow.state.s1"
+        assert state1.group == "inprogress"
+
+        # State2
+        state2_url = "/".join(["http://test.url:9443/jazz/oslc/workflows",
+                                "_CuZu0HUwEeKicpXBddtqNA/states",
+                                "default_workflow/default_workflow.state.s2"])
+        state2 = State(state2_url,
+                       myrtcclient,
+                       raw_data=utils_test.state2)
+        assert str(state2) == "In Progress"
+        assert state2.title == "In Progress"
+        assert state2.identifier == "default_workflow.state.s2"
+        assert state2.group == "closed"
+
+        states = workitem1.getStates()
+        assert states == [state1, state2]
