@@ -31,23 +31,24 @@ class TestQuery:
         myquery = Query(myrtcclient)
 
         # projectarea is not specified
-        with pytest.raises(EmptyAttrib):
-            myquery.queryWorkitems(query_str="fake_test",
-                                   projectarea_id=None,
-                                   projectarea_name=None,
-                                   returned_properties=None)
+        query_fake_strs = ["fake_test", u"fake_test"]
+        for query_str in query_fake_strs:
+            with pytest.raises(EmptyAttrib):
+                myquery.queryWorkitems(query_str=query_str,
+                                       projectarea_id=None,
+                                       projectarea_name=None,
+                                       returned_properties=None)
 
         # test for invalid projectarea id
         mocked_check_pa_id = mocker.patch("rtcclient.client.RTCClient."
                                           "checkProjectAreaID")
         mocked_check_pa_id.return_value = False
-        with pytest.raises(BadValue):
-            myquery.queryWorkitems(query_str="fake_test",
-                                   projectarea_id="fake_id")
-
-        # test for valid projectarea id
-        mocked_check_pa_id.return_value = True
-        pa_id = "_CuZu0HUwEeKicpXBddtqNA"
+        projectarea_fake_ids = ["fake_id", u"fake_id"]
+        for query_str in query_fake_strs:
+            for pa_id in projectarea_fake_ids:
+                with pytest.raises(BadValue):
+                    myquery.queryWorkitems(query_str=query_str,
+                                           projectarea_id=pa_id)
 
         # Workitem1
         workitem1 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
@@ -61,9 +62,16 @@ class TestQuery:
                              workitem_id=6329,
                              raw_data=utils_test.workitem2)
 
-        queried_wis = myquery.queryWorkitems(query_str="valid_query_str",
-                                             projectarea_id=pa_id)
-        assert queried_wis == [workitem1]
+        # test for valid projectarea id
+        mocked_check_pa_id.return_value = True
+        query_valid_strs = ["valid_query_str", u"valid_query_str"]
+        projectarea_ids = ["_CuZu0HUwEeKicpXBddtqNA",
+                           u"_CuZu0HUwEeKicpXBddtqNA"]
+        for query_str in query_valid_strs:
+            for pa_id in projectarea_ids:
+                queried_wis = myquery.queryWorkitems(query_str=query_str,
+                                                     projectarea_id=pa_id)
+                assert queried_wis == [workitem1]
 
         queried_wis = myquery.queryWorkitems(query_str="valid_query_str",
                                              projectarea_id=pa_id,
@@ -71,12 +79,18 @@ class TestQuery:
         assert queried_wis == [workitem2]
 
         # test for other valid id
-        queried_wis = myquery.queryWorkitems(query_str="valid_query_str",
-                                             projectarea_id="valid_id",
-                                             archived=True)
-        assert queried_wis is None
+        projectarea_other_ids = ["valid_id",
+                                 u"valid_id"]
+        for query_str in query_valid_strs:
+            for pa_id in projectarea_other_ids:
+                # archived
+                queried_wis = myquery.queryWorkitems(query_str=query_str,
+                                                     projectarea_id=pa_id,
+                                                     archived=True)
+                assert queried_wis is None
 
-        queried_wis = myquery.queryWorkitems(query_str="valid_query_str",
-                                             projectarea_id="valid_id",
-                                             archived=False)
-        assert queried_wis is None
+                # unarchived
+                queried_wis = myquery.queryWorkitems(query_str=query_str,
+                                                     projectarea_id=pa_id,
+                                                     archived=False)
+                assert queried_wis is None

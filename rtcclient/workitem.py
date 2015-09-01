@@ -98,8 +98,8 @@ class Workitem(FieldBase):
 </rdf:RDF>
 '''
 
-        comments_url = (self.raw_data.get("rtc_cm:comments")
-                                     .get("@oslc_cm:collref"))
+        comments_url = "/".join([self.url,
+                                 "rtc_cm:comments"])
         headers = copy.deepcopy(self.rtc_obj.headers)
         resp = self.get(comments_url,
                         verify=False,

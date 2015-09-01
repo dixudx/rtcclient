@@ -140,3 +140,11 @@ role2 = (xmltodict.parse(read_fixture("roles.xml"))
 role3 = (xmltodict.parse(read_fixture("roles.xml"))
                   .get("jp06:roles")
                   .get("jp06:role")[2])
+
+state1 = (xmltodict.parse(read_fixture("states.xml"))
+                   .get("oslc_cm:Collection")
+                   .get("rtc_cm:Status")[0])
+
+state2 = (xmltodict.parse(read_fixture("states.xml"))
+                   .get("oslc_cm:Collection")
+                   .get("rtc_cm:Status")[1])

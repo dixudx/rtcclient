@@ -749,15 +749,12 @@ class RTCClient(RTCBase):
 
             workitem_url = "/".join([self.url,
                                      "oslc/workitems/%s" % workitem_id])
-            if returned_properties is not None:
-                # retrieve project area info
-                contextId_str = "rtc_cm:contextId"
-                if contextId_str not in returned_properties:
-                    returned_properties += ",%s" % contextId_str
 
+            rp = self._validate_returned_properties(returned_properties)
+            if rp is not None:
                 workitem_url = "".join([workitem_url,
                                         "?oslc_cm.properties=",
-                                        urlquote(returned_properties)])
+                                        urlquote(rp)])
             resp = self.get(workitem_url,
                             verify=False,
                             headers=self.headers)
@@ -823,13 +820,7 @@ class RTCClient(RTCBase):
                          "workitems can be fetched. "
                          "This may be a bug of Rational Team Concert")
 
-        if returned_properties is not None:
-            # retrieve project area info
-            contextId_str = "rtc_cm:contextId"
-            if contextId_str not in returned_properties:
-                returned_properties += ",%s" % contextId_str
-
-        rp = returned_properties
+        rp = self._validate_returned_properties(returned_properties)
         for projarea_id in projectarea_ids:
             workitems = self._get_paged_resources("Workitem",
                                                   projectarea_id=projarea_id,
@@ -844,6 +835,16 @@ class RTCClient(RTCBase):
                              "with ids: %s" % projectarea_ids)
             return None
         return workitems_list
+
+    def _validate_returned_properties(self, returned_properties=None):
+        if returned_properties is not None:
+            # retrieve project area info and state
+            # indispensable for some methods in class Workitem
+            mandatory_strs = ["rtc_cm:state", "rtc_cm:contextId"]
+            for mandatory_str in mandatory_strs:
+                if mandatory_str not in returned_properties:
+                    returned_properties += ",%s" % mandatory_str
+        return returned_properties
 
     def createWorkitem(self, item_type, title, description=None,
                        projectarea_id=None, projectarea_name=None,
