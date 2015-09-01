@@ -68,13 +68,10 @@ class TestProjectArea:
 
     def test_get_role(self, mypa, mock_get_roles, myrtcclient):
         # invalid role labels
-        invalid_labels = ["", None, True, False]
+        invalid_labels = ["", u"", None, True, False]
         for invalid_label in invalid_labels:
             with pytest.raises(BadValue):
                 mypa.getRole(invalid_label)
-
-        # valid role label
-        role = mypa.getRole("Product Owner")
 
         # Role1
         role1_url = "/".join(["http://test.url:9443/jazz/process/project-areas",
@@ -82,11 +79,18 @@ class TestProjectArea:
         role1 = Role(role1_url,
                      myrtcclient,
                      utils_test.role1)
-        assert role == role1
+
+        # valid role label
+        role_valid_names = ["Product Owner", u"Product Owner"]
+        for role_name in role_valid_names:
+            role = mypa.getRole(role_name)
+            assert role == role1
 
         # undefined role
-        with pytest.raises(NotFound):
-            mypa.getRole("fake_role")
+        role_fake_names = ["fake_role", u"fake_role"]
+        for role_name in role_fake_names:
+            with pytest.raises(NotFound):
+                mypa.getRole(role_name)
 
     @pytest.fixture
     def mock_get_members(self, mocker):
@@ -143,24 +147,28 @@ class TestProjectArea:
 
     def test_get_member(self, mypa, myrtcclient, mock_get_members):
         # invalid email address
-        invalid_emails = ["", None, True, False, "test.com",
-                          "test%40email.com"]
+        invalid_emails = ["", u"", None, True, False, "test.com", u"test.com"
+                          "test%40email.com", u"test%40email.com"]
         for invalid_email in invalid_emails:
             with pytest.raises(BadValue):
                 mypa.getMember(invalid_email)
-
-        # valid email address
-        member = mypa.getMember("tester1@email.com")
 
         # Member1
         m1 = Member("http://test.url:9443/jts/users/tester1%40email.com",
                     myrtcclient,
                     utils_test.member1)
-        assert member == m1
+
+        # valid email address
+        member_valid_names = ["tester1@email.com", u"tester1@email.com"]
+        for member_name in member_valid_names:
+            member = mypa.getMember(member_name)
+            assert member == m1
 
         # undefined member
-        with pytest.raises(NotFound):
-            mypa.getMember("fake@email.com")
+        member_fake_names = ["fake@email.com", u"fake@email.com"]
+        for member_name in member_fake_names:
+            with pytest.raises(NotFound):
+                mypa.getMember(member_name)
 
     @pytest.fixture
     def mock_get_itemtypes(self, mocker):
@@ -219,7 +227,7 @@ class TestProjectArea:
 
     def test_get_itemtype(self, mypa, myrtcclient, mock_get_itemtypes):
         # invalid email address
-        invalid_titles = ["", None, True, False]
+        invalid_titles = ["", u"", None, True, False]
         for invalid_title in invalid_titles:
             with pytest.raises(BadValue):
                 mypa.getItemType(invalid_title)
@@ -231,12 +239,16 @@ class TestProjectArea:
                        myrtcclient,
                        utils_test.itemtype1)
 
-        itemtype = mypa.getItemType("Defect")
-        assert itemtype == it1
+        itemtype_valid_names = ["Defect", u"Defect"]
+        for itemtype_name in itemtype_valid_names:
+            itemtype = mypa.getItemType(itemtype_name)
+            assert itemtype == it1
 
         # undefined type
-        with pytest.raises(NotFound):
-            mypa.getItemType("fake_type")
+        itemtype_fake_names = ["fake_type", u"fake_type"]
+        for itemtype_name in itemtype_fake_names:
+            with pytest.raises(NotFound):
+                mypa.getItemType(itemtype_name)
 
     @pytest.fixture
     def mock_get_admins(self, mocker):
@@ -267,21 +279,25 @@ class TestProjectArea:
 
     def test_get_admin(self, mypa, myrtcclient, mock_get_admins):
         # invalid email address
-        invalid_emails = ["", None, True, False, "test.com",
-                          "test%40email.com"]
+        invalid_emails = ["", u"", None, True, False, "test.com", u"test.com",
+                          "test%40email.com", u"test%40email.com"]
         for invalid_email in invalid_emails:
             with pytest.raises(BadValue):
                 mypa.getAdministrator(invalid_email)
-
-        # valid email address
-        admin = mypa.getAdministrator("tester1@email.com")
 
         # Administrator
         ad = Administrator("http://test.url:9443/jts/users/tester1%40email.com",
                            myrtcclient,
                            utils_test.admin)
-        assert admin == ad
+
+        # valid email address
+        admin_valid_names = ["tester1@email.com", u"tester1@email.com"]
+        for admin_name in admin_valid_names:
+            admin = mypa.getAdministrator(admin_name)
+            assert admin == ad
 
         # undefined admin
-        with pytest.raises(NotFound):
-            mypa.getAdministrator("fake@email.com")
+        admin_fake_names = ["fake@email.com", u"fake@email.com"]
+        for admin_name in admin_fake_names:
+            with pytest.raises(NotFound):
+                mypa.getAdministrator(admin_name)
