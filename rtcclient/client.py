@@ -752,10 +752,12 @@ class RTCClient(RTCBase):
 
             rp = self._validate_returned_properties(returned_properties)
             if rp is not None:
-                workitem_url = "".join([workitem_url,
-                                        "?oslc_cm.properties=",
-                                        urlquote(rp)])
-            resp = self.get(workitem_url,
+                req_url = "".join([workitem_url,
+                                   "?oslc_cm.properties=",
+                                   urlquote(rp)])
+            else:
+                req_url = workitem_url
+            resp = self.get(req_url,
                             verify=False,
                             headers=self.headers)
             raw_data = xmltodict.parse(resp.content)
