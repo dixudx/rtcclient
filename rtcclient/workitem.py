@@ -345,9 +345,6 @@ class Workitem(FieldBase):
 
     def _check_missing_subscriber(self, del_subscriber, exist_sub):
         if del_subscriber.url == exist_sub["@rdf:resource"]:
-            self.log.error("The subscriber %s has not been "
-                           "added. No need to unsubscribe",
-                           del_subscriber.email)
             return False
         return True
 
