@@ -73,6 +73,13 @@ class Query(RTCBase):
         If `saved_query_name` is specified, only the saved queries match the
         name will be fetched.
 
+        Note: only if `creator` is added as a member, the saved queries
+        can be found. Otherwise None will be returned.
+
+        WARNING: now the RTC server cannot correctly list all the saved queries
+        It seems to be a bug of RTC. Recommend using `runSavedQueryByUrl` to
+        query all the workitems if the query is saved.
+
         Note: It will run faster when more attributes are specified.
 
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
@@ -115,6 +122,13 @@ class Query(RTCBase):
         in a certain project area (optional, either `projectarea_id`
         or `projectarea_name` is needed if specified)
 
+        Note: only if `creator` is added as a member, the saved queries
+        can be found. Otherwise None will be returned.
+
+        WARNING: now the RTC server cannot correctly list all the saved queries
+        It seems to be a bug of RTC. Recommend using `runSavedQueryByUrl` to
+        query all the workitems if the query is saved.
+
         :param saved_query_name: the saved query name
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
@@ -137,6 +151,13 @@ class Query(RTCBase):
         area (optional, either `projectarea_id` or `projectarea_name` is
         needed if specified)
 
+        Note: only if myself is added as a member, the saved queries
+        can be found. Otherwise None will be returned.
+
+        WARNING: now the RTC server cannot correctly list all the saved queries
+        It seems to be a bug of RTC. Recommend using `runSavedQueryByUrl` to
+        query all the workitems if the query is saved.
+
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the
@@ -152,4 +173,42 @@ class Query(RTCBase):
                                        creator=self.rtc_obj.username,
                                        saved_query_name=saved_query_name)
 
+    def runSavedQueryByUrl(self, saved_query_url, returned_properties=None):
+        """Query workitems using the saved query url
 
+        :param saved_query_url: the saved query url
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`rtcclient.client.RTCClient` for more explanations
+        :return: a :class:`list` that contains the queried
+            :class:`rtcclient.workitem.Workitem` objects
+        :rtype: list
+        """
+
+        saved_query_id = saved_query_url.split("=")[-1]
+        return self._runSavedQuery(saved_query_id,
+                                   returned_properties=returned_properties)
+
+    def runSavedQuery(self, saved_query_obj, returned_properties=None):
+        """Query workitems using the :class:`rtcclient.models.SavedQuery`
+        object
+
+        :param saved_query_obj: the :class:`rtcclient.models.SavedQuery`
+            object
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`rtcclient.client.RTCClient` for more explanations
+        :return: a :class:`list` that contains the queried
+            :class:`rtcclient.workitem.Workitem` objects
+        :rtype: list
+        """
+
+        saved_query_id = saved_query_obj.results.split("/")[-2]
+        return self._runSavedQuery(saved_query_id,
+                                   returned_properties=returned_properties)
+
+    def _runSavedQuery(self, saved_query_id, returned_properties=None):
+        rp = returned_properties
+        return (self.rtc_obj
+                    ._get_paged_resources("RunQuery",
+                                          page_size="100",
+                                          customized_attr=saved_query_id,
+                                          returned_properties=rp))

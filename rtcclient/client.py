@@ -1085,7 +1085,8 @@ class RTCClient(RTCBase):
                              "Subscriber"]
         customized_required = ["Action",
                                "Query",
-                               "State"]
+                               "State",
+                               "RunQuery"]
 
         if resource_name in projectarea_required and not projectarea_id:
             self.log.error("No ProjectArea ID is specified")
@@ -1122,7 +1123,8 @@ class RTCClient(RTCBase):
                                      "?oslc_cm.query=%s" % customized_attr]),
                    "State": "workflows/%s/states/%s" % (projectarea_id,
                                                         customized_attr),
-                   "SavedQuery": "queries"
+                   "SavedQuery": "queries",
+                   "RunQuery": "queries/%s/rtc_cm:results" % customized_attr
                    }
 
         entry_map = {"TeamArea": "rtc_cm:Team",
@@ -1141,7 +1143,8 @@ class RTCClient(RTCBase):
                      "Action": "rtc_cm:Action",
                      "Query": "oslc_cm:ChangeRequest",
                      "State": "rtc_cm:Status",
-                     "SavedQuery": "rtc_cm:Query"
+                     "SavedQuery": "rtc_cm:Query",
+                     "RunQuery": "oslc_cm:ChangeRequest"
                      }
 
         if resource_name not in res_map:
@@ -1280,6 +1283,8 @@ class RTCClient(RTCBase):
         if resource_name == "Subscriber":
             resource_cls = Member
         elif resource_name == "Query":
+            resource_cls = Workitem
+        elif resource_name == "RunQuery":
             resource_cls = Workitem
         else:
             resource_cls = eval(resource_name)

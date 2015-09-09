@@ -104,10 +104,8 @@ class ProjectArea(FieldBase):
         :rtype: list
         """
 
-        self.log.warning("Currently RTC cannot correctly list all the "
-                         "members that belong to the ProjectArea")
         self.log.warning("If you are not listed, please contact your RTC "
-                         "administrators")
+                         "administrators to add you as a team member")
         rp = returned_properties
         return self.rtc_obj._get_paged_resources("Member",
                                                  projectarea_id=self.id,
