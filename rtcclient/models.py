@@ -137,3 +137,12 @@ class Comment(FieldBase):
 
     def __str__(self):
         return self.id
+
+
+class SavedQuery(FieldBase):
+    """User saved query"""
+
+    log = logging.getLogger("models.SavedQuery")
+
+    def __str__(self):
+        return self.title

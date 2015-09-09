@@ -4,7 +4,7 @@ from rtcclient import exception
 from rtcclient.project_area import ProjectArea
 from rtcclient.workitem import Workitem
 from rtcclient.models import TeamArea, Member, Administrator, PlannedFor
-from rtcclient.models import Severity, Priority, ItemType
+from rtcclient.models import Severity, Priority, ItemType, SavedQuery
 from rtcclient.models import FiledAgainst, FoundIn, Comment, Action, State
 import logging
 from rtcclient import urlparse, urlquote, urlencode, OrderedDict
@@ -1063,7 +1063,7 @@ class RTCClient(RTCBase):
     def _get_paged_resources(self, resource_name, projectarea_id=None,
                              workitem_id=None, customized_attr=None,
                              page_size="100", archived=False,
-                             returned_properties=None):
+                             returned_properties=None, filter_rule=None):
         # TODO: multi-thread
 
         self.log.debug("Start to fetch all %ss with [ProjectArea ID: %s] "
@@ -1121,7 +1121,8 @@ class RTCClient(RTCBase):
                    "Query": "".join(["contexts/%s/workitems" % projectarea_id,
                                      "?oslc_cm.query=%s" % customized_attr]),
                    "State": "workflows/%s/states/%s" % (projectarea_id,
-                                                        customized_attr)
+                                                        customized_attr),
+                   "SavedQuery": "queries"
                    }
 
         entry_map = {"TeamArea": "rtc_cm:Team",
@@ -1139,7 +1140,8 @@ class RTCClient(RTCBase):
                      "Subscriber": "rtc_cm:User",
                      "Action": "rtc_cm:Action",
                      "Query": "oslc_cm:ChangeRequest",
-                     "State": "rtc_cm:Status"
+                     "State": "rtc_cm:Status",
+                     "SavedQuery": "rtc_cm:Query"
                      }
 
         if resource_name not in res_map:
@@ -1196,7 +1198,8 @@ class RTCClient(RTCBase):
                 resource = self._handle_resource_entry(resource_name,
                                                        entries,
                                                        projectarea_url=pa_url,
-                                                       archived=archived)
+                                                       archived=archived,
+                                                       filter_rule=filter_rule)
                 if resource is not None:
                     resources_list.append(resource)
                 break
@@ -1206,7 +1209,8 @@ class RTCClient(RTCBase):
                 resource = self._handle_resource_entry(resource_name,
                                                        entry,
                                                        projectarea_url=pa_url,
-                                                       archived=archived)
+                                                       archived=archived,
+                                                       filter_rule=filter_rule)
                 if resource is not None:
                     resources_list.append(resource)
 
@@ -1233,7 +1237,18 @@ class RTCClient(RTCBase):
         return resources_list
 
     def _handle_resource_entry(self, resource_name, entry,
-                               projectarea_url=None, archived=False):
+                               projectarea_url=None, archived=False,
+                               filter_rule=None):
+        """
+        :param filter_rule: a list of filter rules
+            e.g. filter_rule = [("dc:creator", "@rdf:resource",
+                                 "https://test.url:9443/jts/users/me%40mail"),
+                                ("dc:modified", None,
+                                 "2013-08-28T02:06:26.516Z")
+                                ]
+            only the entry matches all the rules will be kept
+        """
+
         if projectarea_url is not None:
             try:
                 if (entry.get("rtc_cm:projectArea")
@@ -1241,6 +1256,21 @@ class RTCClient(RTCBase):
                     return None
             except AttributeError:
                 pass
+
+        if filter_rule is not None:
+            # match all the filter rules
+            for frule in filter_rule:
+                fattr, rdf_resource, fvalue = frule
+                try:
+                    if rdf_resource is not None:
+                        frule_value = entry.get(fattr).get(rdf_resource)
+                    else:
+                        frule_value = entry.get(fattr)
+
+                    if frule_value != fvalue:
+                        return None
+                except AttributeError:
+                    pass
 
         entry_archived = entry.get("rtc_cm:archived")
         if (entry_archived is not None and
