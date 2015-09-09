@@ -231,6 +231,10 @@ class FieldBase(RTCBase):
         if "/jts/users" in rdf_url:
             return urlunquote(rdf_url.split("/")[-1])
 
+        # keep query result url
+        if rdf_url.endswith("rtc_cm:results"):
+            return rdf_url
+
         resp = self.get(rdf_url,
                         verify=False,
                         headers=self.rtc_obj.headers)
@@ -259,6 +263,7 @@ class FieldBase(RTCBase):
             return result_list
 
     def __handle_rdf_entry(self, entry):
+        # only return useful info instead of the whole object
         return_fields = ["rtc_cm:userId",
                          "dc:title",
                          "dc:description"]
