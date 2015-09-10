@@ -1,7 +1,7 @@
 from rtcclient.base import RTCBase
 import logging
 from rtcclient import urlquote
-from rtcclient.models import SavedQuery
+from rtcclient import exception
 
 
 class Query(RTCBase):
@@ -102,6 +102,8 @@ class Query(RTCBase):
             fcreator = self.rtc_obj.getOwnedBy(creator).url
             filter_rule = [("dc:creator", "@rdf:resource",
                             fcreator)]
+            self.log.debug("Add rules for fetching all saved queries: "
+                           "created by %s", creator)
 
         if saved_query_name is not None:
             ftitle_rule = ("dc:title", None, saved_query_name)
@@ -109,6 +111,8 @@ class Query(RTCBase):
                 filter_rule = [ftitle_rule]
             else:
                 filter_rule.append(ftitle_rule)
+            self.log.debug("Add rules for fetching all saved queries: "
+                           "saved query title is %s", saved_query_name)
 
         return (self.rtc_obj
                     ._get_paged_resources("SavedQuery",
@@ -140,6 +144,8 @@ class Query(RTCBase):
         :rtype: list
         """
 
+        self.log.info("Start to fetch all saved queries with the name %s",
+                      saved_query_name)
         return self.getAllSavedQueries(projectarea_id=projectarea_id,
                                        projectarea_name=projectarea_name,
                                        creator=creator,
@@ -168,6 +174,7 @@ class Query(RTCBase):
         :rtype: list
         """
 
+        self.log.info("Start to fetch my saved queries")
         return self.getAllSavedQueries(projectarea_id=projectarea_id,
                                        projectarea_name=projectarea_name,
                                        creator=self.rtc_obj.username,
@@ -184,7 +191,12 @@ class Query(RTCBase):
         :rtype: list
         """
 
-        saved_query_id = saved_query_url.split("=")[-1]
+        try:
+            saved_query_id = saved_query_url.split("=")[-1]
+        except:
+            error_msg = "No saved query id is found in the url"
+            self.log.error(error_msg)
+            raise exception.BadValue(error_msg)
         return self._runSavedQuery(saved_query_id,
                                    returned_properties=returned_properties)
 
@@ -201,7 +213,12 @@ class Query(RTCBase):
         :rtype: list
         """
 
-        saved_query_id = saved_query_obj.results.split("/")[-2]
+        try:
+            saved_query_id = saved_query_obj.results.split("/")[-2]
+        except:
+            error_msg = "Cannot get the correct saved query id"
+            self.log.error(error_msg)
+            raise exception.RTCException(error_msg)
         return self._runSavedQuery(saved_query_id,
                                    returned_properties=returned_properties)
 

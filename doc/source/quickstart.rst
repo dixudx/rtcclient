@@ -244,9 +244,46 @@ will be fetched.
     # below query string means: query all the workitems with title "use case 1"
     >>> myquerystr = 'dc:title="use case 1"'
     >>> returned_prop = "dc:title,dc:identifier,rtc_cm:state,rtc_cm:ownedBy"
-    >>> queried_wis = myquery.queryWorkitems(query_str=myquerystr,
+    >>> queried_wis = myquery.queryWorkitems(myquerystr,
                                              projectarea_name=projectarea_name,
                                              returned_properties=returned_prop)
 
 More detailed and advanced syntax on querying, please refer to
 :ref:`query syntax <query_syntax>`.
+
+
+Query Workitems by Saved Query
+------------------------------
+
+You may have created several customized queries through RTC Web GUI or got
+some saved queries created by other team members. Using these saved queries
+
+    >>> myquery = myclient.query # query class
+    >>> saved_query_url = 'http://test.url:9443/jazz/xxxxxxxx&id=xxxxx'
+    >>> projectarea_name = "my_projectarea_name"
+    # get all saved queries
+    # WARNING: now the RTC server cannot correctly list all the saved queries
+    #          It seems to be a bug of RTC. Recommend using `runSavedQueryByUrl` to
+    #          query all the workitems if the query is saved.
+    >>> allsavedqueries = myquery.getAllSavedQueries(projectarea_name=projectarea_name)
+    # saved queries created by tester1@email.com
+    >>> allsavedqueries = myquery.getAllSavedQueries(projectarea_name=projectarea_name,
+                                                     creator="tester1@email.com")
+    # my saved queries
+    >>> mysavedqueries = myquery.getMySavedQueries(projectarea_name=projectarea_name)
+    >>> mysavedquery = mysavedqueries[0]
+    >>> returned_prop = "dc:title,dc:identifier,rtc_cm:state,rtc_cm:ownedBy"
+    >>> queried_wis = myquery.runSavedQuery(mysavedquery,
+                                            returned_properties=returned_prop)
+
+
+Query Workitems by Saved Query Url
+----------------------------------
+
+You can also query all the workitems directly using your saved query's url.
+
+    >>> myquery = myclient.query # query class
+    >>> saved_query_url = 'http://test.url:9443/jazz/xxxxxxxx&id=xxxxx'
+    >>> returned_prop = "dc:title,dc:identifier,rtc_cm:state,rtc_cm:ownedBy"
+    >>> queried_wis = myquery.runSavedQueryByUrl(saved_query_url,
+                                                 returned_properties=returned_prop)
