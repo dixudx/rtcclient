@@ -148,3 +148,15 @@ state1 = (xmltodict.parse(read_fixture("states.xml"))
 state2 = (xmltodict.parse(read_fixture("states.xml"))
                    .get("oslc_cm:Collection")
                    .get("rtc_cm:Status")[1])
+
+savedquery1 = (xmltodict.parse(read_fixture("savedqueries.xml"))
+                        .get("oslc_cm:Collection")
+                        .get("rtc_cm:Query")[0])
+
+savedquery2 = (xmltodict.parse(read_fixture("savedqueries.xml"))
+                        .get("oslc_cm:Collection")
+                        .get("rtc_cm:Query")[1])
+
+savedquery3 = (xmltodict.parse(read_fixture("savedqueries.xml"))
+                        .get("oslc_cm:Collection")
+                        .get("rtc_cm:Query")[2])

@@ -1,0 +1,32 @@
+<oslc_cm:Collection xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:dc="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rtc_cm="http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/" oslc_cm:totalCount="3">
+<rtc_cm:Query rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.query.QueryDescriptor/_1CR5MMfiEd6yW_0tvNlbrw">
+<dc:identifier/>
+<dc:title>Closed created by me</dc:title>
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw"/>
+<dc:description>Work items I have created which have been resolved</dc:description>
+<rtc_cm:results oslc_cm:collref="http://test.url:9443/jazz/oslc/queries/_1CR5MMfiEd6yW_0tvNlbrw/rtc_cm:results"/>
+<dc:creator rdf:resource="http://test.url:9443/jts/users/tester1%40email.com"/>
+<dc:modified>2014-02-22T01:23:47.490Z</dc:modified>
+<rtc_cm:modifiedBy rdf:resource="http://test.url:9443/jts/users/ADMIN"/>
+</rtc_cm:Query>
+<rtc_cm:Query rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.query.QueryDescriptor/_1CTHUMfiEd6yW_0tvNlbrw">
+<dc:identifier/>
+<dc:title>Open Track Build Items</dc:title>
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_0qMJUMfiEd6yW_0tvNlbrw"/>
+<dc:description>All unresolved Track Build Items</dc:description>
+<rtc_cm:results oslc_cm:collref="http://test.url:9443/jazz/oslc/queries/_1CTHUMfiEd6yW_0tvNlbrw/rtc_cm:results"/>
+<dc:creator rdf:resource="http://test.url:9443/jts/users/tester2%40email.com"/>
+<dc:modified>2014-02-22T01:23:47.495Z</dc:modified>
+<rtc_cm:modifiedBy rdf:resource="http://test.url:9443/jts/users/ADMIN"/>
+</rtc_cm:Query>
+<rtc_cm:Query rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.workitem.query.QueryDescriptor/_1CU8gMfiEd6yW_0tvNlbrw">
+<dc:identifier/>
+<dc:title>Open Adoptions</dc:title>
+<rtc_cm:projectArea rdf:resource="http://test.url:9443/jazz/oslc/projectareas/_CuZu0HUwEeKicpXBddtqNA"/>
+<dc:description/>
+<rtc_cm:results oslc_cm:collref="http://test.url:9443/jazz/oslc/queries/_1CU8gMfiEd6yW_0tvNlbrw/rtc_cm:results"/>
+<dc:creator rdf:resource="http://test.url:9443/jts/users/tester2%40email.com"/>
+<dc:modified>2014-02-22T01:23:47.499Z</dc:modified>
+<rtc_cm:modifiedBy rdf:resource="http://test.url:9443/jts/users/ADMIN"/>
+</rtc_cm:Query>
+</oslc_cm:Collection>

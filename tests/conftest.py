@@ -14,6 +14,6 @@ def rtcclient(mocker):
     mocked_headers.return_value = mock_resp
 
     return RTCClient(url="http://test.url:9443/jazz",
-                     username="user",
+                     username="tester1@email.com",
                      password="password",
                      searchpath=_search_path)

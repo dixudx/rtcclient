@@ -53,3 +53,7 @@ Models
 
 .. autoclass:: rtcclient.models.Comment
    :members:
+
+
+   .. autoclass:: rtcclient.models.SavedQuery
+   :members:
