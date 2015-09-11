@@ -368,13 +368,7 @@ class Workitem(FieldBase):
         :rtype: list
         """
 
-        cust_attr = (self.raw_data.get("rtc_cm:state")
-                                  .get("@rdf:resource")
-                                  .split("/")[-2])
-        return self.rtc_obj._get_paged_resources("Action",
-                                                 projectarea_id=self.contextId,
-                                                 customized_attr=cust_attr,
-                                                 page_size="100")
+        return self._getActions()
 
     def getAction(self, action_name):
         """Get the :class:`rtcclient.models.Action` object by its name
@@ -390,16 +384,31 @@ class Workitem(FieldBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        actions = self.getActions()
+        actions = self._getActions(action_name=action_name)
 
         if actions is not None:
-            for action in actions:
-                if action.title == action_name:
-                    self.log.info("Find <Action %s>", action)
-                    return action
+            action = actions[0]
+            self.log.info("Find <Action %s>", action)
+            return action
 
         self.log.error("No Action named %s", action_name)
         raise exception.NotFound("No Action named %s" % action_name)
+
+    def _getActions(self, action_name=None):
+        filter_rule = None
+        if action_name is not None:
+            faction_rule = ("dc:title", None, action_name)
+            filter_rule = self.rtc_obj._add_filter_rule(filter_rule,
+                                                        faction_rule)
+
+        cust_attr = (self.raw_data.get("rtc_cm:state")
+                                  .get("@rdf:resource")
+                                  .split("/")[-2])
+        return self.rtc_obj._get_paged_resources("Action",
+                                                 projectarea_id=self.contextId,
+                                                 customized_attr=cust_attr,
+                                                 page_size="100",
+                                                 filter_rule=filter_rule)
 
     def getStates(self):
         """Get all :class:`rtcclient.models.State` objects of this workitem

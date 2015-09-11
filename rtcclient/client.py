@@ -92,8 +92,7 @@ class RTCClient(RTCBase):
         _headers["Accept"] = self.CONTENT_XML
         return _headers
 
-    def getProjectAreas(self, archived=False,
-                        returned_properties=None):
+    def getProjectAreas(self, archived=False, returned_properties=None):
         """Get all :class:`rtcclient.project_area.ProjectArea` objects
 
         If no :class:`rtcclient.project_area.ProjectArea` objects are
@@ -108,11 +107,8 @@ class RTCClient(RTCBase):
         :rtype: list
         """
 
-        rp = returned_properties
-        return self._get_paged_resources("ProjectArea",
-                                         page_size="10",
-                                         archived=archived,
-                                         returned_properties=rp)
+        return self._getProjectAreas(archived=archived,
+                                     returned_properties=returned_properties)
 
     def getProjectArea(self, projectarea_name, archived=False,
                        returned_properties=None):
@@ -127,24 +123,53 @@ class RTCClient(RTCBase):
         :rtype: rtcclient.project_area.ProjectArea
         """
 
-        self.log.debug("Try to get <ProjectArea %s>", projectarea_name)
         if not isinstance(projectarea_name,
                           six.string_types) or not projectarea_name:
             excp_msg = "Please specify a valid ProjectArea name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
+        self.log.debug("Try to get <ProjectArea %s>", projectarea_name)
         rp = returned_properties
-        proj_areas = self.getProjectAreas(archived=archived,
-                                          returned_properties=rp)
+        proj_areas = self._getProjectAreas(archived=archived,
+                                           returned_properties=rp,
+                                           projectarea_name=projectarea_name)
+
         if proj_areas is not None:
-            for proj_area in proj_areas:
-                if proj_area.title == projectarea_name:
-                    self.log.info("Find <ProjectArea %s>", proj_area)
-                    return proj_area
+            proj_area = proj_areas[0]
+            self.log.info("Find <ProjectArea %s>", proj_area)
+            return proj_area
 
         self.log.error("No ProjectArea named %s", projectarea_name)
         raise exception.NotFound("No ProjectArea named %s" % projectarea_name)
+
+    def _getProjectAreas(self, archived=False, returned_properties=None,
+                         projectarea_name=None, projectarea_id=None):
+        rp = returned_properties
+
+        filter_rule = None
+        if projectarea_name is not None:
+            fpaname_rule = ("dc:title", None, projectarea_name)
+            filter_rule = self._add_filter_rule(filter_rule, fpaname_rule)
+
+        if projectarea_id is not None:
+            paid_url = "/".join([self.url, "oslc/projectareas",
+                                 projectarea_id])
+            fpaid_rule = ("@rdf:resource", None, paid_url)
+            filter_rule = self._add_filter_rule(filter_rule, fpaid_rule)
+
+        return self._get_paged_resources("ProjectArea",
+                                         page_size="10",
+                                         archived=archived,
+                                         returned_properties=rp,
+                                         filter_rule=filter_rule)
+
+    def _add_filter_rule(self, filter_rule, added_rule):
+        if filter_rule is None:
+            filter_rule = [added_rule]
+        else:
+            filter_rule.append(added_rule)
+        return filter_rule
 
     def getProjectAreaByID(self, projectarea_id, archived=False,
                            returned_properties=None):
@@ -160,22 +185,22 @@ class RTCClient(RTCBase):
         :rtype: rtcclient.project_area.ProjectArea
         """
 
-        self.log.debug("Try to get <ProjectArea> by its id: %s",
-                       projectarea_id)
         if not isinstance(projectarea_id,
                           six.string_types) or not projectarea_id:
             excp_msg = "Please specify a valid ProjectArea ID"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
+        self.log.debug("Try to get <ProjectArea> by its id: %s",
+                       projectarea_id)
         rp = returned_properties
-        proj_areas = self.getProjectAreas(archived=archived,
-                                          returned_properties=rp)
+        proj_areas = self._getProjectAreas(archived=archived,
+                                           returned_properties=rp,
+                                           projectarea_id=projectarea_id)
         if proj_areas is not None:
-            for proj_area in proj_areas:
-                if proj_area.id == projectarea_id:
-                    self.log.info("Find <ProjectArea %s>", proj_area)
-                    return proj_area
+            proj_area = proj_areas[0]
+            self.log.info("Find <ProjectArea %s>", proj_area)
+            return proj_area
 
         self.log.error("No ProjectArea's ID is %s", projectarea_id)
         raise exception.NotFound("No ProjectArea's ID is %s" % projectarea_id)
@@ -244,14 +269,14 @@ class RTCClient(RTCBase):
         self.log.debug("Check the validity of the ProjectArea id: %s",
                        projectarea_id)
 
-        proj_areas = self.getProjectAreas(archived=archived)
+        proj_areas = self._getProjectAreas(archived=archived,
+                                           projectarea_id=projectarea_id)
         if proj_areas is not None:
-            for proj_area in proj_areas:
-                if proj_area.id == projectarea_id:
-                    self.log.info("Find <ProjectArea %s> whose id is: %s",
-                                  proj_area,
-                                  projectarea_id)
-                    return True
+            proj_area = proj_areas[0]
+            self.log.info("Find <ProjectArea %s> whose id is: %s",
+                          proj_area,
+                          projectarea_id)
+            return True
 
         self.log.error("No ProjectArea whose id is: %s",
                        projectarea_id)
@@ -280,23 +305,23 @@ class RTCClient(RTCBase):
         :rtype: rtcclient.models.TeamArea
         """
 
-        self.log.debug("Try to get <TeamArea %s>", teamarea_name)
         if not isinstance(teamarea_name,
                           six.string_types) or not teamarea_name:
             excp_msg = "Please specify a valid TeamArea name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        teamareas = self.getTeamAreas(projectarea_id=projectarea_id,
-                                      projectarea_name=projectarea_name,
-                                      archived=archived,
-                                      returned_properties=returned_properties)
+        self.log.debug("Try to get <TeamArea %s>", teamarea_name)
+        teamareas = self._getTeamAreas(projectarea_id=projectarea_id,
+                                       projectarea_name=projectarea_name,
+                                       archived=archived,
+                                       returned_properties=returned_properties,
+                                       teamarea_name=teamarea_name)
 
         if teamareas is not None:
-            for teamarea in teamareas:
-                if teamarea.title == teamarea_name:
-                    self.log.info("Find <TeamArea %s>", teamarea)
-                    return teamarea
+            teamarea = teamareas[0]
+            self.log.info("Find <TeamArea %s>", teamarea)
+            return teamarea
 
         self.log.error("No TeamArea named %s", teamarea_name)
         raise exception.NotFound("No TeamArea named %s" % teamarea_name)
@@ -324,15 +349,30 @@ class RTCClient(RTCBase):
         :rtype: list
         """
 
+        return self._getTeamAreas(projectarea_id=projectarea_id,
+                                  projectarea_name=projectarea_name,
+                                  archived=archived,
+                                  returned_properties=returned_properties)
+
+    def _getTeamAreas(self, projectarea_id=None, projectarea_name=None,
+                      archived=False, returned_properties=None,
+                      teamarea_name=None):
+
         projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
                                              projectarea_name=projectarea_name)
-
         rp = returned_properties
+
+        filter_rule = None
+        if teamarea_name is not None:
+            ftaname_rule = ("dc:title", None, teamarea_name)
+            filter_rule = self._add_filter_rule(filter_rule, ftaname_rule)
+
         return self._get_paged_resources("TeamArea",
                                          projectarea_id=projarea_id,
                                          page_size="100",
                                          archived=archived,
-                                         returned_properties=rp)
+                                         returned_properties=rp,
+                                         filter_rule=filter_rule)
 
     def getOwnedBy(self, email, projectarea_id=None,
                    projectarea_name=None):
@@ -371,24 +411,24 @@ class RTCClient(RTCBase):
         :rtype: rtcclient.models.PlannedFor
         """
 
-        self.log.debug("Try to get <PlannedFor %s>", plannedfor_name)
         if not isinstance(plannedfor_name,
                           six.string_types) or not plannedfor_name:
             excp_msg = "Please specify a valid PlannedFor name"
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
+        self.log.debug("Try to get <PlannedFor %s>", plannedfor_name)
         rp = returned_properties
-        plannedfors = self.getPlannedFors(projectarea_id=projectarea_id,
-                                          projectarea_name=projectarea_name,
-                                          archived=archived,
-                                          returned_properties=rp)
+        plannedfors = self._getPlannedFors(projectarea_id=projectarea_id,
+                                           projectarea_name=projectarea_name,
+                                           archived=archived,
+                                           returned_properties=rp,
+                                           plannedfor_name=plannedfor_name)
 
         if plannedfors is not None:
-            for plannedfor in plannedfors:
-                if plannedfor.title == plannedfor_name:
-                    self.log.info("Find <PlannedFor %s>", plannedfor)
-                    return plannedfor
+            plannedfor = plannedfors[0]
+            self.log.info("Find <PlannedFor %s>", plannedfor)
+            return plannedfor
 
         self.log.error("No PlannedFor named %s", plannedfor_name)
         raise exception.NotFound("No PlannedFor named %s" % plannedfor_name)
@@ -416,15 +456,30 @@ class RTCClient(RTCBase):
         :rtype: list
         """
 
+        return self._getPlannedFors(projectarea_id=projectarea_id,
+                                    projectarea_name=projectarea_name,
+                                    archived=archived,
+                                    returned_properties=returned_properties)
+
+    def _getPlannedFors(self, projectarea_id=None, projectarea_name=None,
+                        archived=False, returned_properties=None,
+                        plannedfor_name=None):
+
         projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
                                              projectarea_name=projectarea_name)
+
+        filter_rule = None
+        if plannedfor_name is not None:
+            fpfname_rule = ("dc:title", None, plannedfor_name)
+            filter_rule = self._add_filter_rule(filter_rule, fpfname_rule)
 
         rp = returned_properties
         return self._get_paged_resources("PlannedFor",
                                          projectarea_id=projarea_id,
                                          page_size="100",
                                          archived=archived,
-                                         returned_properties=rp)
+                                         returned_properties=rp,
+                                         filter_rule=filter_rule)
 
     def getSeverity(self, severity_name, projectarea_id=None,
                     projectarea_name=None):
@@ -447,14 +502,14 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        severities = self.getSeverities(projectarea_id=projectarea_id,
-                                        projectarea_name=projectarea_name)
+        severities = self._getSeverities(projectarea_id=projectarea_id,
+                                         projectarea_name=projectarea_name,
+                                         severity_name=severity_name)
 
         if severities is not None:
-            for severity in severities:
-                if severity.title == severity_name:
-                    self.log.info("Find <Severity %s>", severity)
-                    return severity
+            severity = severities[0]
+            self.log.info("Find <Severity %s>", severity)
+            return severity
 
         self.log.error("No Severity named %s", severity_name)
         raise exception.NotFound("No Severity named %s" % severity_name)
@@ -476,6 +531,11 @@ class RTCClient(RTCBase):
         :rtype: list
         """
 
+        return self._getSeverities(projectarea_id=projectarea_id,
+                                   projectarea_name=projectarea_name)
+
+    def _getSeverities(self, projectarea_id=None, projectarea_name=None,
+                       severity_name=None):
         projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
                                              projectarea_name=projectarea_name)
         if projarea_id is None:
@@ -483,9 +543,16 @@ class RTCClient(RTCBase):
                            "projectarea_id and projectarea_name")
             raise exception.EmptyAttrib("At least input either-or between "
                                         "projectarea_id and projectarea_name")
+
+        filter_rule = None
+        if severity_name is not None:
+            fsname_rule = ("dc:title", None, severity_name)
+            filter_rule = self._add_filter_rule(filter_rule, fsname_rule)
+
         return self._get_paged_resources("Severity",
                                          projectarea_id=projarea_id,
-                                         page_size="10")
+                                         page_size="10",
+                                         filter_rule=filter_rule)
 
     def getPriority(self, priority_name, projectarea_id=None,
                     projectarea_name=None):
@@ -508,14 +575,14 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        priorities = self.getPriorities(projectarea_id=projectarea_id,
-                                        projectarea_name=projectarea_name)
+        priorities = self._getPriorities(projectarea_id=projectarea_id,
+                                         projectarea_name=projectarea_name,
+                                         priority_name=priority_name)
 
         if priorities is not None:
-            for priority in priorities:
-                if priority.title == priority_name:
-                    self.log.info("Find <Priority %s>", priority)
-                    return priority
+            priority = priorities[0]
+            self.log.info("Find <Priority %s>", priority)
+            return priority
 
         self.log.error("No Priority named %s", priority_name)
         raise exception.NotFound("No Priority named %s" % priority_name)
@@ -537,6 +604,11 @@ class RTCClient(RTCBase):
         :rtype: list
         """
 
+        return self._getPriorities(projectarea_id=projectarea_id,
+                                   projectarea_name=projectarea_name)
+
+    def _getPriorities(self, projectarea_id=None, projectarea_name=None,
+                       priority_name=None):
         projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
                                              projectarea_name=projectarea_name)
         if projarea_id is None:
@@ -544,9 +616,16 @@ class RTCClient(RTCBase):
                            "projectarea_id and projectarea_name")
             raise exception.EmptyAttrib("At least input either-or between "
                                         "projectarea_id and projectarea_name")
+
+        filter_rule = None
+        if priority_name is not None:
+            fpname_rule = ("dc:title", None, priority_name)
+            filter_rule = self._add_filter_rule(filter_rule, fpname_rule)
+
         return self._get_paged_resources("Priority",
                                          projectarea_id=projarea_id,
-                                         page_size="10")
+                                         page_size="10",
+                                         filter_rule=filter_rule)
 
     def getFoundIn(self, foundin_name, projectarea_id=None,
                    projectarea_name=None, archived=False):
@@ -568,15 +647,15 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        foundins = self.getFoundIns(projectarea_id=projectarea_id,
-                                    projectarea_name=projectarea_name,
-                                    archived=archived)
+        foundins = self._getFoundIns(projectarea_id=projectarea_id,
+                                     projectarea_name=projectarea_name,
+                                     archived=archived,
+                                     foundin_name=foundin_name)
 
         if foundins is not None:
-            for foundin in foundins:
-                if foundin.title == foundin_name:
-                    self.log.info("Find <FoundIn %s>", foundin)
-                    return foundin
+            foundin = foundins[0]
+            self.log.info("Find <FoundIn %s>", foundin)
+            return foundin
 
         self.log.error("No FoundIn named %s", foundin_name)
         raise exception.NotFound("No FoundIn named %s" % foundin_name)
@@ -601,12 +680,24 @@ class RTCClient(RTCBase):
         :rtype: list
         """
 
+        return self._getFoundIns(projectarea_id=projectarea_id,
+                                 projectarea_name=projectarea_name,
+                                 archived=archived)
+
+    def _getFoundIns(self, projectarea_id=None, projectarea_name=None,
+                     archived=False, foundin_name=None):
         projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
                                              projectarea_name=projectarea_name)
+
+        filter_rule = None
+        if foundin_name is not None:
+            ffname_rule = ("dc:title", None, foundin_name)
+            filter_rule = self._add_filter_rule(filter_rule, ffname_rule)
         return self._get_paged_resources("FoundIn",
                                          projectarea_id=projarea_id,
                                          page_size="100",
-                                         archived=archived)
+                                         archived=archived,
+                                         filter_rule=filter_rule)
 
     def getFiledAgainst(self, filedagainst_name, projectarea_id=None,
                         projectarea_name=None, archived=False):
@@ -629,15 +720,15 @@ class RTCClient(RTCBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        fas = self.getFiledAgainsts(projectarea_id=projectarea_id,
-                                    projectarea_name=projectarea_name,
-                                    archived=archived)
+        fas = self._getFiledAgainsts(projectarea_id=projectarea_id,
+                                     projectarea_name=projectarea_name,
+                                     archived=archived,
+                                     filedagainst_name=filedagainst_name)
 
         if fas is not None:
-            for filedagainst in fas:
-                if filedagainst.title == filedagainst_name:
-                    self.log.info("Find <FiledAgainst %s>", filedagainst)
-                    return filedagainst
+            filedagainst = fas[0]
+            self.log.info("Find <FiledAgainst %s>", filedagainst)
+            return filedagainst
 
         error_msg = "No FiledAgainst named %s" % filedagainst_name
         self.log.error(error_msg)
@@ -664,12 +755,24 @@ class RTCClient(RTCBase):
         :rtype: list
         """
 
+        return self._getFiledAgainsts(projectarea_id=projectarea_id,
+                                      projectarea_name=projectarea_name,
+                                      archived=archived)
+
+    def _getFiledAgainsts(self, projectarea_id=None, projectarea_name=None,
+                          archived=False, filedagainst_name=None):
         projarea_id = self._pre_get_resource(projectarea_id=projectarea_id,
                                              projectarea_name=projectarea_name)
+
+        filter_rule = None
+        if filedagainst_name is not None:
+            ffaname_rule = ("dc:title", None, filedagainst_name)
+            filter_rule = self._add_filter_rule(filter_rule, ffaname_rule)
         return self._get_paged_resources("FiledAgainst",
                                          projectarea_id=projarea_id,
                                          page_size="100",
-                                         archived=archived)
+                                         archived=archived,
+                                         filter_rule=filter_rule)
 
     def getTemplate(self, copied_from, template_name=None,
                     template_folder=None, keep=False, encoding="UTF-8"):
@@ -1290,7 +1393,8 @@ class RTCClient(RTCBase):
             resource_cls = eval(resource_name)
 
         if resource_name in ["Workitem",
-                             "Query"]:
+                             "Query",
+                             "RunQuery"]:
             resource_url = entry.get("@rdf:resource")
             resource_url = "/".join([self.url,
                                      "oslc/workitems",

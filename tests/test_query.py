@@ -5,6 +5,7 @@ from rtcclient.exception import BadValue, EmptyAttrib
 from rtcclient.query import Query
 from rtcclient.workitem import Workitem
 from rtcclient.models import SavedQuery
+from rtcclient import exception
 
 
 class TestQuery:
@@ -292,3 +293,82 @@ class TestQuery:
         pa_id = "_CuZu0HUwEeKicpXBddtqNA"
         saved_queries = myquery.getMySavedQueries(projectarea_id=pa_id)
         assert saved_queries is None
+
+    @pytest.fixture
+    def mock_get_workitems(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("workitems.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_run_saved_query(self, myrtcclient, mock_get_workitems):
+        myquery = myrtcclient.query
+
+        # SavedQuery1
+        saved_query1_url = ("http://test.url:9443/jazz/resource/"
+                            "itemOid/com.ibm.team.workitem.query."
+                            "QueryDescriptor/_1CR5MMfiEd6yW_0tvNlbrw")
+        saved_query1 = SavedQuery(saved_query1_url,
+                                  myrtcclient,
+                                  utils_test.savedquery1)
+
+        # SavedQuery2
+        saved_query2_url = ("http://test.url:9443/jazz/resource/itemOid/"
+                            "com.ibm.team.workitem.query.QueryDescriptor/"
+                            "_1CTHUMfiEd6yW_0tvNlbrw")
+        saved_query2 = SavedQuery(saved_query2_url,
+                                  myrtcclient,
+                                  utils_test.savedquery2)
+
+        # SavedQuery3
+        saved_query3_url = ("http://test.url:9443/jazz/resource/itemOid/"
+                            "com.ibm.team.workitem.query.QueryDescriptor/"
+                            "_1CU8gMfiEd6yW_0tvNlbrw")
+        saved_query3 = SavedQuery(saved_query3_url,
+                                  myrtcclient,
+                                  utils_test.savedquery3)
+
+        # Workitem1
+        workitem1 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
+                             myrtcclient,
+                             workitem_id=161,
+                             raw_data=utils_test.workitem1)
+
+        for saved_query in [saved_query1, saved_query2, saved_query3]:
+            query_workitems = myquery.runSavedQuery(saved_query)
+            assert query_workitems == [workitem1]
+
+        # invalid saved query
+        for result in [None, "", True, False, 1234]:
+            saved_query1.results = result
+            with pytest.raises(exception.RTCException):
+                myquery.runSavedQuery(saved_query1)
+
+    def test_run_saved_query_by_url(self, myrtcclient, mock_get_workitems):
+        myquery = myrtcclient.query
+
+        valid_urls = [("http://test.url:9443/jazz/web/projects/xxxxxx"
+                       "&id=_1CR5MMfiEd6yW_0tvNlbrw"),
+                      ("http://test.url:9443/jazz/web/projects/xxxxxx"
+                       "&id=_1CTHUMfiEd6yW_0tvNlbr"),
+                      ("http://test.url:9443/jazz/web/projects/xxxxxx"
+                       "&id=_1CU8gMfiEd6yW_0tvNlbrw")]
+
+        # Workitem1
+        workitem1 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
+                             myrtcclient,
+                             workitem_id=161,
+                             raw_data=utils_test.workitem1)
+
+        for valid_url in valid_urls:
+            query_workitems = myquery.runSavedQueryByUrl(valid_url)
+            assert query_workitems == [workitem1]
+
+        # invalid saved query urls
+        invalid_urls = [None, "", True, False, "http://test.xxx",
+                        "http://xxxxx=", "http://xxxx=xxxx="]
+        for invalid_url in invalid_urls:
+            with pytest.raises(exception.BadValue):
+                myquery.runSavedQueryByUrl(invalid_url)
