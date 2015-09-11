@@ -42,6 +42,9 @@ class ProjectArea(FieldBase):
         :rtype: list
         """
 
+        # no need to retrieve all the entries from _get_paged_resources
+        # role raw data is very simple that contains no other links
+
         self.log.info("Get all the roles in <ProjectArea %s>",
                       self)
         roles_url = "/".join([self.rtc_obj.url,
@@ -104,13 +107,7 @@ class ProjectArea(FieldBase):
         :rtype: list
         """
 
-        self.log.warning("If you are not listed, please contact your RTC "
-                         "administrators to add you as a team member")
-        rp = returned_properties
-        return self.rtc_obj._get_paged_resources("Member",
-                                                 projectarea_id=self.id,
-                                                 page_size='100',
-                                                 returned_properties=rp)
+        return self._getMembers(returned_properties=returned_properties)
 
     def getMember(self, email, returned_properties=None):
         """Get the :class:`rtcclient.models.Member` object by the
@@ -128,23 +125,34 @@ class ProjectArea(FieldBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        members = self.getMembers(returned_properties=returned_properties)
-        self.log.warning("Some members that do exist in or belong to"
-                         "the ProjectArea may cannot be retrieved")
-        self.log.warning("This is an existing bug of RTC")
-
         self.log.debug("Try to get Member whose email is %s>", email)
+        members = self._getMembers(returned_properties=returned_properties,
+                                   email=email)
         if members is not None:
-            for member in members:
-                if member.email == email:
-                    self.log.info("Get <Member %s> in <ProjectArea %s>",
-                                  member, self)
-                    return member
+            member = members[0]
+            self.log.info("Get <Member %s> in <ProjectArea %s>",
+                          member, self)
+            return member
 
         excp_msg = "No member's email is %s in <ProjectArea %s>" % (email,
                                                                     self)
         self.log.error(excp_msg)
         raise exception.NotFound(excp_msg)
+
+    def _getMembers(self, returned_properties=None, email=None):
+        self.log.warning("If you are not listed, please contact your RTC "
+                         "administrators to add you as a team member")
+        rp = returned_properties
+        filter_rule = None
+        if email is not None:
+            fmember_rule = ("rtc_cm:userId", None, email)
+            filter_rule = self.rtc_obj._add_filter_rule(filter_rule,
+                                                        fmember_rule)
+        return self.rtc_obj._get_paged_resources("Member",
+                                                 projectarea_id=self.id,
+                                                 page_size='100',
+                                                 returned_properties=rp,
+                                                 filter_rule=filter_rule)
 
     def getItemTypes(self, returned_properties=None):
         """Get all the :class:`rtcclient.models.ItemType` objects
@@ -159,11 +167,7 @@ class ProjectArea(FieldBase):
         :rtype: list
         """
 
-        rp = returned_properties
-        return self.rtc_obj._get_paged_resources("ItemType",
-                                                 projectarea_id=self.id,
-                                                 page_size='10',
-                                                 returned_properties=rp)
+        return self._getItemTypes(returned_properties=returned_properties)
 
     def getItemType(self, title, returned_properties=None):
         """Get the :class:`rtcclient.models.ItemType` object by the title
@@ -180,19 +184,32 @@ class ProjectArea(FieldBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        itemtypes = self.getItemTypes(returned_properties=returned_properties)
         self.log.debug("Try to get <ItemType %s>", title)
+        itemtypes = self._getItemTypes(returned_properties=returned_properties,
+                                       title=title)
         if itemtypes is not None:
-            for itemtype in itemtypes:
-                if itemtype.title == title:
-                    self.log.info("Get <ItemType %s> in <ProjectArea %s>",
-                                  itemtype, self)
-                    return itemtype
+            itemtype = itemtypes[0]
+            self.log.info("Get <ItemType %s> in <ProjectArea %s>",
+                          itemtype, self)
+            return itemtype
 
         excp_msg = "No itemtype's name is %s in <ProjectArea %s>" % (title,
                                                                      self)
         self.log.error(excp_msg)
         raise exception.NotFound(excp_msg)
+
+    def _getItemTypes(self, returned_properties=None, title=None):
+        rp = returned_properties
+        filter_rule = None
+        if title is not None:
+            fit_rule = ("dc:title", None, title)
+            filter_rule = self.rtc_obj._add_filter_rule(filter_rule,
+                                                        fit_rule)
+        return self.rtc_obj._get_paged_resources("ItemType",
+                                                 projectarea_id=self.id,
+                                                 page_size='10',
+                                                 returned_properties=rp,
+                                                 filter_rule=filter_rule)
 
     def getAdministrators(self, returned_properties=None):
         """Get all the :class:`rtcclient.models.Administrator` objects in this
@@ -208,11 +225,7 @@ class ProjectArea(FieldBase):
         :rtype: list
         """
 
-        rp = returned_properties
-        return self.rtc_obj._get_paged_resources("Administrator",
-                                                 projectarea_id=self.id,
-                                                 page_size='10',
-                                                 returned_properties=rp)
+        return self._getAdministrators(returned_properties=returned_properties)
 
     def getAdministrator(self, email, returned_properties=None):
         """Get the :class:`rtcclient.models.Administrator` object
@@ -230,18 +243,31 @@ class ProjectArea(FieldBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        rp = returned_properties
-        administrators = self.getAdministrators(returned_properties=rp)
         self.log.debug("Try to get Administrator whose email is %s",
                        email)
+        rp = returned_properties
+        administrators = self._getAdministrators(returned_properties=rp,
+                                                 email=email)
         if administrators is not None:
-            for administrator in administrators:
-                if administrator.email == email:
-                    self.log.info("Get <Administrator %s> in <ProjectArea %s>",
-                                  administrator, self)
-                    return administrator
+            administrator = administrators[0]
+            self.log.info("Get <Administrator %s> in <ProjectArea %s>",
+                          administrator, self)
+            return administrator
 
         msg = "No administrator's email is %s in <ProjectArea %s>" % (email,
                                                                       self)
         self.log.error(msg)
         raise exception.NotFound(msg)
+
+    def _getAdministrators(self, returned_properties=None, email=None):
+        rp = returned_properties
+        filter_rule = None
+        if email is not None:
+            fadmin_rule = ("rtc_cm:userId", None, email)
+            filter_rule = self.rtc_obj._add_filter_rule(filter_rule,
+                                                        fadmin_rule)
+        return self.rtc_obj._get_paged_resources("Administrator",
+                                                 projectarea_id=self.id,
+                                                 page_size='10',
+                                                 returned_properties=rp,
+                                                 filter_rule=filter_rule)
