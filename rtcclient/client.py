@@ -1290,7 +1290,8 @@ class RTCClient(RTCBase):
             resource_cls = eval(resource_name)
 
         if resource_name in ["Workitem",
-                             "Query"]:
+                             "Query",
+                             "RunQuery"]:
             resource_url = entry.get("@rdf:resource")
             resource_url = "/".join([self.url,
                                      "oslc/workitems",

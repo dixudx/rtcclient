@@ -192,7 +192,11 @@ class Query(RTCBase):
         """
 
         try:
+            if "=" not in saved_query_url:
+                raise exception.BadValue()
             saved_query_id = saved_query_url.split("=")[-1]
+            if not saved_query_id:
+                raise exception.BadValue()
         except:
             error_msg = "No saved query id is found in the url"
             self.log.error(error_msg)
