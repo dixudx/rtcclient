@@ -26,10 +26,11 @@ to here_.
 
 This library can help you:
 
-* Interacts with an RTC server to retrieve objects which contain the detailed information/configuration, including Project Areas, Team Areas, Workitems, etc
+* Interacts with an RTC server to retrieve objects which contain the detailed information/configuration, including Project Areas, Team Areas, Workitems, Saved Queries, etc
 * Creates all kinds of Workitems through self-customized templates or Copies from some existing Workitems
 * Add comments to the retrieved Workitems
-* Query Workitems using specified filtered rules
+* Add/remove subscribers to/from the retrieved Workitems
+* Query Workitems using specified filtered rules or directly from your saved queries
 * Logs all the activities and messages during your operation
 
 
