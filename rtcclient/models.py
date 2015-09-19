@@ -144,5 +144,9 @@ class SavedQuery(FieldBase):
 
     log = logging.getLogger("models.SavedQuery")
 
+    def __init__(self, url, rtc_obj, raw_data=None):
+        self.id = url.split("/")[-1]
+        FieldBase.__init__(self, url, rtc_obj, raw_data)
+
     def __str__(self):
         return self.title

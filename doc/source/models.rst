@@ -55,5 +55,5 @@ Models
    :members:
 
 
-   .. autoclass:: rtcclient.models.SavedQuery
+.. autoclass:: rtcclient.models.SavedQuery
    :members:

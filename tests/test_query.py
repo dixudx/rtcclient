@@ -372,3 +372,26 @@ class TestQuery:
         for invalid_url in invalid_urls:
             with pytest.raises(exception.BadValue):
                 myquery.runSavedQueryByUrl(invalid_url)
+
+    def test_run_saved_query_by_id(self, myrtcclient, mock_get_workitems):
+        myquery = myrtcclient.query
+
+        valid_ids = ["_1CR5MMfiEd6yW_0tvNlbrw",
+                     "12345678",
+                     "ABCDEFG"]
+
+        # Workitem1
+        workitem1 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
+                             myrtcclient,
+                             workitem_id=161,
+                             raw_data=utils_test.workitem1)
+
+        for valid_id in valid_ids:
+            query_workitems = myquery.runSavedQueryByID(valid_id)
+            assert query_workitems == [workitem1]
+
+        # invalid saved query IDs
+        invalid_ids = [None, "", True, False]
+        for invalid_id in invalid_ids:
+            with pytest.raises(exception.BadValue):
+                myquery.runSavedQueryByID(invalid_id)
