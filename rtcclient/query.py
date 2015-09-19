@@ -2,6 +2,7 @@ from rtcclient.base import RTCBase
 import logging
 from rtcclient import urlquote
 from rtcclient import exception
+import six
 
 
 class Query(RTCBase):
@@ -201,6 +202,34 @@ class Query(RTCBase):
             error_msg = "No saved query id is found in the url"
             self.log.error(error_msg)
             raise exception.BadValue(error_msg)
+        return self._runSavedQuery(saved_query_id,
+                                   returned_properties=returned_properties)
+
+    def runSavedQueryByID(self, saved_query_id, returned_properties=None):
+        """Query workitems using the saved query id
+
+        This saved query id can be obtained by below two methods:
+
+        1. :class:`rtcclient.models.SavedQuery` object (e.g.
+        mysavedquery.id)
+
+        2. your saved query url (e.g.
+        https://myrtc:9443/jazz/web/xxx#action=xxxx%id=_mGYe0CWgEeGofp83pg),
+        where the last "_mGYe0CWgEeGofp83pg" is the saved query id.
+
+        :param saved_query_id: the saved query id
+        :param returned_properties: the returned properties that you want.
+            Refer to :class:`rtcclient.client.RTCClient` for more explanations
+        :return: a :class:`list` that contains the queried
+            :class:`rtcclient.workitem.Workitem` objects
+        :rtype: list
+        """
+
+        if not isinstance(saved_query_id,
+                          six.string_types) or not saved_query_id:
+            excp_msg = "Please specify a valid saved query id"
+            self.log.error(excp_msg)
+            raise exception.BadValue(excp_msg)
         return self._runSavedQuery(saved_query_id,
                                    returned_properties=returned_properties)
 

@@ -1,6 +1,28 @@
 CHANGES
 =======
 
+0.3.0
+-----
+
+* update for 0.3.0
+* apply filter for getting paged resources
+* fix bugs of saved query and add more tests
+* add exception handlers for saved query
+* add tests for getting saved queries
+* add doc for saved queries
+* add methods to query workitems using saved query url
+* add methods to get saved queries
+* remove wrong log
+* add method to add/remove subscribers
+* fix object url for getting single workitem
+* fix returned properties bug
+* add tests for workitem states and enable unicode
+* update tests for class projectarea to enable unicode
+* update tests for client due to unicode enabled
+* add method to get all States of Workitem
+* add six to enable unicode string and fix returned_properties bug
+* add keyword in setup.cfg and update ChangeLog
+
 0.2.0
 -----
 
