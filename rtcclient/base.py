@@ -201,7 +201,9 @@ class FieldBase(RTCBase):
         """Initialze from raw data (OrderedDict)"""
         for (key, value) in self.raw_data.iteritems():
             if key.startswith("@"):
-                continue
+                # be compatible with IncludedInBuild
+                if "@oslc_cm:label" != key:
+                    continue
 
             attr = key.split(":")[-1].replace("-", "_")
             attr_list = attr.split(".")
@@ -219,6 +221,7 @@ class FieldBase(RTCBase):
                 if value_text is not None:
                     value = value_text
                 else:
+                    # request detailed info using rdf:resource
                     value = value.values()[0]
                     try:
                         value = self.__get_rdf_resource_title(value)
@@ -243,8 +246,13 @@ class FieldBase(RTCBase):
         root_key = raw_data.keys()[0]
         total_count = raw_data[root_key].get("@oslc_cm:totalCount")
         if total_count is None:
-            return raw_data[root_key].get("dc:title")
+            # no total count
+            # only single resource
+            # compatible with IncludedInBuild
+            return (raw_data[root_key].get("dc:title") or
+                    raw_data[root_key].get("foaf:nick"))
         else:
+            # multiple resource
             result_list = list()
             entry_keys = [entry_key for entry_key in raw_data[root_key].keys()
                           if not entry_key.startswith("@")]

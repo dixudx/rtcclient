@@ -6,6 +6,7 @@ from rtcclient.workitem import Workitem
 from rtcclient.models import TeamArea, Member, Administrator, PlannedFor
 from rtcclient.models import Severity, Priority, ItemType, SavedQuery
 from rtcclient.models import FiledAgainst, FoundIn, Comment, Action, State
+from rtcclient.models import IncludedInBuild
 import logging
 from rtcclient import urlparse, urlquote, urlencode, OrderedDict
 import copy
@@ -1185,11 +1186,13 @@ class RTCClient(RTCBase):
                                 "Query",
                                 "State"]
         workitem_required = ["Comment",
-                             "Subscriber"]
+                             "Subscriber",
+                             "IncludedInBuild"]
         customized_required = ["Action",
                                "Query",
                                "State",
-                               "RunQuery"]
+                               "RunQuery",
+                               "IncludedInBuild"]
 
         if resource_name in projectarea_required and not projectarea_id:
             self.log.error("No ProjectArea ID is specified")
@@ -1227,7 +1230,9 @@ class RTCClient(RTCBase):
                    "State": "workflows/%s/states/%s" % (projectarea_id,
                                                         customized_attr),
                    "SavedQuery": "queries",
-                   "RunQuery": "queries/%s/rtc_cm:results" % customized_attr
+                   "RunQuery": "queries/%s/rtc_cm:results" % customized_attr,
+                   "IncludedInBuild": "workitems/%s/%s" % (workitem_id,
+                                                           customized_attr)
                    }
 
         entry_map = {"TeamArea": "rtc_cm:Team",
@@ -1247,7 +1252,8 @@ class RTCClient(RTCBase):
                      "Query": "oslc_cm:ChangeRequest",
                      "State": "rtc_cm:Status",
                      "SavedQuery": "rtc_cm:Query",
-                     "RunQuery": "oslc_cm:ChangeRequest"
+                     "RunQuery": "oslc_cm:ChangeRequest",
+                     "IncludedInBuild": "oslc_auto:AutomationResult"
                      }
 
         if resource_name not in res_map:

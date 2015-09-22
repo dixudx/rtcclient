@@ -150,3 +150,12 @@ class SavedQuery(FieldBase):
 
     def __str__(self):
         return self.title
+
+
+class IncludedInBuild(FieldBase):
+    """Which build includes the certain workitem"""
+
+    log = logging.getLogger("models.IncludedInBuild")
+
+    def __str__(self):
+        return self.label

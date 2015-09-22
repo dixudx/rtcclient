@@ -425,3 +425,22 @@ class Workitem(FieldBase):
                                                  projectarea_id=self.contextId,
                                                  customized_attr=cust_attr,
                                                  page_size="50")
+
+    def getIncludedInBuilds(self):
+        """Get all :class:`rtcclient.models.IncludedInBuild` objects that
+        have already included this workitem
+
+        WARNING: If one of the IncludedInBuilds is removed or cannot be
+        retrieved/found correctly, then 404 error will be raised.
+
+        :return: a :class:`list` contains all the
+            :class:`rtcclient.models.IncludedInBuild` objects
+        :rtype: list
+        """
+
+        build_tag = ("rtc_cm:com.ibm.team.build.linktype.includedWorkItems."
+                     "com.ibm.team.build.common.link.includedInBuilds")
+        return self.rtc_obj._get_paged_resources("IncludedInBuild",
+                                                 workitem_id=self.identifier,
+                                                 customized_attr=build_tag,
+                                                 page_size="5")
