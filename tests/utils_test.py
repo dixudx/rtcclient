@@ -160,3 +160,11 @@ savedquery2 = (xmltodict.parse(read_fixture("savedqueries.xml"))
 savedquery3 = (xmltodict.parse(read_fixture("savedqueries.xml"))
                         .get("oslc_cm:Collection")
                         .get("rtc_cm:Query")[2])
+
+includedinbuild1 = (xmltodict.parse(read_fixture("includedinbuilds.xml"))
+                             .get("oslc_cm:Collection")
+                             .get("oslc_auto:AutomationResult")[0])
+
+includedinbuild2 = (xmltodict.parse(read_fixture("includedinbuilds.xml"))
+                             .get("oslc_cm:Collection")
+                             .get("oslc_auto:AutomationResult")[1])

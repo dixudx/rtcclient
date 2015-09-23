@@ -3,7 +3,7 @@ import pytest
 import utils_test
 from rtcclient.exception import BadValue, NotFound
 from rtcclient.workitem import Workitem
-from rtcclient.models import Comment, Action, State
+from rtcclient.models import Comment, Action, State, IncludedInBuild
 
 
 class TestWorkitem:
@@ -227,3 +227,69 @@ class TestWorkitem:
 
         states = workitem1.getStates()
         assert states == [state1, state2]
+
+    @pytest.fixture
+    def mock_get_iib(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("includedinbuilds.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_includedinbuilds(self, myrtcclient, mock_get_iib,
+                                  workitem1):
+        # IncludedInBuild1
+        iib1_url = ("http://test.url:9443/jazz/resource/itemOid/"
+                    "com.ibm.team.build.BuildResult/_2NXr8Fx3EeWfxsy-c6nRWw")
+        iib1 = IncludedInBuild(iib1_url,
+                               myrtcclient,
+                               raw_data=utils_test.includedinbuild1)
+        assert iib1.url == iib1_url
+        assert iib1.identifier == "_2NXr8Fx3EeWfxsy-c6nRWw"
+        assert iib1.name == "20150916-0836"
+        assert iib1.created == "2015-09-16T13:35:51.342Z"
+        assert iib1.started == "2015-09-16T13:36:01.122Z"
+        assert iib1.ended == "2015-09-16T13:43:20.183Z"
+        assert iib1.reason == "MANUAL"
+        assert iib1.state == "COMPLETED"
+        assert iib1.verdict == "OK"
+        assert iib1.subject is None
+
+        # fake data
+        assert iib1.plan == ("http://test.url:9443/jazz/oslc/automation/"
+                             "plans/_-xFK4AH0EeSgb7B1Epikyg")
+        assert iib1.creator == ("http://test.url:9443/jazz/oslc/automation/"
+                                "persons/_Ult00OjfEd6dKb6PaBIgvQ")
+        assert iib1.contributions == ("http://test.url:9443/jazz/oslc/"
+                                      "automation/results/"
+                                      "_2NXr8Fx3EeWfxsy-c6nRWw/contributions")
+
+        # IncludedInBuild2
+        iib2_url = ("http://test.url:9443/jazz/resource/itemOid/"
+                    "com.ibm.team.build.BuildResult/_b0KuAFuPEeWfxsy-c6nRWw")
+        iib2 = IncludedInBuild(iib2_url,
+                               myrtcclient,
+                               raw_data=utils_test.includedinbuild2)
+        assert iib2.url == iib2_url
+        assert iib2.identifier == "_b0KuAFuPEeWfxsy-c6nRWw"
+        assert iib2.name == "20150915-0452"
+        assert iib2.created == "2015-09-15T09:52:10.975Z"
+        assert iib2.started == "2015-09-15T09:52:19.544Z"
+        assert iib2.ended == "2015-09-15T10:03:05.743Z"
+        assert iib2.reason == "MANUAL"
+        assert iib2.state == "COMPLETED"
+        assert iib2.verdict == "OK"
+        assert iib2.subject is None
+
+        # fake data
+        assert iib2.plan == ("http://test.url:9443/jazz/oslc/automation/"
+                             "plans/_0-o5QJ4DEeOwXZhplBr4Rw")
+        assert iib2.creator == ("http://test.url:9443/jazz/oslc/automation/"
+                                "persons/_mYwwQGA5EeKE8fx0mWPe-A")
+        assert iib2.contributions == ("http://test.url:9443/jazz/oslc/"
+                                      "automation/results/"
+                                      "_b0KuAFuPEeWfxsy-c6nRWw/contributions")
+
+        iibs = workitem1.getIncludedInBuilds()
+        assert iibs == [iib1, iib2]
