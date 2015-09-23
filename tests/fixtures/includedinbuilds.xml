@@ -1,0 +1,30 @@
+<oslc_cm:Collection xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:dc="http://purl.org/dc/terms/" xmlns:oslc_auto="http://open-services.net/xmlns/automation/1.0/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:calm="http://jazz.net/xmlns/prod/jazz/calm/1.0/" oslc_cm:totalCount="2">
+<oslc_auto:AutomationResult rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.build.BuildResult/_2NXr8Fx3EeWfxsy-c6nRWw" oslc_cm:label="Integration Stream Build 20150916-0836">
+<dc:identifier>_2NXr8Fx3EeWfxsy-c6nRWw</dc:identifier>
+<dc:name>20150916-0836</dc:name>
+<oslc_auto:plan rdf:resource="http://test.url:9443/jazz/oslc/automation/plans/_-xFK4AH0EeSgb7B1Epikyg"/>
+<dc:creator rdf:resource="http://test.url:9443/jazz/oslc/automation/persons/_Ult00OjfEd6dKb6PaBIgvQ"/>
+<dc:created>2015-09-16T13:35:51.342Z</dc:created>
+<oslc_auto:started>2015-09-16T13:36:01.122Z</oslc_auto:started>
+<oslc_auto:ended>2015-09-16T13:43:20.183Z</oslc_auto:ended>
+<oslc_auto:reason>MANUAL</oslc_auto:reason>
+<oslc_auto:state>COMPLETED</oslc_auto:state>
+<oslc_auto:verdict>OK</oslc_auto:verdict>
+<oslc_auto:subject/>
+<oslc_auto:contributions rdf:resource="http://test.url:9443/jazz/oslc/automation/results/_2NXr8Fx3EeWfxsy-c6nRWw/contributions"/>
+</oslc_auto:AutomationResult>
+<oslc_auto:AutomationResult rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.build.BuildResult/_b0KuAFuPEeWfxsy-c6nRWw" oslc_cm:label="DevOps Team Stream Build 20150915-0452">
+<dc:identifier>_b0KuAFuPEeWfxsy-c6nRWw</dc:identifier>
+<dc:name>20150915-0452</dc:name>
+<oslc_auto:plan rdf:resource="http://test.url:9443/jazz/oslc/automation/plans/_0-o5QJ4DEeOwXZhplBr4Rw"/>
+<dc:creator rdf:resource="http://test.url:9443/jazz/oslc/automation/persons/_mYwwQGA5EeKE8fx0mWPe-A"/>
+<dc:created>2015-09-15T09:52:10.975Z</dc:created>
+<oslc_auto:started>2015-09-15T09:52:19.544Z</oslc_auto:started>
+<oslc_auto:ended>2015-09-15T10:03:05.743Z</oslc_auto:ended>
+<oslc_auto:reason>MANUAL</oslc_auto:reason>
+<oslc_auto:state>COMPLETED</oslc_auto:state>
+<oslc_auto:verdict>OK</oslc_auto:verdict>
+<oslc_auto:subject/>
+<oslc_auto:contributions rdf:resource="http://test.url:9443/jazz/oslc/automation/results/_b0KuAFuPEeWfxsy-c6nRWw/contributions"/>
+</oslc_auto:AutomationResult>
+</oslc_cm:Collection>
