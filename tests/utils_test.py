@@ -168,3 +168,15 @@ includedinbuild1 = (xmltodict.parse(read_fixture("includedinbuilds.xml"))
 includedinbuild2 = (xmltodict.parse(read_fixture("includedinbuilds.xml"))
                              .get("oslc_cm:Collection")
                              .get("oslc_auto:AutomationResult")[1])
+
+children1 = (xmltodict.parse(read_fixture("children.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("oslc_cm:ChangeRequest")[0])
+
+children2 = (xmltodict.parse(read_fixture("children.xml"))
+                      .get("oslc_cm:Collection")
+                      .get("oslc_cm:ChangeRequest")[1])
+
+parent = (xmltodict.parse(read_fixture("parent.xml"))
+                   .get("oslc_cm:Collection")
+                   .get("oslc_cm:ChangeRequest"))
