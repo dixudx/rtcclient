@@ -1187,12 +1187,16 @@ class RTCClient(RTCBase):
                                 "State"]
         workitem_required = ["Comment",
                              "Subscriber",
-                             "IncludedInBuild"]
+                             "IncludedInBuild",
+                             "Parent",
+                             "Children"]
         customized_required = ["Action",
                                "Query",
                                "State",
                                "RunQuery",
-                               "IncludedInBuild"]
+                               "IncludedInBuild",
+                               "Parent",
+                               "Children"]
 
         if resource_name in projectarea_required and not projectarea_id:
             self.log.error("No ProjectArea ID is specified")
@@ -1232,7 +1236,11 @@ class RTCClient(RTCBase):
                    "SavedQuery": "queries",
                    "RunQuery": "queries/%s/rtc_cm:results" % customized_attr,
                    "IncludedInBuild": "workitems/%s/%s" % (workitem_id,
-                                                           customized_attr)
+                                                           customized_attr),
+                   "Parent": "workitems/%s/%s" % (workitem_id,
+                                                  customized_attr),
+                   "Children": "workitems/%s/%s" % (workitem_id,
+                                                    customized_attr)
                    }
 
         entry_map = {"TeamArea": "rtc_cm:Team",
@@ -1253,7 +1261,9 @@ class RTCClient(RTCBase):
                      "State": "rtc_cm:Status",
                      "SavedQuery": "rtc_cm:Query",
                      "RunQuery": "oslc_cm:ChangeRequest",
-                     "IncludedInBuild": "oslc_auto:AutomationResult"
+                     "IncludedInBuild": "oslc_auto:AutomationResult",
+                     "Parent": "oslc_cm:ChangeRequest",
+                     "Children": "oslc_cm:ChangeRequest"
                      }
 
         if resource_name not in res_map:
@@ -1391,16 +1401,16 @@ class RTCClient(RTCBase):
 
         if resource_name == "Subscriber":
             resource_cls = Member
-        elif resource_name == "Query":
-            resource_cls = Workitem
-        elif resource_name == "RunQuery":
+        elif resource_name in ["Query", "RunQuery", "Parent", "Children"]:
             resource_cls = Workitem
         else:
             resource_cls = eval(resource_name)
 
         if resource_name in ["Workitem",
                              "Query",
-                             "RunQuery"]:
+                             "RunQuery",
+                             "Parent",
+                             "Children"]:
             resource_url = entry.get("@rdf:resource")
             resource_url = "/".join([self.url,
                                      "oslc/workitems",
