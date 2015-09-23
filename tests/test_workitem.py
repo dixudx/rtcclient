@@ -293,3 +293,48 @@ class TestWorkitem:
 
         iibs = workitem1.getIncludedInBuilds()
         assert iibs == [iib1, iib2]
+
+    @pytest.fixture
+    def mock_get_children(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("children.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_children(self, myrtcclient, mock_get_children,
+                          workitem1):
+        # chidlren1
+        children1 = Workitem("http://test.url:9443/jazz/oslc/workitems/142990",
+                             myrtcclient,
+                             workitem_id=142990,
+                             raw_data=utils_test.children1)
+
+        # chidlren2
+        children2 = Workitem("http://test.url:9443/jazz/oslc/workitems/142989",
+                             myrtcclient,
+                             workitem_id=142989,
+                             raw_data=utils_test.children1)
+
+        children = workitem1.getChildren()
+        assert children == [children1, children2]
+
+    @pytest.fixture
+    def mock_get_parent(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("parent.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_parent(self, myrtcclient, mock_get_parent,
+                        workitem1):
+        # parent
+        parent = Workitem("http://test.url:9443/jazz/oslc/workitems/141872",
+                          myrtcclient,
+                          workitem_id=141872,
+                          raw_data=utils_test.parent)
+
+        assert workitem1.getParent() == parent
