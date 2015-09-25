@@ -513,6 +513,9 @@ class Workitem(FieldBase):
     def addParent(self, parent_id):
         """Add a parent to current workitem
 
+        Notice: for a certain workitem, no more than one parent workitem
+        can be added and specified
+
         :param parent_id: the parent workitem id/number
             (integer or equivalent string)
         """
@@ -550,3 +553,74 @@ class Workitem(FieldBase):
                       "<Workitem %s>",
                       parent_id,
                       self)
+
+    def addChild(self, child_id):
+        """Add a child to current workitem
+
+        :param child_id: the child workitem id/number
+            (integer or equivalent string)
+        """
+
+        self.log.debug("Try to add a child <Workitem %s> to current "
+                       "<Workitem %s>",
+                       child_id,
+                       self)
+        self._addChildren([child_id])
+        self.log.info("Successfully add a child <Workitem %s> to current "
+                      "<Workitem %s>",
+                      child_id,
+                      self)
+
+    def addChildren(self, child_ids):
+
+        if not hasattr(child_ids, "__iter__"):
+            error_msg = "Input parameter 'child_ids' is not iterable"
+            self.log.error(error_msg)
+            raise exception.BadValue(error_msg)
+
+        self.log.debug("Try to add children <Workitem %s> to current "
+                       "<Workitem %s>",
+                       child_ids,
+                       self)
+        self._addChildren(child_ids)
+        self.log.info("Successfully add children <Workitem %s> to current "
+                      "<Workitem %s>",
+                      child_ids,
+                      self)
+
+    def _addChildren(self, child_ids):
+        headers = copy.deepcopy(self.rtc_obj.headers)
+        headers["Content-Type"] = self.OSLC_CR_JSON
+        req_url = "".join([self.url,
+                           "?oslc_cm.properties=com.ibm.team.workitem.",
+                           "linktype.parentworkitem.children"])
+
+        child_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
+                     "parentworkitem.children")
+
+        children_original = dict()
+        children_original[child_tag] = list()
+
+        for child_id in child_ids:
+
+            # check data type
+            if isinstance(child_id, bool):
+                raise exception.BadValue("Invalid workitem id: %s",
+                                         child_id)
+            if isinstance(child_id, six.string_types):
+                child_id = int(child_id)
+            if not isinstance(child_id, int):
+                raise exception.BadValue("Invalid workitem id: %s",
+                                         child_id)
+
+            # add child url
+            child_url = ("{0}/resource/itemName/com.ibm.team."
+                         "workitem.WorkItem/{1}".format(self.rtc_obj.url,
+                                                        child_id))
+            children_original[child_tag].append({"rdf:resource": child_url})
+
+        # update children workitems
+        self.put(req_url,
+                 verify=False,
+                 headers=headers,
+                 data=json.dumps(children_original))
