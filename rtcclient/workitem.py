@@ -6,6 +6,7 @@ from rtcclient import exception, OrderedDict
 from requests.exceptions import HTTPError
 from rtcclient.models import Comment
 import six
+import json
 
 
 class Workitem(FieldBase):
@@ -486,11 +487,12 @@ class Workitem(FieldBase):
         children_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
                         "parentworkitem.children")
         rp = returned_properties
-        return (self.rtc_obj._get_paged_resources("Children",
-                                                  workitem_id=self.identifier,
-                                                  customized_attr=children_tag,
-                                                  page_size="10",
-                                                  returned_properties=rp))
+        return (self.rtc_obj
+                    ._get_paged_resources("Children",
+                                          workitem_id=self.identifier,
+                                          customized_attr=children_tag,
+                                          page_size="10",
+                                          returned_properties=rp))
 
     def getChangeSets(self):
         """Get all the ChangeSets of this workitem
@@ -507,3 +509,44 @@ class Workitem(FieldBase):
                                           workitem_id=self.identifier,
                                           customized_attr=changeset_tag,
                                           page_size="10"))
+
+    def addParent(self, parent_id):
+        """Add a parent to current workitem
+
+        :param parent_id: the parent workitem id/number
+            (integer or equivalent string)
+        """
+
+        if isinstance(parent_id, bool):
+            raise exception.BadValue("Please input a valid workitem id")
+        if isinstance(parent_id, six.string_types):
+            parent_id = int(parent_id)
+        if not isinstance(parent_id, int):
+            raise exception.BadValue("Please input a valid workitem id")
+
+        self.log.debug("Try to add a parent <Workitem %s> to current "
+                       "<Workitem %s>",
+                       parent_id,
+                       self)
+
+        headers = copy.deepcopy(self.rtc_obj.headers)
+        headers["Content-Type"] = self.OSLC_CR_JSON
+        req_url = "".join([self.url,
+                           "?oslc_cm.properties=com.ibm.team.workitem.",
+                           "linktype.parentworkitem.parent"])
+
+        parent_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
+                      "parentworkitem.parent")
+        parent_url = ("{0}/resource/itemName/com.ibm.team."
+                      "workitem.WorkItem/{1}".format(self.rtc_obj.url,
+                                                     parent_id))
+        parent_original = {parent_tag: [{"rdf:resource": parent_url}]}
+
+        self.put(req_url,
+                 verify=False,
+                 headers=headers,
+                 data=json.dumps(parent_original))
+        self.log.info("Successfully add a parent <Workitem %s> to current "
+                      "<Workitem %s>",
+                      parent_id,
+                      self)

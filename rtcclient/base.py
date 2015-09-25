@@ -13,6 +13,7 @@ class RTCBase(object):
     CONTENT_XML = "text/xml"
     CONTENT_URL_ENCODED = "application/x-www-form-urlencoded"
     OSLC_CR_XML = "application/x-oslc-cm-change-request+xml"
+    OSLC_CR_JSON = "application/x-oslc-cm-change-request+json"
 
     def __init__(self, url):
         self.url = self.validate_url(url)
