@@ -4,6 +4,7 @@ import utils_test
 from rtcclient.exception import BadValue, NotFound
 from rtcclient.workitem import Workitem
 from rtcclient.models import Comment, Action, State, IncludedInBuild
+from rtcclient.models import ChangeSet
 
 
 class TestWorkitem:
@@ -338,3 +339,45 @@ class TestWorkitem:
                           raw_data=utils_test.parent)
 
         assert workitem1.getParent() == parent
+
+    @pytest.fixture
+    def mock_get_changesets(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("changesets.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_changesets(self, myrtcclient, mock_get_changesets,
+                            workitem1):
+        # changeset1
+        changeset1_url = ("http://test.url:9443/jazz/resource/itemOid/"
+                          "com.ibm.team.scm.ChangeSet/"
+                          "_VAjiUGHIEeWDLNtG9052Dw")
+        changeset1 = ChangeSet(changeset1_url,
+                               myrtcclient,
+                               raw_data=utils_test.changeset1)
+
+        assert changeset1.url == changeset1_url
+        assert str(changeset1) == ("Changes 1 - Comment 1 - User1 - "
+                                   "Sep 23, 2015 2:54 AM")
+
+        # changeset2
+        changeset2_url = ("http://test.url:9443/jazz/resource/itemOid/"
+                          "com.ibm.team.scm.ChangeSet/"
+                          "_aVKuMGHWEeWDLNtG9052Dw")
+        changeset2 = ChangeSet(changeset2_url,
+                               myrtcclient,
+                               raw_data=utils_test.changeset2)
+
+        # changeset3
+        changeset3_url = ("http://test.url:9443/jazz/resource/itemOid/"
+                          "com.ibm.team.scm.ChangeSet/"
+                          "_nBUMsF0gEeWfxsy-c6nRWw")
+        changeset3 = ChangeSet(changeset3_url,
+                               myrtcclient,
+                               raw_data=utils_test.changeset3)
+
+        changesets = workitem1.getChangeSets()
+        assert changesets == [changeset1, changeset2, changeset3]

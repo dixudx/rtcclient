@@ -180,3 +180,15 @@ children2 = (xmltodict.parse(read_fixture("children.xml"))
 parent = (xmltodict.parse(read_fixture("parent.xml"))
                    .get("oslc_cm:Collection")
                    .get("oslc_cm:ChangeRequest"))
+
+changeset1 = (xmltodict.parse(read_fixture("changesets.xml"))
+                       .get("oslc_cm:Collection")
+                       .get("rtc_cm:Reference")[0])
+
+changeset2 = (xmltodict.parse(read_fixture("changesets.xml"))
+                       .get("oslc_cm:Collection")
+                       .get("rtc_cm:Reference")[1])
+
+changeset3 = (xmltodict.parse(read_fixture("changesets.xml"))
+                       .get("oslc_cm:Collection")
+                       .get("rtc_cm:Reference")[2])
