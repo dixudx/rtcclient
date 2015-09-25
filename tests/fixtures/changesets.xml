@@ -1,0 +1,5 @@
+<oslc_cm:Collection xmlns:oslc_cm="http://open-services.net/xmlns/cm/1.0/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:calm="http://jazz.net/xmlns/prod/jazz/calm/1.0/" xmlns:rtc_cm="http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/" oslc_cm:totalCount="3">
+<rtc_cm:Reference rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.scm.ChangeSet/_VAjiUGHIEeWDLNtG9052Dw" oslc_cm:label="Changes 1 - Comment 1 - User1 - Sep 23, 2015 2:54 AM"/>
+<rtc_cm:Reference rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.scm.ChangeSet/_aVKuMGHWEeWDLNtG9052Dw" oslc_cm:label="Changes 2 - Comment 2 - User2 - Sep 23, 2015 4:35 AM"/>
+<rtc_cm:Reference rdf:resource="http://test.url:9443/jazz/resource/itemOid/com.ibm.team.scm.ChangeSet/_nBUMsF0gEeWfxsy-c6nRWw" oslc_cm:label="Changes 3 - Comment 3 - User3 - Sep 17, 2015 4:43 AM"/>
+</oslc_cm:Collection>

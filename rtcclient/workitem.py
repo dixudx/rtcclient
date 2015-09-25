@@ -473,7 +473,7 @@ class Workitem(FieldBase):
         return None
 
     def getChildren(self, returned_properties=None):
-        """Get the children workitems of this workitem
+        """Get all the children workitems of this workitem
 
         If no children, None will be returned.
 
@@ -491,3 +491,19 @@ class Workitem(FieldBase):
                                                   customized_attr=children_tag,
                                                   page_size="10",
                                                   returned_properties=rp))
+
+    def getChangeSets(self):
+        """Get all the ChangeSets of this workitem
+
+        :return: a :class:`list` contains all the
+            :class:`rtcclient.models.ChangeSet` objects
+        :rtype: list
+        """
+
+        changeset_tag = ("rtc_cm:com.ibm.team.filesystem.workitems."
+                         "change_set.com.ibm.team.scm.ChangeSet")
+        return (self.rtc_obj
+                    ._get_paged_resources("ChangeSet",
+                                          workitem_id=self.identifier,
+                                          customized_attr=changeset_tag,
+                                          page_size="10"))

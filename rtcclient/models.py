@@ -159,3 +159,12 @@ class IncludedInBuild(FieldBase):
 
     def __str__(self):
         return self.label
+
+
+class ChangeSet(FieldBase):
+    """ChangeSet"""
+
+    log = logging.getLogger("models.ChangeSet")
+
+    def __str__(self):
+        return self.label

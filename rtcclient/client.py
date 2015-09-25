@@ -6,7 +6,7 @@ from rtcclient.workitem import Workitem
 from rtcclient.models import TeamArea, Member, Administrator, PlannedFor
 from rtcclient.models import Severity, Priority, ItemType, SavedQuery
 from rtcclient.models import FiledAgainst, FoundIn, Comment, Action, State
-from rtcclient.models import IncludedInBuild
+from rtcclient.models import IncludedInBuild, ChangeSet
 import logging
 from rtcclient import urlparse, urlquote, urlencode, OrderedDict
 import copy
@@ -1189,14 +1189,16 @@ class RTCClient(RTCBase):
                              "Subscriber",
                              "IncludedInBuild",
                              "Parent",
-                             "Children"]
+                             "Children",
+                             "ChangeSet"]
         customized_required = ["Action",
                                "Query",
                                "State",
                                "RunQuery",
                                "IncludedInBuild",
                                "Parent",
-                               "Children"]
+                               "Children",
+                               "ChangeSet"]
 
         if resource_name in projectarea_required and not projectarea_id:
             self.log.error("No ProjectArea ID is specified")
@@ -1240,7 +1242,9 @@ class RTCClient(RTCBase):
                    "Parent": "workitems/%s/%s" % (workitem_id,
                                                   customized_attr),
                    "Children": "workitems/%s/%s" % (workitem_id,
-                                                    customized_attr)
+                                                    customized_attr),
+                   "ChangeSet": "workitems/%s/%s" % (workitem_id,
+                                                     customized_attr)
                    }
 
         entry_map = {"TeamArea": "rtc_cm:Team",
@@ -1263,7 +1267,8 @@ class RTCClient(RTCBase):
                      "RunQuery": "oslc_cm:ChangeRequest",
                      "IncludedInBuild": "oslc_auto:AutomationResult",
                      "Parent": "oslc_cm:ChangeRequest",
-                     "Children": "oslc_cm:ChangeRequest"
+                     "Children": "oslc_cm:ChangeRequest",
+                     "ChangeSet": "rtc_cm:Reference"
                      }
 
         if resource_name not in res_map:

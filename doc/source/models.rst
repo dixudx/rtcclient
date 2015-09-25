@@ -57,3 +57,11 @@ Models
 
 .. autoclass:: rtcclient.models.SavedQuery
    :members:
+
+
+.. autoclass:: rtcclient.models.IncludedInBuild
+   :members:
+
+
+.. autoclass:: rtcclient.models.ChangeSet
+   :members:
