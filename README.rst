@@ -22,22 +22,21 @@ to here_.
 
 .. _here: http://www.ibm.com/developerworks/downloads/r/rtc/
 
-**IMPORTANT NOTE: THIS IS NOT AN OFFICIAL Python-based RTC Client.**
+**IMPORTANT NOTE: This is NOT an official-released Python-based RTC Client.**
 
 This library can help you:
 
 * Interacts with an RTC server to retrieve objects which contain the detailed information/configuration, including Project Areas, Team Areas, Workitems, Saved Queries, etc
 * Creates all kinds of Workitems through self-customized templates or Copies from some existing Workitems
-* Add comments to the retrieved Workitems
-* Add/remove subscribers to/from the retrieved Workitems
+* Performs some actions on the retrieved Workitems;
 * Query Workitems using specified filtered rules or directly from your saved queries
 * Logs all the activities and messages during your operation
 
 
-Python & Rational Team Concert versions
+Python & Rational Team Concert Versions
 ---------------------------------------
 
-The project have been tested against ``Rational Team Concert`` **5.0.1** and
+The project has been tested against ``Rational Team Concert`` **5.0.1** and
 **5.0.2** on Python 2.6, 2.7 and 3.3.
 
 
