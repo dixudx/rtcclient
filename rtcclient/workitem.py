@@ -572,6 +572,11 @@ class Workitem(FieldBase):
                       self)
 
     def addChildren(self, child_ids):
+        """Add children to current workitem
+
+        :param child_ids: a :class:`list` contains the children
+            workitem id/number (integer or equivalent string)
+        """
 
         if not hasattr(child_ids, "__iter__"):
             error_msg = "Input parameter 'child_ids' is not iterable"
@@ -589,37 +594,155 @@ class Workitem(FieldBase):
                       self)
 
     def _addChildren(self, child_ids):
-        headers = copy.deepcopy(self.rtc_obj.headers)
-        headers["Content-Type"] = self.OSLC_CR_JSON
-        req_url = "".join([self.url,
-                           "?oslc_cm.properties=com.ibm.team.workitem.",
-                           "linktype.parentworkitem.children"])
-
         child_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
                      "parentworkitem.children")
 
         children_original = dict()
         children_original[child_tag] = list()
 
+        # retrieve current children
+        cur_children = self.getChildren(returned_properties="dc:identifier")
+        cur_child_ids = [cur_child.identifier for cur_child in cur_children]
+
+        # add current children to list
+        for child_id in cur_child_ids:
+            self._addChild(child_id, children_original)
+
+        # add new children to list
         for child_id in child_ids:
-
-            # check data type
-            if isinstance(child_id, bool):
-                raise exception.BadValue("Invalid workitem id: %s",
-                                         child_id)
-            if isinstance(child_id, six.string_types):
-                child_id = int(child_id)
-            if not isinstance(child_id, int):
-                raise exception.BadValue("Invalid workitem id: %s",
-                                         child_id)
-
-            # add child url
-            child_url = ("{0}/resource/itemName/com.ibm.team."
-                         "workitem.WorkItem/{1}".format(self.rtc_obj.url,
-                                                        child_id))
-            children_original[child_tag].append({"rdf:resource": child_url})
+            self._addChild(child_id, children_original)
 
         # update children workitems
+        headers = copy.deepcopy(self.rtc_obj.headers)
+        headers["Content-Type"] = self.OSLC_CR_JSON
+        req_url = "".join([self.url,
+                           "?oslc_cm.properties=com.ibm.team.workitem.",
+                           "linktype.parentworkitem.children"])
+        self.put(req_url,
+                 verify=False,
+                 headers=headers,
+                 data=json.dumps(children_original))
+
+    def _addChild(self, child_id, children_original):
+        child_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
+                     "parentworkitem.children")
+
+        # check data type
+        if isinstance(child_id, bool):
+            raise exception.BadValue("Invalid workitem id: %s",
+                                     child_id)
+        if isinstance(child_id, six.string_types):
+            child_id = int(child_id)
+        if not isinstance(child_id, int):
+            raise exception.BadValue("Invalid workitem id: %s",
+                                     child_id)
+
+        # add child url
+        child_url = ("{0}/resource/itemName/com.ibm.team."
+                     "workitem.WorkItem/{1}".format(self.rtc_obj.url,
+                                                    child_id))
+        new_child = {"rdf:resource": child_url}
+        if new_child not in children_original[child_tag]:
+            children_original[child_tag].append(new_child)
+        else:
+            self.log.debug("Child <Workitem %s> has already been added to "
+                           "current <Workitem %s>. Ignore it.",
+                           child_id,
+                           self)
+
+    def removeParent(self):
+        """Remove the parent workitem from current workitem
+
+        Notice: for a certain workitem, no more than one parent workitem
+        can be added and specified
+
+        """
+
+        self.log.debug("Try to remove the parent workitem from current "
+                       "<Workitem %s>",
+                       self)
+
+        headers = copy.deepcopy(self.rtc_obj.headers)
+        headers["Content-Type"] = self.OSLC_CR_JSON
+        req_url = "".join([self.url,
+                           "?oslc_cm.properties=com.ibm.team.workitem.",
+                           "linktype.parentworkitem.parent"])
+
+        parent_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
+                      "parentworkitem.parent")
+        parent_original = {parent_tag: []}
+
+        self.put(req_url,
+                 verify=False,
+                 headers=headers,
+                 data=json.dumps(parent_original))
+        self.log.info("Successfully remove the parent workitem of current "
+                      "<Workitem %s>",
+                      self)
+
+    def removeChild(self, child_id):
+        """Remove a child from current workitem
+
+        :param child_id: the child workitem id/number
+            (integer or equivalent string)
+        """
+
+        self.log.debug("Try to remove a child <Workitem %s> from current "
+                       "<Workitem %s>",
+                       child_id,
+                       self)
+        self._removeChildren([child_id])
+        self.log.info("Successfully remove a child <Workitem %s> from "
+                      "current <Workitem %s>",
+                      child_id,
+                      self)
+
+    def removeChildren(self, child_ids):
+        """Remove children from current workitem
+
+        :param child_ids: a :class:`list` contains the children
+            workitem id/number (integer or equivalent string)
+        """
+
+        if not hasattr(child_ids, "__iter__"):
+            error_msg = "Input parameter 'child_ids' is not iterable"
+            self.log.error(error_msg)
+            raise exception.BadValue(error_msg)
+
+        self.log.debug("Try to remove children <Workitem %s> from current "
+                       "<Workitem %s>",
+                       child_ids,
+                       self)
+        self._removeChildren(child_ids)
+        self.log.info("Successfully remove children <Workitem %s> from "
+                      "current <Workitem %s>",
+                      child_ids,
+                      self)
+
+    def _removeChildren(self, child_ids):
+        child_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
+                     "parentworkitem.children")
+
+        children_original = dict()
+        children_original[child_tag] = list()
+
+        # retrieve current children
+        cur_children = self.getChildren(returned_properties="dc:identifier")
+        cur_child_ids = [cur_child.identifier for cur_child in cur_children]
+
+        # add current children to list
+        # remove to-be-deleted children
+        for child_id in cur_child_ids:
+            if (int(child_id) not in child_ids and
+                    str(child_id) not in child_ids):
+                self._addChild(child_id, children_original)
+
+        # update children workitems
+        headers = copy.deepcopy(self.rtc_obj.headers)
+        headers["Content-Type"] = self.OSLC_CR_JSON
+        req_url = "".join([self.url,
+                           "?oslc_cm.properties=com.ibm.team.workitem.",
+                           "linktype.parentworkitem.children"])
         self.put(req_url,
                  verify=False,
                  headers=headers,
