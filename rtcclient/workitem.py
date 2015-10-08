@@ -650,6 +650,36 @@ class Workitem(FieldBase):
                            child_id,
                            self)
 
+    def removeParent(self):
+        """Remove the parent workitem from current workitem
+
+        Notice: for a certain workitem, no more than one parent workitem
+        can be added and specified
+
+        """
+
+        self.log.debug("Try to remove the parent workitem from current "
+                       "<Workitem %s>",
+                       self)
+
+        headers = copy.deepcopy(self.rtc_obj.headers)
+        headers["Content-Type"] = self.OSLC_CR_JSON
+        req_url = "".join([self.url,
+                           "?oslc_cm.properties=com.ibm.team.workitem.",
+                           "linktype.parentworkitem.parent"])
+
+        parent_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
+                      "parentworkitem.parent")
+        parent_original = {parent_tag: []}
+
+        self.put(req_url,
+                 verify=False,
+                 headers=headers,
+                 data=json.dumps(parent_original))
+        self.log.info("Successfully remove the parent workitem of current "
+                      "<Workitem %s>",
+                      self)
+
     def removeChild(self, child_id):
         """Remove a child from current workitem
 
