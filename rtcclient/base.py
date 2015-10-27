@@ -138,6 +138,35 @@ class RTCBase(object):
             response.raise_for_status()
         return response
 
+    def delete(self, url, headers=None, verify=False,
+               timeout=60, **kwargs):
+        """Sends a DELETE request. Refactor from requests module
+
+        :param url: URL for the new :class:`Request` object.
+        :param headers: (optional) Dictionary of HTTP Headers to send with
+            the :class:`Request`.
+        :param verify: (optional) if ``True``, the SSL cert will be verified.
+            A CA_BUNDLE path can also be provided.
+        :type timeout: float or tuple
+        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :return: :class:`Response <Response>` object
+        :rtype: requests.Response
+        """
+
+        self.log.debug("Delete a request to %s",
+                       url)
+        response = requests.delete(url,
+                                   headers=headers,
+                                   verify=verify,
+                                   timeout=timeout,
+                                   **kwargs)
+        if response.status_code not in [200, 201]:
+            self.log.error('Failed DELETE request at <%s> with response: %s',
+                           url,
+                           response.content)
+            response.raise_for_status()
+        return response
+
     @classmethod
     def validate_url(cls, url):
         """Strip and trailing slash to validate a url
