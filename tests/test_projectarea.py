@@ -38,8 +38,9 @@ class TestProjectArea:
 
     def test_get_roles(self, mypa, mock_get_roles, myrtcclient):
         # Role1
-        role1_url = "/".join(["http://test.url:9443/jazz/process/project-areas",
-                              "_vsoCMN-TEd6VxeRBsGx82Q/roles/Product%20Owner"])
+        role1_url = "/".join(["http://test.url:9443/jazz/process",
+                              "project-areas/_vsoCMN-TEd6VxeRBsGx82Q",
+                              "roles/Product%20Owner"])
         role1 = Role(role1_url,
                      myrtcclient,
                      utils_test.role1)
@@ -50,15 +51,17 @@ class TestProjectArea:
                                               "managing the Product Backlog."])
 
         # Role2
-        role2_url = "/".join(["http://test.url:9443/jazz/process/project-areas",
-                              "_vsoCMN-TEd6VxeRBsGx82Q/roles/Test%20Team"])
+        role2_url = "/".join(["http://test.url:9443/jazz/process",
+                              "project-areas_vsoCMN-TEd6VxeRBsGx82Q"
+                              "roles/Test%20Team"])
         role2 = Role(role2_url,
                      myrtcclient,
                      utils_test.role2)
 
         # Role3
-        role3_url = "/".join(["http://test.url:9443/jazz/process/project-areas",
-                              "_vsoCMN-TEd6VxeRBsGx82Q/roles/default"])
+        role3_url = "/".join(["http://test.url:9443/jazz/process",
+                              "project-areas/_vsoCMN-TEd6VxeRBsGx82Q",
+                              "roles/default"])
         role3 = Role(role3_url,
                      myrtcclient,
                      utils_test.role3)
@@ -74,8 +77,9 @@ class TestProjectArea:
                 mypa.getRole(invalid_label)
 
         # Role1
-        role1_url = "/".join(["http://test.url:9443/jazz/process/project-areas",
-                              "_vsoCMN-TEd6VxeRBsGx82Q/roles/Product%20Owner"])
+        role1_url = "/".join(["http://test.url:9443/jazz/process"
+                              "project-areas_vsoCMN-TEd6VxeRBsGx82Q",
+                              "roles/Product%20Owner"])
         role1 = Role(role1_url,
                      myrtcclient,
                      utils_test.role1)
@@ -110,7 +114,7 @@ class TestProjectArea:
         assert str(m1) == "tester1"
         assert m1.email == "tester1@email.com"
         assert m1.userId == "tester1@email.com"
-        assert m1.title =="tester1"
+        assert m1.title == "tester1"
         assert m1.emailAddress == "mailto:tester1%40email.com"
         assert m1.photo is None
         assert m1.modified == "2009-11-24T19:14:14.595Z"
@@ -123,7 +127,7 @@ class TestProjectArea:
         assert str(m2) == "tester2"
         assert m2.email == "tester2@email.com"
         assert m2.userId == "tester2@email.com"
-        assert m2.title =="tester2"
+        assert m2.title == "tester2"
         assert m2.emailAddress == "mailto:tester2%40email.com"
         assert m2.photo is None
         assert m2.modified == "2013-04-22T06:24:34.661Z"
@@ -136,7 +140,7 @@ class TestProjectArea:
         assert str(m3) == "tester3"
         assert m3.email == "tester3@email.com"
         assert m3.userId == "tester3@email.com"
-        assert m3.title =="tester3"
+        assert m3.title == "tester3"
         assert m3.emailAddress == "mailto:tester3%40email.com"
         assert m3.photo is None
         assert m3.modified == "2010-05-13T20:34:05.138Z"
@@ -286,7 +290,8 @@ class TestProjectArea:
                 mypa.getAdministrator(invalid_email)
 
         # Administrator
-        ad = Administrator("http://test.url:9443/jts/users/tester1%40email.com",
+        ad_url = "http://test.url:9443/jts/users/tester1%40email.com"
+        ad = Administrator(ad_url,
                            myrtcclient,
                            utils_test.admin)
 

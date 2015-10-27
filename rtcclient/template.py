@@ -374,7 +374,8 @@ class Templater(RTCBase):
         :param template_names: a :class:`list`/:class:`tuple`/:class:`set`
             contains the template file names for copied :class:`Workitems`.
             If `None`, the new template files will be named after the
-            :class:`rtcclient.workitem.Workitem` id with "`.template`" as a postfix
+            :class:`rtcclient.workitem.Workitem` id with "`.template`" as a
+            postfix
         :param template_folder: refer to
             :class:`rtcclient.template.Templater.getTemplate`
         :param keep (default is False): refer to

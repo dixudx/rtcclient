@@ -13,25 +13,25 @@ def test_headers(mocker):
     mocked_get = mocker.patch("requests.get")
     mocked_post = mocker.patch("requests.post")
 
-    mock_resp = mocker.MagicMock(spec=requests.Response)
-    mock_resp.status_code = 200
+    mock_rsp = mocker.MagicMock(spec=requests.Response)
+    mock_rsp.status_code = 200
 
-    mocked_get.return_value = mock_resp
-    mocked_post.return_value = mock_resp
+    mocked_get.return_value = mock_rsp
+    mocked_post.return_value = mock_rsp
 
     expected_headers = {"Content-Type": "application/x-www-form-urlencoded",
                         "Cookie": "cookie-id",
                         "Accept": "text/xml"}
 
     # auth failed
-    mock_resp.headers = {"set-cookie": "cookie-id",
-                         "x-com-ibm-team-repository-web-auth-msg": "authfailed"}
+    mock_rsp.headers = {"set-cookie": "cookie-id",
+                        "x-com-ibm-team-repository-web-auth-msg": "authfailed"}
     with pytest.raises(RTCException):
         RTCClient(url="http://test.url:9443/jazz",
                   username="user",
                   password="password")
 
-    mock_resp.headers = {"set-cookie": "cookie-id"}
+    mock_rsp.headers = {"set-cookie": "cookie-id"}
     client = RTCClient(url="http://test.url:9443/jazz",
                        username="user",
                        password="password")
@@ -1043,7 +1043,8 @@ class TestRTCClient:
 
         # test for valid projectarea id
         mocked_check_pa_id.return_value = True
-        projectarea_ids = ["_CuZu0HUwEeKicpXBddtqNA", u"_CuZu0HUwEeKicpXBddtqNA"]
+        projectarea_ids = ["_CuZu0HUwEeKicpXBddtqNA",
+                           u"_CuZu0HUwEeKicpXBddtqNA"]
         for foundin_name in foundin_valid_names:
             for pa_id in projectarea_ids:
                 foundin = myrtcclient.getFoundIn("Sprint2",
@@ -1492,4 +1493,3 @@ class TestRTCClient:
                 checked_result = myrtcclient.checkType(type_name,
                                                        projectarea_id=pa_id)
                 assert checked_result is False
-
