@@ -5,9 +5,19 @@ python:
   - "2.7"
   - "3.3"
 
+matrix:
+  include:
+    - python: "2.6"
+      env: TEST_SUITE=py26
+    - python: "2.7"
+      env: TEST_SUITE=py27
+    - python: "3.3"
+      env: TEST_SUITE=py33
+
+install:
+  - pip install tox
+
 # command to run tests
 script:
   - tox -e pep8
-  - tox -e py26
-  - tox -e py27
-  - tox -e py33
+  - tox -e $TEST_SUITE
