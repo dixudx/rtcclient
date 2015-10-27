@@ -28,7 +28,6 @@ class TestProjectArea:
 
     @pytest.fixture
     def mock_get_roles(self, mocker):
-        # TODO: add roles.xml
         mocked_get = mocker.patch("requests.get")
         mock_resp = mocker.MagicMock(spec=requests.Response)
         mock_resp.status_code = 200

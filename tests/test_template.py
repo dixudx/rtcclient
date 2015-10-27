@@ -51,7 +51,7 @@ class TestTemplater:
 
     def test_get_template(self, mytemplater, mocker):
         # invalid template names
-        invalid_names = [None, True, False, "", u""]
+        invalid_names = [None, True, False, "", u"", 123.4]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 mytemplater.getTemplate(invalid_name,
@@ -78,7 +78,8 @@ class TestTemplater:
 
     def test_get_templates_exception(self, mytemplater):
         # invalid workitem ids
-        invalid_names = [None, True, False, "", u"", "test", u"test"]
+        invalid_names = [None, True, False, "", u"", "test", u"test",
+                         123, 123.4]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 mytemplater.getTemplates(invalid_name,

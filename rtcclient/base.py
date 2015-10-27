@@ -223,13 +223,13 @@ class FieldBase(RTCBase):
         """Initialize from the response"""
 
         raw_data = xmltodict.parse(resp.content)
-        root_key = raw_data.keys()[0]
+        root_key = list(raw_data.keys())[0]
         self.raw_data = raw_data.get(root_key)
         self.__initializeFromRaw()
 
     def __initializeFromRaw(self):
         """Initialze from raw data (OrderedDict)"""
-        for (key, value) in self.raw_data.iteritems():
+        for (key, value) in self.raw_data.items():
             if key.startswith("@"):
                 # be compatible with IncludedInBuild
                 if "@oslc_cm:label" != key:
@@ -252,7 +252,8 @@ class FieldBase(RTCBase):
                     value = value_text
                 else:
                     # request detailed info using rdf:resource
-                    value = value.values()[0]
+                    value = list(value.values())[0]
+
                     try:
                         value = self.__get_rdf_resource_title(value)
                     except (exception.RTCException, Exception):
@@ -273,7 +274,7 @@ class FieldBase(RTCBase):
                         headers=self.rtc_obj.headers)
         raw_data = xmltodict.parse(resp.content)
 
-        root_key = raw_data.keys()[0]
+        root_key = list(raw_data.keys())[0]
         total_count = raw_data[root_key].get("@oslc_cm:totalCount")
         if total_count is None:
             # no total count
