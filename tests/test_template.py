@@ -3,6 +3,7 @@ import pytest
 import utils_test
 from rtcclient.exception import BadValue
 from jinja2 import exceptions as jinja2_excp
+import xmltodict
 
 
 class TestTemplater:
@@ -74,7 +75,8 @@ class TestTemplater:
                                                    template_folder=None,
                                                    keep=False,
                                                    encoding="UTF-8")
-            assert template_161 == utils_test.template_raw
+            assert (list(xmltodict.parse(template_161).items()).sort() ==
+                    list(utils_test.template_ordereddict.items()).sort())
 
     def test_get_templates_exception(self, mytemplater):
         # invalid workitem ids
