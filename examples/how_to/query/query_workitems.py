@@ -28,4 +28,3 @@ if __name__ == "__main__":
     queried_wis = myquery.queryWorkitems(query_str=myquerystr,
                                          projectarea_name=projectarea_name,
                                          returned_properties=returned_prop)
-    print queried_wis

@@ -88,6 +88,7 @@ workitem2_raw = xmltodict.unparse(workitem2_origin)
 
 template_name = "issue_example.template"
 template_raw = read_fixture(template_name)
+template_ordereddict = xmltodict.parse(template_raw)
 
 member1 = (xmltodict.parse(read_fixture("members.xml"))
                     .get("oslc_cm:Collection")

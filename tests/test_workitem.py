@@ -95,7 +95,6 @@ class TestWorkitem:
         # TODO: add comment test
         pass
 
-
     @pytest.fixture
     def mock_get_subscribers(self, mocker):
         mocked_get = mocker.patch("requests.get")
@@ -204,8 +203,8 @@ class TestWorkitem:
                         workitem1):
         # State1
         state1_url = "/".join(["http://test.url:9443/jazz/oslc/workflows",
-                                "_CuZu0HUwEeKicpXBddtqNA/states",
-                                "default_workflow/default_workflow.state.s1"])
+                               "_CuZu0HUwEeKicpXBddtqNA/states",
+                               "default_workflow/default_workflow.state.s1"])
         state1 = State(state1_url,
                        myrtcclient,
                        raw_data=utils_test.state1)
@@ -216,8 +215,8 @@ class TestWorkitem:
 
         # State2
         state2_url = "/".join(["http://test.url:9443/jazz/oslc/workflows",
-                                "_CuZu0HUwEeKicpXBddtqNA/states",
-                                "default_workflow/default_workflow.state.s2"])
+                               "_CuZu0HUwEeKicpXBddtqNA/states",
+                               "default_workflow/default_workflow.state.s2"])
         state2 = State(state2_url,
                        myrtcclient,
                        raw_data=utils_test.state2)

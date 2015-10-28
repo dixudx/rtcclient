@@ -3,6 +3,7 @@ import pytest
 import utils_test
 from rtcclient.exception import BadValue
 from jinja2 import exceptions as jinja2_excp
+import xmltodict
 
 
 class TestTemplater:
@@ -51,7 +52,7 @@ class TestTemplater:
 
     def test_get_template(self, mytemplater, mocker):
         # invalid template names
-        invalid_names = [None, True, False, "", u""]
+        invalid_names = [None, True, False, "", u"", 123.4]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 mytemplater.getTemplate(invalid_name,
@@ -74,11 +75,13 @@ class TestTemplater:
                                                    template_folder=None,
                                                    keep=False,
                                                    encoding="UTF-8")
-            assert template_161 == utils_test.template_raw
+            assert (list(xmltodict.parse(template_161).items()).sort() ==
+                    list(utils_test.template_ordereddict.items()).sort())
 
     def test_get_templates_exception(self, mytemplater):
         # invalid workitem ids
-        invalid_names = [None, True, False, "", u"", "test", u"test"]
+        invalid_names = [None, True, False, "", u"", "test", u"test",
+                         123, 123.4]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 mytemplater.getTemplates(invalid_name,
