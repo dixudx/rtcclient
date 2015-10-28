@@ -10,7 +10,7 @@ rtcclient
 .. image:: https://img.shields.io/pypi/dm/rtcclient.svg
     :target: https://pypi.python.org/pypi/rtcclient
 
-.. image:: https://travis-ci.org/dixudx/rtcclient.svg
+.. image:: https://api.travis-ci.org/dixudx/rtcclient.svg?branch=master
     :target: https://pypi.python.org/pypi/rtcclient
 
 
