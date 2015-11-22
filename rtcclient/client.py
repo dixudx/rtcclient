@@ -845,11 +845,11 @@ class RTCClient(RTCBase):
 
         try:
             if isinstance(workitem_id, bool):
-                raise ValueError()
+                raise ValueError("Invalid Workitem id")
             if isinstance(workitem_id, six.string_types):
                 workitem_id = int(workitem_id)
             if not isinstance(workitem_id, int):
-                raise ValueError()
+                raise ValueError("Invalid Workitem id")
 
             workitem_url = "/".join([self.url,
                                      "oslc/workitems/%s" % workitem_id])
@@ -878,7 +878,7 @@ class RTCClient(RTCBase):
             raise exception.BadValue(excp_msg)
         except Exception as excp:
             self.log.error(excp)
-            raise exception.NotFound("Not found <Workitem %s>", workitem_id)
+            raise exception.NotFound("Not found <Workitem %s>" % workitem_id)
 
     def getWorkitems(self, projectarea_id=None, projectarea_name=None,
                      returned_properties=None, archived=False):
