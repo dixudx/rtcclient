@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+0.5.0
+-----
+
+* upload ChangeLog for 0.4.0
+* ready for 0.5.0
+* fix issue #68
+* fix exception typo
+
 0.4.0
 -----
 
