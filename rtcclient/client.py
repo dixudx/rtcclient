@@ -26,6 +26,10 @@ class RTCClient(RTCBase):
     :param searchpath: the folder to store your templates.
         If `None`, the default search path
         (/your/site-packages/rtcclient/templates) will be loaded.
+    :param ends_with_jazz: (optional) Set to `True` (default) if
+        the url ends with 'jazz', otherwise to `False` if with 'ccm'
+        (Refer to issue #68 for details)
+    :type ends_with_jazz: bool
 
     Tips: You can also customize your preferred properties to be returned
     by specified `returned_properties` when the called methods have
@@ -40,7 +44,8 @@ class RTCClient(RTCBase):
 
     log = logging.getLogger("client.RTCClient")
 
-    def __init__(self, url, username, password, searchpath=None):
+    def __init__(self, url, username, password, searchpath=None,
+                 ends_with_jazz=True):
         """Initialization
 
         See params above
@@ -49,6 +54,11 @@ class RTCClient(RTCBase):
         self.username = username
         self.password = password
         RTCBase.__init__(self, url)
+
+        if not isinstance(ends_with_jazz, bool):
+            raise exception.BadValue("ends_with_jazz is not boolean")
+
+        self.jazz = ends_with_jazz
         self.headers = self._get_headers()
         if searchpath is None:
             self.searchpath = _search_path
@@ -64,10 +74,16 @@ class RTCClient(RTCBase):
         return self
 
     def _get_headers(self):
+        if self.jazz is True:
+            _allow_redirects = True
+        else:
+            _allow_redirects = False
+
         _headers = {"Content-Type": self.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
-                        headers=_headers)
+                        headers=_headers,
+                        allow_redirects=_allow_redirects)
 
         _headers["Content-Type"] = self.CONTENT_URL_ENCODED
         _headers["Cookie"] = resp.headers.get("set-cookie")
@@ -77,7 +93,8 @@ class RTCClient(RTCBase):
         resp = self.post(self.url + "/authenticated/j_security_check",
                          data=credentials,
                          verify=False,
-                         headers=_headers)
+                         headers=_headers,
+                         allow_redirects=_allow_redirects)
 
         # authfailed
         authfailed = resp.headers.get("x-com-ibm-team-repository-web-auth-msg")
@@ -85,11 +102,21 @@ class RTCClient(RTCBase):
             raise exception.RTCException("Authentication Failed: "
                                          "Invalid username or password")
 
+        # fix issue #68
+        if not _allow_redirects:
+            _headers["Cookie"] = resp.headers.get("set-cookie")
+
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
-                        headers=_headers)
+                        headers=_headers,
+                        allow_redirects=_allow_redirects)
 
-        _headers["Cookie"] = resp.headers.get("set-cookie")
+        # fix issue #68
+        if not _allow_redirects:
+            _headers["Cookie"] += "; " + resp.headers.get("set-cookie")
+        else:
+            _headers["Cookie"] = resp.headers.get("set-cookie")
+
         _headers["Accept"] = self.CONTENT_XML
         return _headers
 
@@ -845,11 +872,11 @@ class RTCClient(RTCBase):
 
         try:
             if isinstance(workitem_id, bool):
-                raise ValueError()
+                raise ValueError("Invalid Workitem id")
             if isinstance(workitem_id, six.string_types):
                 workitem_id = int(workitem_id)
             if not isinstance(workitem_id, int):
-                raise ValueError()
+                raise ValueError("Invalid Workitem id")
 
             workitem_url = "/".join([self.url,
                                      "oslc/workitems/%s" % workitem_id])
@@ -878,7 +905,7 @@ class RTCClient(RTCBase):
             raise exception.BadValue(excp_msg)
         except Exception as excp:
             self.log.error(excp)
-            raise exception.NotFound("Not found <Workitem %s>", workitem_id)
+            raise exception.NotFound("Not found <Workitem %s>" % workitem_id)
 
     def getWorkitems(self, projectarea_id=None, projectarea_name=None,
                      returned_properties=None, archived=False):

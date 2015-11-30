@@ -1,6 +1,35 @@
 CHANGES
 =======
 
+0.4.0
+-----
+
+* ready for 0.4.0
+* add badge for travis ci
+* fix bugs across different python versions
+* remove error line
+* fix bugs on python3.3
+* fix travis ci
+* add travis ci
+* fix pep8 errors
+* update rtcclient introduction
+* remove parent workitem
+* fix bug when adding child(ren) and add method to remove child(ren)
+* add DELETE method in class Base
+* update REAME
+* add children workitems
+* add parent workitem
+* add children workitems
+* add parent workitem
+* get changesets
+* add testcases for get children/parent workitems
+* get parent/children workitems
+* add tests for get includedinbuilds
+* add includedinbuild fixture
+* Get IncludedInBuilds
+* query workitems using query id
+* update ChangeLog for 0.3.0
+
 0.3.0
 -----
 

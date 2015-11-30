@@ -76,12 +76,15 @@ Team Areas, Workitems) into easily managed Python objects:
     >>> from rtcclient.utils import setup_basic_logging
     >>> from rtcclient.client import RTCClient
     # you can remove this if you don't need logging
-    # default logging for console output
+    # default debug logging for console output
     >>> setup_basic_logging()
+    # url ends with jazz
     >>> url = "https://your_domain:9443/jazz"
     >>> username = "your_username"
     >>> password = "your_password"
-    >>> myclient = RTCClient(url, username, password)
+    # if your url ends with ccm, set ends_with_jazz to False
+    # refer to issue #68 for detailed explanation
+    >>> myclient = RTCClient(url, username, password, ends_with_jazz=True)
     # it will be faster if returned properties is specified
     # see in below query example
     >>> wk = myclient.getWorkitem(123456) # get a workitem whose id is 123456
