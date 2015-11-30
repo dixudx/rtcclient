@@ -109,7 +109,7 @@ class RTCClient(RTCBase):
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
                         headers=_headers,
-                        allow_redirects=self.allow_redirects)
+                        allow_redirects=_allow_redirects)
 
         # fix issue #68
         if not _allow_redirects:
