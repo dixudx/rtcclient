@@ -26,7 +26,7 @@ class RTCClient(RTCBase):
     :param searchpath: the folder to store your templates.
         If `None`, the default search path
         (/your/site-packages/rtcclient/templates) will be loaded.
-    :param ends_with_jazz: (optional) Set to `True` (default) if
+    :param ends_with_jazz: (optional but important) Set to `True` (default) if
         the url ends with 'jazz', otherwise to `False` if with 'ccm'
         (Refer to issue #68 for details)
     :type ends_with_jazz: bool
@@ -98,7 +98,8 @@ class RTCClient(RTCBase):
 
         # authfailed
         authfailed = resp.headers.get("x-com-ibm-team-repository-web-auth-msg")
-        if authfailed == "authfailed":
+        if (authfailed == "authfailed" or
+                resp.headers.get("set-cookie") is None):
             raise exception.RTCException("Authentication Failed: "
                                          "Invalid username or password")
 
