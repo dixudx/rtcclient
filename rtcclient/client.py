@@ -121,6 +121,16 @@ class RTCClient(RTCBase):
         _headers["Accept"] = self.CONTENT_XML
         return _headers
 
+    def relogin(self):
+        """Relogin the RTC Server/Jazz when the token expires
+
+        """
+
+        self.log.info("Cookie expires. Relogin to get a new cookie.")
+        self.headers = None
+        self.headers = self._get_headers()
+        self.log.debug("Successfully relogin.")
+
     def getProjectAreas(self, archived=False, returned_properties=None):
         """Get all :class:`rtcclient.project_area.ProjectArea` objects
 

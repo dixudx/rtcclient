@@ -4,6 +4,7 @@ from rtcclient import requests
 import xmltodict
 from rtcclient import urlunquote, OrderedDict
 from rtcclient import exception
+from rtcclient.utils import token_expire_handler
 
 
 class RTCBase(object):
@@ -50,6 +51,7 @@ class RTCBase(object):
     def get_rtc_obj(self):
         pass
 
+    @token_expire_handler
     def get(self, url,
             verify=False, headers=None,
             timeout=60, **kwargs):
@@ -76,6 +78,7 @@ class RTCBase(object):
             response.raise_for_status()
         return response
 
+    @token_expire_handler
     def post(self, url, data=None, json=None,
              verify=False, headers=None, timeout=60, **kwargs):
         """Sends a POST request. Refactor from requests module
@@ -109,6 +112,7 @@ class RTCBase(object):
             response.raise_for_status()
         return response
 
+    @token_expire_handler
     def put(self, url, data=None, verify=False,
             headers=None, timeout=60, **kwargs):
         """Sends a PUT request. Refactor from requests module
@@ -138,6 +142,7 @@ class RTCBase(object):
             response.raise_for_status()
         return response
 
+    @token_expire_handler
     def delete(self, url, headers=None, verify=False,
                timeout=60, **kwargs):
         """Sends a DELETE request. Refactor from requests module
