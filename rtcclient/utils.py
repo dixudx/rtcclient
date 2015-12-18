@@ -1,6 +1,7 @@
 import logging
 import functools
 from xml.parsers.expat import ExpatError
+import xmltodict
 
 
 def setup_basic_logging():
@@ -21,9 +22,11 @@ def token_expire_handler(func):
         else:
             # check whether token expires
             try:
-                return func(*args, **kwargs)
+                resp = func(*args, **kwargs)
+                xmltodict.parse(resp.content)
+                return resp
             except ExpatError as excp:
-                if "invalid token" in excp:
+                if "invalid token" in str(excp):
                     # expires
                     rtc_obj.relogin()
                     kwargs["headers"]["Cookie"] = rtc_obj.headers["Cookie"]
