@@ -2,6 +2,7 @@ import logging
 import functools
 from xml.parsers.expat import ExpatError
 import xmltodict
+from rtcclient.exception import RTCException
 
 
 def setup_basic_logging():
@@ -28,7 +29,11 @@ def token_expire_handler(func):
             except ExpatError as excp:
                 if "invalid token" in str(excp):
                     # expires
-                    rtc_obj.relogin()
+                    try:
+                        rtc_obj.relogin()
+                    except RTCException:
+                        raise RTCException("Relogin Failed: "
+                                           "Invalid username or password")
                     kwargs["headers"]["Cookie"] = rtc_obj.headers["Cookie"]
                     return func(*args, **kwargs)
                 else:
