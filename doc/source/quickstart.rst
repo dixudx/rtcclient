@@ -37,7 +37,7 @@ Adding a connection with RTC Server is very simple.
 
 Begin by importing the `RTCClient` module::
 
-    >>> from rtcclient.client import RTCClient
+    >>> from rtcclient import RTCClient
 
 Now, let's input the url, username and password of this to-be-connected
 RTC Server. For this example,

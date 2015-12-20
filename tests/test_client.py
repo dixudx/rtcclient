@@ -1,4 +1,4 @@
-from rtcclient.client import RTCClient
+from rtcclient import RTCClient
 import requests
 import pytest
 import utils_test

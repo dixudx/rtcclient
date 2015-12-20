@@ -40,8 +40,8 @@ This library can help you:
 Python & Rational Team Concert Versions
 ---------------------------------------
 
-The project has been tested against ``Rational Team Concert`` **5.0.1** and
-**5.0.2** on Python 2.6, 2.7 and 3.3.
+The project has been tested against ``Rational Team Concert`` **5.0.1**,
+**5.0.2** and **6.0** on Python 2.6, 2.7 and 3.3.
 
 
 Important Links
@@ -74,7 +74,7 @@ Team Areas, Workitems) into easily managed Python objects:
 .. code-block:: python
 
     >>> from rtcclient.utils import setup_basic_logging
-    >>> from rtcclient.client import RTCClient
+    >>> from rtcclient import RTCClient
     # you can remove this if you don't need logging
     # default debug logging for console output
     >>> setup_basic_logging()
