@@ -7,6 +7,7 @@ from rtcclient.exception import BadValue, NotFound, EmptyAttrib
 
 
 class TestProjectArea:
+
     @pytest.fixture(autouse=True)
     def myrtcclient(self, rtcclient):
         myclient = rtcclient

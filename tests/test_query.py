@@ -9,6 +9,7 @@ from rtcclient import exception
 
 
 class TestQuery:
+
     @pytest.fixture(autouse=True)
     def myrtcclient(self, rtcclient):
         myclient = rtcclient

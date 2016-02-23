@@ -1,0 +1,17 @@
+-   repo: git://github.com/pre-commit/mirrors-autopep8
+    sha: v1.2.1
+    hooks:
+      - id: autopep8
+    exclude: doc/*/*
+
+- repo: git://github.com/pre-commit/pre-commit-hooks
+  sha: v0.4.2
+  hooks:
+    - id: check-json
+    - id: check-xml
+    - id: check-yaml
+    - id: debug-statements
+    - id: flake8
+    - id: requirements-txt-fixer
+    - id: trailing-whitespace
+  exclude: doc/*/*

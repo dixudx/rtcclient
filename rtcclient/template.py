@@ -384,10 +384,10 @@ class Templater(RTCBase):
             :class:`rtcclient.template.Templater.getTemplate`
         """
 
-        if (not workitems or isinstance(workitems, six.string_types)
-                or isinstance(workitems, int)
-                or isinstance(workitems, float)
-                or not hasattr(workitems, "__iter__")):
+        if (not workitems or isinstance(workitems, six.string_types) or
+                isinstance(workitems, int) or
+                isinstance(workitems, float) or
+                not hasattr(workitems, "__iter__")):
             error_msg = "Input parameter 'workitems' is not iterable"
             self.log.error(error_msg)
             raise exception.BadValue(error_msg)

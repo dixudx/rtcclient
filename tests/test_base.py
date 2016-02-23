@@ -4,6 +4,7 @@ import requests
 
 
 class BaseTestRTC(RTCBase):
+
     def __str__(self):
         return "Test Base"
 

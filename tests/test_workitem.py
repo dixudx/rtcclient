@@ -8,6 +8,7 @@ from rtcclient.models import ChangeSet
 
 
 class TestWorkitem:
+
     @pytest.fixture(autouse=True)
     def myrtcclient(self, rtcclient):
         myclient = rtcclient

@@ -7,6 +7,7 @@ import xmltodict
 
 
 class TestTemplater:
+
     @pytest.fixture(autouse=True)
     def myrtcclient(self, rtcclient):
         myclient = rtcclient

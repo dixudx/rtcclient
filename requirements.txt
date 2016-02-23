@@ -1,4 +1,4 @@
-xmltodict
-requests
 jinja2>=2.2
+requests
 six
+xmltodict

@@ -1,10 +1,10 @@
-__author__ = 'stephenhsu'
-
 import requests
 try:
     requests.packages.urllib3.disable_warnings()
 except:
     pass
+
+from rtcclient.client import RTCClient
 
 try:
     import urlparse
@@ -29,5 +29,3 @@ except ImportError:  # pragma no cover
 import os
 _path = os.path.realpath(os.path.dirname(__file__))
 _search_path = os.path.join(_path, 'templates')
-
-from rtcclient.client import RTCClient
