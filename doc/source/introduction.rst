@@ -47,6 +47,28 @@ within an existing project area or another team area to establish a team
 hierarchy.
 
 
+Component [3]_
+--------------
+
+A configuration or set of configurations may be divided into components
+representing some user-defined set of object versions and/or
+sub-configurations; for example, components might be used to represent
+physical components or software modules. A provider is not required to
+implement components; they are used only as a way of limiting the scope of
+the closure over links. Components might or might not be resources; they
+might be dynamic sets of object versions chosen by other criteria such as
+property values. A provider can also treat each configuration and
+sub-configuration in a hierarchy as being separate components.
+
+
+Change set [3]_
+---------------
+
+A set of changes to be made to one or more configurations, where each
+change is described in terms of members (direct or indirect) that should
+be added to, replaced in, or removed from some configurations.
+
+
 Role
 ----
 
@@ -115,3 +137,5 @@ When you create a work item type, you must associate it with a category.
 If you intend to define a unique workflow for the new work item type,
 create a new category and associate it with the work item type.
 Otherwise, you can associate the work item type with an existing category.
+
+.. [3] `SCM Data Model <http://open-services.net/bin/view/Main/CmQuerySyntaxV1>`_

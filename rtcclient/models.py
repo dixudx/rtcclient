@@ -1,6 +1,8 @@
 from rtcclient.base import FieldBase
-from rtcclient import urlunquote
+from rtcclient import urlunquote, OrderedDict
 import logging
+import xmltodict
+import six
 
 
 class Role(FieldBase):
@@ -168,3 +170,119 @@ class ChangeSet(FieldBase):
 
     def __str__(self):
         return self.label
+
+    def getChanges(self):
+        """Get all :class:`rtcclient.models.Change` objects in this changeset
+
+        :return: a :class:`list` contains all the
+            :class:`rtcclient.models.Change` objects
+        :rtype: list
+        """
+
+        identifier = self.url.split("/")[-1]
+        resource_url = "/".join(["%s" % self.rtc_obj.url,
+                                 "resource/itemOid",
+                                 "com.ibm.team.scm.ChangeSet",
+                                 "%s?_mediaType=text/xml" % identifier])
+        resp = self.get(resource_url,
+                        verify=False,
+                        headers=self.rtc_obj.headers)
+        raw_data = xmltodict.parse(resp.content).get("scm:ChangeSet")
+        common_changes = dict()
+        changes = raw_data.get("changes")
+        for (key, value) in raw_data.items():
+            if key.startswith("@"):
+                continue
+            if "changes" != key:
+                common_changes[key] = value
+        return self._handle_changes(changes, common_changes)
+
+    def _handle_changes(self, changes, common_changes):
+        change_objs = list()
+        if isinstance(changes, OrderedDict):
+            # only one single change
+            changes.update(common_changes)
+            change_objs.append(Change(None,
+                                      self.rtc_obj,
+                                      raw_data=changes))
+        else:
+            # multiple changes
+            for change in changes:
+                change.update(common_changes)
+                change_objs.append(Change(None,
+                                          self.rtc_obj,
+                                          raw_data=change))
+
+        return change_objs
+
+
+class Change(FieldBase):
+    """Change"""
+
+    log = logging.getLogger("models.Change")
+
+    def __init__(self, url, rtc_obj, raw_data=None):
+        FieldBase.__init__(self, url, rtc_obj, raw_data)
+
+    def __str__(self):
+        return self.internalId
+
+    def fetchBeforeStateFile(self, file_folder):
+        """Fetch the initial file (before the change) to a folder
+
+        :param file_folder: the folder to store the file
+        """
+        self.log.info("Fetching initial file of this Change<%s>:" % self)
+        self._fetchFile(self.before, file_folder)
+
+    def fetchAfterStateFile(self, file_folder):
+        """Fetch the final file (after the change) to a folder
+
+        :param file_folder: the folder to store the file
+        """
+
+        if isinstance(self.after, six.string_types):
+            self.log.info("Fetching final file of this Change<%s>:" % self)
+            self._fetchFile(self.after, file_folder)
+        else:
+            if u"true" == self.after.get("@xsi:nil"):
+                self.log.info("This file has been deleted successfully.")
+
+    def fetchCurrentFile(self, file_folder):
+        """Fetch the current/final file (after the change) to a folder
+
+        :param file_folder: the folder to store the file
+        """
+
+        self.fetchAfterStateFile(file_folder)
+
+    def _fetchFile(self, stateId, file_folder):
+
+        file_url = "/".join(["{0}/service",
+                             ("com.ibm.team.filesystem.service.internal."
+                              "rest.IFilesystemContentService"),
+                             "-",
+                             ("{1}?itemId={2}&stateId={3}"
+                              "&platformLineDelimiter=CRLF")])
+
+        file_url = file_url.format(self.rtc_obj.url,
+                                   self.component,
+                                   self.item,
+                                   stateId)
+
+        self.log.debug("Start fetching file from %s ..." % file_url)
+
+        import requests
+        import re
+        import os
+        resp = requests.get(file_url,
+                            verify=False,
+                            headers=self.rtc_obj.headers)
+        file_name = re.findall(".+filename\*=UTF-8''(.+)",
+                               resp.headers["content-disposition"])[0]
+        file_path = os.path.join(file_folder, file_name)
+        with open(file_path, "wb") as file_content:
+            file_content.write(resp.content)
+
+        self.log.info("Successfully Fetching '%s' to '%s'" % (file_name,
+                                                              file_path))
