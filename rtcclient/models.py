@@ -243,7 +243,6 @@ class Change(FieldBase):
             self.log.info("Fetching initial file of this Change<%s>:" % self)
             return self._fetchFile(self.before, file_folder)
 
-
     def fetchAfterStateFile(self, file_folder):
         """Fetch the final file (after the change) to a folder
 
@@ -259,7 +258,6 @@ class Change(FieldBase):
         else:
             self.log.info("Fetching final file of this Change<%s>:" % self)
             return self._fetchFile(self.after, file_folder)
-
 
     def fetchCurrentFile(self, file_folder):
         """Fetch the current/final file (after the change) to a folder
