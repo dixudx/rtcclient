@@ -65,3 +65,6 @@ Models
 
 .. autoclass:: rtcclient.models.ChangeSet
    :members:
+
+.. autoclass:: rtcclient.models.Change
+   :members:

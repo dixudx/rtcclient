@@ -256,7 +256,7 @@ class Change(FieldBase):
 
         self.fetchAfterStateFile(file_folder)
 
-    def _fetchFile(self, stateId, file_folder):
+    def _fetchFile(self, state_id, file_folder):
 
         file_url = "/".join(["{0}/service",
                              ("com.ibm.team.filesystem.service.internal."
@@ -268,7 +268,7 @@ class Change(FieldBase):
         file_url = file_url.format(self.rtc_obj.url,
                                    self.component,
                                    self.item,
-                                   stateId)
+                                   state_id)
 
         self.log.debug("Start fetching file from %s ..." % file_url)
 
