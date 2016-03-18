@@ -230,31 +230,46 @@ class Change(FieldBase):
     def fetchBeforeStateFile(self, file_folder):
         """Fetch the initial file (before the change) to a folder
 
+        If the file is newly added, then `None` will be returned.
+
         :param file_folder: the folder to store the file
+        :return: the :class:`string` object
+        :rtype: string
         """
-        self.log.info("Fetching initial file of this Change<%s>:" % self)
-        self._fetchFile(self.before, file_folder)
+
+        if u"true" == self.before:
+            self.log.info("This file is newly added. No previous file")
+        else:
+            self.log.info("Fetching initial file of this Change<%s>:" % self)
+            return self._fetchFile(self.before, file_folder)
 
     def fetchAfterStateFile(self, file_folder):
         """Fetch the final file (after the change) to a folder
 
+        If the file has been deleted, then `None` will be returned.
+
         :param file_folder: the folder to store the file
+        :return: the :class:`string` object
+        :rtype: string
         """
 
-        if isinstance(self.after, six.string_types):
-            self.log.info("Fetching final file of this Change<%s>:" % self)
-            self._fetchFile(self.after, file_folder)
+        if u"true" == self.after:
+            self.log.info("This file has been deleted successfully.")
         else:
-            if u"true" == self.after.get("@xsi:nil"):
-                self.log.info("This file has been deleted successfully.")
+            self.log.info("Fetching final file of this Change<%s>:" % self)
+            return self._fetchFile(self.after, file_folder)
 
     def fetchCurrentFile(self, file_folder):
         """Fetch the current/final file (after the change) to a folder
 
+        If the file has been deleted, then `None` will be returned.
+
         :param file_folder: the folder to store the file
+        :return: the :class:`string` object
+        :rtype: string
         """
 
-        self.fetchAfterStateFile(file_folder)
+        return self.fetchAfterStateFile(file_folder)
 
     def _fetchFile(self, state_id, file_folder):
 
@@ -286,3 +301,4 @@ class Change(FieldBase):
 
         self.log.info("Successfully Fetching '%s' to '%s'" % (file_name,
                                                               file_path))
+        return file_path
