@@ -1058,7 +1058,7 @@ class RTCClient(RTCBase):
                       item_type, wi_raw)
 
         wi_url_post = "/".join([self.url,
-                                "/oslc/contexts",
+                                "oslc/contexts",
                                 projectarea_id,
                                 "workitems/%s" % itemtype.identifier])
         return self._createWorkitem(wi_url_post, wi_raw)
