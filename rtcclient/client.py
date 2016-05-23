@@ -1162,7 +1162,7 @@ class RTCClient(RTCBase):
 
         input_attributes = set(kwargs.keys())
         missing_attributes = parameters.difference(input_attributes)
-        if not missing_attributes:
+        if bool(missing_attributes):
             error_msg = "Missing Parameters: %s" % list(missing_attributes)
             self.log.error(error_msg)
             raise exception.EmptyAttrib(error_msg)
