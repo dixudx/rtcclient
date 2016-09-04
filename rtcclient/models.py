@@ -272,6 +272,8 @@ class Change(FieldBase):
         return self.fetchAfterStateFile(file_folder)
 
     def _fetchFile(self, state_id, file_folder):
+        if self.raw_data['item']['@xsi:type'] == 'scm:FolderHandle':
+            return
 
         file_url = "/".join(["{0}/service",
                              ("com.ibm.team.filesystem.service.internal."
