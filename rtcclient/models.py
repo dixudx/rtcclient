@@ -199,13 +199,15 @@ class ChangeSet(FieldBase):
 
     def _handle_changes(self, changes, common_changes):
         change_objs = list()
+
         if isinstance(changes, OrderedDict):
             # only one single change
             changes.update(common_changes)
             change_objs.append(Change(None,
                                       self.rtc_obj,
                                       raw_data=changes))
-        else:
+
+        elif isinstance(changes, list):
             # multiple changes
             for change in changes:
                 change.update(common_changes)
