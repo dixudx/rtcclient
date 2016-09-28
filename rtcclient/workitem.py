@@ -104,6 +104,7 @@ class Workitem(FieldBase):
         headers = copy.deepcopy(self.rtc_obj.headers)
         resp = self.get(comments_url,
                         verify=False,
+                        proxies=self.rtc_obj.proxies,
                         headers=headers)
 
         raw_data = xmltodict.parse(resp.content)
@@ -124,6 +125,7 @@ class Workitem(FieldBase):
         resp = self.post(req_url,
                          verify=False,
                          headers=headers,
+                         proxies=self.rtc_obj.proxies,
                          data=comment_msg)
         self.log.info("Successfully add comment: [%s] for <Workitem %s>",
                       msg, self)
@@ -234,6 +236,7 @@ class Workitem(FieldBase):
                                    "?oslc_cm.properties=rtc_cm:subscribers"])
         self.put(subscribers_url,
                  verify=False,
+                 proxies=self.rtc_obj.proxies,
                  headers=headers,
                  data=xmltodict.unparse(raw_data))
 
@@ -246,6 +249,7 @@ class Workitem(FieldBase):
         headers["OSLC-Core-Version"] = "2.0"
         resp = self.get(subscribers_url,
                         verify=False,
+                        proxies=self.rtc_obj.proxies,
                         headers=headers)
         headers["If-Match"] = resp.headers.get("etag")
         raw_data = xmltodict.parse(resp.content)
@@ -547,6 +551,7 @@ class Workitem(FieldBase):
 
         self.put(req_url,
                  verify=False,
+                 proxies=self.rtc_obj.proxies,
                  headers=headers,
                  data=json.dumps(parent_original))
         self.log.info("Successfully add a parent <Workitem %s> to current "
@@ -621,6 +626,7 @@ class Workitem(FieldBase):
         self.put(req_url,
                  verify=False,
                  headers=headers,
+                 proxies=self.rtc_obj.proxies,
                  data=json.dumps(children_original))
 
     def _addChild(self, child_id, children_original):
@@ -674,6 +680,7 @@ class Workitem(FieldBase):
 
         self.put(req_url,
                  verify=False,
+                 proxies=self.rtc_obj.proxies,
                  headers=headers,
                  data=json.dumps(parent_original))
         self.log.info("Successfully remove the parent workitem of current "
@@ -746,4 +753,5 @@ class Workitem(FieldBase):
         self.put(req_url,
                  verify=False,
                  headers=headers,
+                 proxies=self.rtc_obj.proxies,
                  data=json.dumps(children_original))

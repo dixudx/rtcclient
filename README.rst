@@ -82,6 +82,8 @@ Team Areas, Workitems) into easily managed Python objects:
     >>> url = "https://your_domain:9443/jazz"
     >>> username = "your_username"
     >>> password = "your_password"
+    # if your rtc server is behind a proxy, remember to set "proxies"
+    # explicitly. detailed can be found in quick start of the doc
     # if your url ends with ccm, set ends_with_jazz to False
     # refer to issue #68 for detailed explanation
     >>> myclient = RTCClient(url, username, password, ends_with_jazz=True)
