@@ -1,17 +1,29 @@
 CHANGES
 =======
 
-0.5.0
------
-
+* new feature #78 add support for proxies
+* downgrade flake8 version due to flake8 no longer supports Python 2.6
+* Fix keyerror for directories changes
+* Fix changes == None issue
+* fix issue #74
+* fix issue #73
+* remove redundant blank lines
+* minor bugs fix on fetching changed files
+* add doc for Change
+* implement new feature - issue #72
+* add pre-commit and fix style errors
+* add pre-commit and fix code styles
+* add RTCClient to __init__
+* issue #70: raise exception for relogin
+* close issue #70
+* fix issue #70 client session expired
+* fix issue #70 client session expired
+* fix issue #70 part 1
+* update ChangeLog for 0.5.0
 * upload ChangeLog for 0.4.0
 * ready for 0.5.0
 * fix issue #68
 * fix exception typo
-
-0.4.0
------
-
 * ready for 0.4.0
 * add badge for travis ci
 * fix bugs across different python versions
@@ -27,8 +39,6 @@ CHANGES
 * update REAME
 * add children workitems
 * add parent workitem
-* add children workitems
-* add parent workitem
 * get changesets
 * add testcases for get children/parent workitems
 * get parent/children workitems
@@ -37,10 +47,6 @@ CHANGES
 * Get IncludedInBuilds
 * query workitems using query id
 * update ChangeLog for 0.3.0
-
-0.3.0
------
-
 * update for 0.3.0
 * apply filter for getting paged resources
 * fix bugs of saved query and add more tests
@@ -59,10 +65,6 @@ CHANGES
 * add method to get all States of Workitem
 * add six to enable unicode string and fix returned_properties bug
 * add keyword in setup.cfg and update ChangeLog
-
-0.2.0
------
-
 * add files/packages and build wheel in setup.cfg
 * update badges
 * update installation.rst
@@ -101,10 +103,6 @@ CHANGES
 * update rst files
 * update docs
 * init doc
-
-v0.1.dev95
-----------
-
 * ready for release 0.1
 * update README cfg
 * remove redundancy and minor update
