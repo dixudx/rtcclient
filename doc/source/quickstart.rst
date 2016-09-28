@@ -47,6 +47,42 @@ RTC Server. For this example,
     >>> password = "your_password"
     >>> myclient = RTCClient(url, username, password)
 
+If your url ends with **ccm**, set `ends_with_jazz` to `False`,
+refer to **issue #68** for detailed explanation.
+
+About Proxies
+-------------
+
+If your RTC Server is behind a proxy, you need to set `proxies` explicitly.
+
+HTTP Proxies
+~~~~~~~~~~~~
+
+    >>> url = "https://your_domain:9443/jazz"
+    >>> username = "your_username"
+    >>> password = "your_password"
+    # example http proxy
+    >>> proxies = {
+            'http': 'http://10.10.1.10:3128',
+            'https': 'http://10.10.1.10:1080',
+        }
+    >>> myclient = RTCClient(url, username, password, proxies=proxies)
+
+SOCKS Proxies
+~~~~~~~~~~~~
+In addition to basic HTTP proxies, proxies using the SOCKS protocol are also
+supported.
+
+    >>> url = "https://your_domain:9443/jazz"
+    >>> username = "your_username"
+    >>> password = "your_password"
+     # example socks proxy
+    >>> proxies = {
+            "http": "socks5://127.0.0.1:1080",
+            "https": "socks5://user:pass@host:port"
+        }
+    >>> myclient = RTCClient(url, username, password, proxies=proxies)
+
 
 Get a Workitem
 --------------
@@ -67,7 +103,7 @@ For example,
     # wk equals wk2
     >>> wk == wk2
     True
-    >>> wk 
+    >>> wk
     <Workitem 123456>
     >>> str(wk)
     '141488'

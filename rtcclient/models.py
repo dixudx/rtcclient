@@ -186,6 +186,7 @@ class ChangeSet(FieldBase):
                                  "%s?_mediaType=text/xml" % identifier])
         resp = self.get(resource_url,
                         verify=False,
+                        proxies=self.rtc_obj.proxies,
                         headers=self.rtc_obj.headers)
         raw_data = xmltodict.parse(resp.content).get("scm:ChangeSet")
         common_changes = dict()

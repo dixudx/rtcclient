@@ -23,7 +23,9 @@ class RTCClient(RTCBase):
     :param url: the rtc url (e.g. https://your_domain:9443/jazz)
     :param username: the rtc username
     :param password: the rtc password
-    :param searchpath: the folder to store your templates.
+    :param proxies: (optional) Dictionary mapping protocol to the URL of
+            the proxy.
+    :param searchpath: (optional) the folder to store your templates.
         If `None`, the default search path
         (/your/site-packages/rtcclient/templates) will be loaded.
     :param ends_with_jazz: (optional but important) Set to `True` (default) if
@@ -44,7 +46,7 @@ class RTCClient(RTCBase):
 
     log = logging.getLogger("client.RTCClient")
 
-    def __init__(self, url, username, password, searchpath=None,
+    def __init__(self, url, username, password, proxies=None, searchpath=None,
                  ends_with_jazz=True):
         """Initialization
 
@@ -53,6 +55,7 @@ class RTCClient(RTCBase):
 
         self.username = username
         self.password = password
+        self.proxies = proxies
         RTCBase.__init__(self, url)
 
         if not isinstance(ends_with_jazz, bool):
@@ -83,6 +86,7 @@ class RTCClient(RTCBase):
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
                         headers=_headers,
+                        proxies=self.proxies,
                         allow_redirects=_allow_redirects)
 
         _headers["Content-Type"] = self.CONTENT_URL_ENCODED
@@ -94,6 +98,7 @@ class RTCClient(RTCBase):
                          data=credentials,
                          verify=False,
                          headers=_headers,
+                         proxies=self.proxies,
                          allow_redirects=_allow_redirects)
 
         # authfailed
@@ -110,6 +115,7 @@ class RTCClient(RTCBase):
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
                         headers=_headers,
+                        proxies=self.proxies,
                         allow_redirects=_allow_redirects)
 
         # fix issue #68
@@ -901,6 +907,7 @@ class RTCClient(RTCBase):
                 req_url = workitem_url
             resp = self.get(req_url,
                             verify=False,
+                            proxies=self.proxies,
                             headers=self.headers)
             raw_data = xmltodict.parse(resp.content)
             workitem_raw = raw_data["oslc_cm:ChangeRequest"]
@@ -1108,7 +1115,8 @@ class RTCClient(RTCBase):
         headers['Content-Type'] = self.OSLC_CR_XML
 
         resp = self.post(url_post, verify=False,
-                         headers=headers, data=workitem_raw)
+                         headers=headers, proxies=self.proxies,
+                         data=workitem_raw)
 
         raw_data = xmltodict.parse(resp.content)
         workitem_raw = raw_data["oslc_cm:ChangeRequest"]
@@ -1337,6 +1345,7 @@ class RTCClient(RTCBase):
 
         resp = self.get(resource_url,
                         verify=False,
+                        proxies=self.proxies,
                         headers=self.headers)
         raw_data = xmltodict.parse(resp.content)
 
@@ -1384,6 +1393,7 @@ class RTCClient(RTCBase):
             if url_next:
                 resp = self.get(url_next,
                                 verify=False,
+                                proxies=self.proxies,
                                 headers=self.headers)
                 raw_data = xmltodict.parse(resp.content)
             else:
