@@ -244,7 +244,7 @@ class Change(FieldBase):
             self.log.info("This file is newly added. No previous file")
         else:
             self.log.info("Fetching initial file of this Change<%s>:" % self)
-            return self._fetchFile(self.before, file_folder)
+            return self._fetchFile(self.before, file_folder, override=False)
 
     def fetchAfterStateFile(self, file_folder):
         """Fetch the final file (after the change) to a folder
@@ -274,7 +274,7 @@ class Change(FieldBase):
 
         return self.fetchAfterStateFile(file_folder)
 
-    def _fetchFile(self, state_id, file_folder):
+    def _fetchFile(self, state_id, file_folder, override=True):
         if self.raw_data['item']['@xsi:type'] == 'scm:FolderHandle':
             return
 
@@ -301,6 +301,10 @@ class Change(FieldBase):
         file_name = re.findall(".+filename\*=UTF-8''(.+)",
                                resp.headers["content-disposition"])[0]
         file_path = os.path.join(file_folder, file_name)
+
+        if not override and os.path.exists(file_path):
+            return
+
         with open(file_path, "wb") as file_content:
             file_content.write(resp.content)
 
