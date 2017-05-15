@@ -296,6 +296,10 @@ class FieldBase(RTCBase):
         if rdf_url.endswith("rtc_cm:results"):
             return rdf_url
 
+        # keep attachment url
+        if "/resource/content/" in rdf_url:
+            return rdf_url
+
         resp = self.get(rdf_url,
                         verify=False,
                         proxies=self.rtc_obj.proxies,

@@ -1,0 +1,26 @@
+<oslc_cm:Collection oslc_cm:totalCount="4">
+    <rtc_cm:Attachment rdf:resource="http://test.url:9443/ccm/resource/itemOid/com.ibm.team.workitem.Attachment/_bsU_gTk1EeeUpchvxQKZYg" oslc_cm:label="http://test.url:9443/ccm/resource/itemOid/com.ibm.team.workitem.Attachment/_bsU_gTk1EeeUpchvxQKZYg">
+        <dc:identifier>22</dc:identifier>
+        <dc:title>cgobench1.go</dc:title>
+        <dc:description>cgobench1.go</dc:description>
+        <dc:format>application/octet-stream</dc:format>
+        <rtc_cm:contentLength>351</rtc_cm:contentLength>
+        <dc:created>2017-05-15T06:12:11.264Z</dc:created>
+        <dc:creator rdf:resource="http://test.url:9443/jts/users/tester1"/>
+        <dc:modified>2017-05-15T06:12:11.440Z</dc:modified>
+        <rtc_cm:modifiedBy rdf:resource="http://test.url:9443/jts/users/tester1"/>
+        <rtc_cm:content rdf:resource="http://test.url:9443/ccm/resource/content/_bsRVIDk1EeeUpchvxQKZYg"/>
+    </rtc_cm:Attachment>
+    <rtc_cm:Attachment rdf:resource="http://test.url:9443/ccm/resource/itemOid/com.ibm.team.workitem.Attachment/_yUgkwTkeEeeUpchvxQKZYg" oslc_cm:label="http://test.url:9443/ccm/resource/itemOid/com.ibm.team.workitem.Attachment/_yUgkwTkeEeeUpchvxQKZYg">
+        <dc:identifier>21</dc:identifier>
+        <dc:title>cgobench2.go</dc:title>
+        <dc:description>cgobench2.go</dc:description>
+        <dc:format>application/octet-stream</dc:format>
+        <rtc_cm:contentLength>351</rtc_cm:contentLength>
+        <dc:created>2017-05-15T03:30:04.686Z</dc:created>
+        <dc:creator rdf:resource="http://test.url:9443/jts/users/tester2"/>
+        <dc:modified>2017-05-15T03:30:04.690Z</dc:modified>
+        <rtc_cm:modifiedBy rdf:resource="http://test.url:9443/jts/users/tester2"/>
+        <rtc_cm:content rdf:resource="http://test.url:9443/ccm/resource/content/_yUfWoDkeEeeUpchvxQKZYg"/>
+    </rtc_cm:Attachment>
+</oslc_cm:Collection>

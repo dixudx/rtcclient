@@ -307,3 +307,15 @@ class Change(FieldBase):
         self.log.info("Successfully Fetching '%s' to '%s'" % (file_name,
                                                               file_path))
         return file_path
+
+
+class Attachment(FieldBase):
+    """Attachment of the work item"""
+
+    log = logging.getLogger("models.Attachment")
+
+    def __init__(self, url, rtc_obj, raw_data=None):
+        FieldBase.__init__(self, url, rtc_obj, raw_data)
+
+    def __str__(self):
+        return self.identifier + ": " + self.title

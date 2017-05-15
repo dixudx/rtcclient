@@ -4,7 +4,7 @@ import utils_test
 from rtcclient.exception import BadValue, NotFound
 from rtcclient.workitem import Workitem
 from rtcclient.models import Comment, Action, State, IncludedInBuild
-from rtcclient.models import ChangeSet
+from rtcclient.models import ChangeSet, Attachment
 
 
 class TestWorkitem:
@@ -381,3 +381,57 @@ class TestWorkitem:
 
         changesets = workitem1.getChangeSets()
         assert changesets == [changeset1, changeset2, changeset3]
+
+    def test_add_attachment(self, myrtcclient, mocker, workitem1):
+        # TODO: add attachment test
+        pass
+
+    @pytest.fixture
+    def mock_get_attachments(self, mocker):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.read_fixture("attachment.xml")
+        mocked_get.return_value = mock_resp
+        return mocked_get
+
+    def test_get_attachments(self, myrtcclient, mock_get_attachments,
+                             workitem1):
+        # Attachment1
+        attachment1_url = ("http://test.url:9443/ccm/resource/itemOid/"
+                           "com.ibm.team.workitem.Attachment/"
+                           "_bsU_gTk1EeeUpchvxQKZYg")
+        attachment1 = Attachment(attachment1_url,
+                                 myrtcclient,
+                                 raw_data=utils_test.attachment1)
+        assert attachment1.identifier == "22"
+        assert str(attachment1) == "22: cgobench1.go"
+        assert attachment1.title == "cgobench1.go"
+        assert attachment1.description == "cgobench1.go"
+        assert attachment1.contentLength == "351"
+        assert attachment1.created == "2017-05-15T06:12:11.264Z"
+        assert attachment1.creator == "tester1"
+        assert attachment1.modified == "2017-05-15T06:12:11.440Z"
+        assert attachment1.content == ("http://test.url:9443/ccm/resource/"
+                                       "content/_bsRVIDk1EeeUpchvxQKZYg")
+
+        # Attachment2
+        attachment2_url = ("http://test.url:9443/ccm/resource/itemOid/"
+                           "com.ibm.team.workitem.Attachment/"
+                           "_yUgkwTkeEeeUpchvxQKZYg")
+        attachment2 = Attachment(attachment2_url,
+                                 myrtcclient,
+                                 raw_data=utils_test.attachment2)
+        assert attachment2.identifier == "21"
+        assert str(attachment2) == "21: cgobench2.go"
+        assert attachment2.title == "cgobench2.go"
+        assert attachment2.description == "cgobench2.go"
+        assert attachment2.contentLength == "351"
+        assert attachment2.created == "2017-05-15T03:30:04.686Z"
+        assert attachment2.creator == "tester2"
+        assert attachment2.modified == "2017-05-15T03:30:04.690Z"
+        assert attachment2.content == ("http://test.url:9443/ccm/resource/"
+                                       "content/_yUfWoDkeEeeUpchvxQKZYg")
+
+        attachements = workitem1.getAttachments()
+        assert attachements == [attachment1, attachment2]

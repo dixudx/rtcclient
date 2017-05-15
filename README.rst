@@ -32,7 +32,7 @@ This library can help you:
 
 * Interacts with an RTC server to retrieve objects which contain the detailed information/configuration, including **Project Areas**, **Team Areas**, **Workitems** and etc;
 * Creates all kinds of **Workitems** through self-customized templates or copies from some existing **Workitems**;
-* Performs some actions on the retrieved **Workitems**, including get/add **Comments**, get/add/remove **Subscribers**/**Children**/**Parent** and etc;
+* Performs some actions on the retrieved **Workitems**, including get/add **Comments**, get/add/remove **Subscribers**/**Children**/**Parent**, upload/get **Attachments** and etc;
 * Query **Workitems** using specified filtered rules or directly from your saved queries;
 * Logs all the activities and messages during your operation;
 

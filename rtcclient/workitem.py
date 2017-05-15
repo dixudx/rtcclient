@@ -4,9 +4,10 @@ import xmltodict
 import copy
 from rtcclient import exception, OrderedDict
 from requests.exceptions import HTTPError
-from rtcclient.models import Comment
+from rtcclient.models import Comment, Attachment
 import six
 import json
+import os
 
 
 class Workitem(FieldBase):
@@ -755,3 +756,78 @@ class Workitem(FieldBase):
                  headers=headers,
                  proxies=self.rtc_obj.proxies,
                  data=json.dumps(children_original))
+
+    def addAttachment(self, filepath):
+        """Upload attachment to a workitem
+
+        :param filepath: the attachment file path
+        :return: the :class:`rtcclient.models.Attachment` object
+        :rtype: rtcclient.models.Attachment
+        """
+
+        proj_id = self.contextId
+
+        fa = self.rtc_obj.getFiledAgainst(self.filedAgainst,
+                                          projectarea_id=proj_id)
+        fa_id = fa.url.split("/")[-1]
+
+        headers = copy.deepcopy(self.rtc_obj.headers)
+        if headers.__contains__("Content-Type"):
+            headers.__delitem__("Content-Type")
+
+        filename = os.path.basename(filepath)
+        fileh = open(filepath, "rb")
+        files = {"attach": (filename, fileh, "application/octet-stream")}
+
+        params = {"projectId": proj_id,
+                  "multiple": "true",
+                  "category": fa_id}
+        req_url = "".join([self.rtc_obj.url,
+                           "/service/com.ibm.team.workitem.service.",
+                           "internal.rest.IAttachmentRestService/"])
+        resp = self.post(req_url,
+                         verify=False,
+                         headers=headers,
+                         proxies=self.rtc_obj.proxies,
+                         params=params,
+                         files=files)
+        raw_data = xmltodict.parse(resp.content)
+        json_body = json.loads(raw_data["html"]["body"]["textarea"])
+        attachment_info = json_body["files"][0]
+        return self._add_attachment_link(attachment_info)
+
+    def _add_attachment_link(self, attachment_info):
+        payload = {"rdf:resource": attachment_info["url"],
+                   "dcterms:title": ": ".join([str(attachment_info["id"]),
+                                               attachment_info["name"]])}
+        attachment_tag = ("/rtc_cm:com.ibm.team.workitem.linktype."
+                          "attachment.attachment")
+        attachment_collection_url = self.url + attachment_tag
+
+        resp = self.post(attachment_collection_url,
+                         payload,
+                         verify=False,
+                         headers=self.rtc_obj.headers,
+                         proxies=self.rtc_obj.proxies)
+        raw_data = xmltodict.parse(resp.content)
+
+        return Attachment(attachment_info["url"],
+                          self.rtc_obj,
+                          raw_data=raw_data["rtc_cm:Attachment"])
+
+    def getAttachments(self):
+        """Get all :class:`rtcclient.models.Attachment` objects of
+        this workitem
+
+        :return: a :class:`list` contains all the
+            :class:`rtcclient.models.Attachment` objects
+        :rtype: list
+        """
+
+        attachment_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
+                          "attachment.attachment")
+        return (self.rtc_obj
+                    ._get_paged_resources("Attachment",
+                                          workitem_id=self.identifier,
+                                          customized_attr=attachment_tag,
+                                          page_size="10"))

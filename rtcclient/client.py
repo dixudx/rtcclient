@@ -6,7 +6,7 @@ from rtcclient.workitem import Workitem
 from rtcclient.models import TeamArea, Member, Administrator, PlannedFor
 from rtcclient.models import Severity, Priority, ItemType, SavedQuery
 from rtcclient.models import FiledAgainst, FoundIn, Comment, Action, State
-from rtcclient.models import IncludedInBuild, ChangeSet
+from rtcclient.models import IncludedInBuild, ChangeSet, Attachment
 import logging
 from rtcclient import urlparse, urlquote, urlencode, OrderedDict
 import copy
@@ -90,7 +90,9 @@ class RTCClient(RTCBase):
                         allow_redirects=_allow_redirects)
 
         _headers["Content-Type"] = self.CONTENT_URL_ENCODED
-        _headers["Cookie"] = resp.headers.get("set-cookie")
+        if resp.headers.get("set-cookie") is not None:
+            _headers["Cookie"] = resp.headers.get("set-cookie")
+
         credentials = urlencode({"j_username": self.username,
                                  "j_password": self.password})
 
@@ -103,14 +105,14 @@ class RTCClient(RTCBase):
 
         # authfailed
         authfailed = resp.headers.get("x-com-ibm-team-repository-web-auth-msg")
-        if (authfailed == "authfailed" or
-                resp.headers.get("set-cookie") is None):
+        if authfailed == "authfailed":
             raise exception.RTCException("Authentication Failed: "
                                          "Invalid username or password")
 
         # fix issue #68
         if not _allow_redirects:
-            _headers["Cookie"] = resp.headers.get("set-cookie")
+            if resp.headers.get("set-cookie") is not None:
+                _headers["Cookie"] = resp.headers.get("set-cookie")
 
         resp = self.get(self.url + "/authenticated/identity",
                         verify=False,
@@ -1236,7 +1238,8 @@ class RTCClient(RTCBase):
                              "IncludedInBuild",
                              "Parent",
                              "Children",
-                             "ChangeSet"]
+                             "ChangeSet",
+                             "Attachment"]
         customized_required = ["Action",
                                "Query",
                                "State",
@@ -1244,7 +1247,8 @@ class RTCClient(RTCBase):
                                "IncludedInBuild",
                                "Parent",
                                "Children",
-                               "ChangeSet"]
+                               "ChangeSet",
+                               "Attachment"]
 
         if resource_name in projectarea_required and not projectarea_id:
             self.log.error("No ProjectArea ID is specified")
@@ -1290,7 +1294,9 @@ class RTCClient(RTCBase):
                    "Children": "workitems/%s/%s" % (workitem_id,
                                                     customized_attr),
                    "ChangeSet": "workitems/%s/%s" % (workitem_id,
-                                                     customized_attr)
+                                                     customized_attr),
+                   "Attachment": "workitems/%s/%s" % (workitem_id,
+                                                      customized_attr),
                    }
 
         entry_map = {"TeamArea": "rtc_cm:Team",
@@ -1314,7 +1320,8 @@ class RTCClient(RTCBase):
                      "IncludedInBuild": "oslc_auto:AutomationResult",
                      "Parent": "oslc_cm:ChangeRequest",
                      "Children": "oslc_cm:ChangeRequest",
-                     "ChangeSet": "rtc_cm:Reference"
+                     "ChangeSet": "rtc_cm:Reference",
+                     "Attachment": "rtc_cm:Attachment"
                      }
 
         if resource_name not in res_map:
