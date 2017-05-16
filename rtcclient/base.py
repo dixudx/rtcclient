@@ -256,6 +256,7 @@ class FieldBase(RTCBase):
 
     def __initializeFromRaw(self):
         """Initialze from raw data (OrderedDict)"""
+
         for (key, value) in self.raw_data.items():
             if key.startswith("@"):
                 # be compatible with IncludedInBuild

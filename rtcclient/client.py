@@ -145,7 +145,7 @@ class RTCClient(RTCBase):
         If no :class:`rtcclient.project_area.ProjectArea` objects are
         retrieved, `None` is returned.
 
-        :param archived (default is False): whether the project area
+        :param archived: (default is False) whether the project area
             is archived
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
@@ -162,7 +162,7 @@ class RTCClient(RTCBase):
         """Get :class:`rtcclient.project_area.ProjectArea` object by its name
 
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the project area
+        :param archived: (default is False) whether the project area
             is archived
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
@@ -224,7 +224,7 @@ class RTCClient(RTCBase):
 
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
-        :param archived (default is False): whether the project area
+        :param archived: (default is False) whether the project area
             is archived
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
@@ -256,7 +256,7 @@ class RTCClient(RTCBase):
         """Get :class:`rtcclient.project_area.ProjectArea` id by its name
 
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the project area
+        :param archived: (default is False) whether the project area
             is archived
         :return: the :class:`string` object
         :rtype: string
@@ -278,7 +278,7 @@ class RTCClient(RTCBase):
         :class:`rtcclient.project_area.ProjectArea` id(s) will be returned.
 
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the project area
+        :param archived: (default is False) whether the project area
             is archived
         :return: a :class:`list` that contains all the :class:`ProjectArea` ids
         :rtype: list
@@ -307,7 +307,7 @@ class RTCClient(RTCBase):
 
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
-        :param archived (default is False): whether the project area is
+        :param archived: (default is False) whether the project area is
             archived
         :return: `True` or `False`
         :rtype: bool
@@ -344,7 +344,7 @@ class RTCClient(RTCBase):
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the team area
+        :param archived: (default is False) whether the team area
             is archived
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
@@ -387,7 +387,7 @@ class RTCClient(RTCBase):
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the team areas
+        :param archived: (default is False) whether the team areas
             are archived
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
@@ -450,7 +450,7 @@ class RTCClient(RTCBase):
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the plannedfor
+        :param archived: (default is False) whether the plannedfor
             is archived
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
@@ -494,7 +494,7 @@ class RTCClient(RTCBase):
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the plannedfors
+        :param archived: (default is False) whether the plannedfors
             are archived
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
@@ -682,7 +682,7 @@ class RTCClient(RTCBase):
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the foundin is archived
+        :param archived: (default is False) whether the foundin is archived
         :return: the :class:`rtcclient.models.FoundIn` object
         :rtype: rtcclient.models.FoundIn
         """
@@ -721,7 +721,7 @@ class RTCClient(RTCBase):
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the foundins are archived
+        :param archived: (default is False) whether the foundins are archived
         :return: a :class:`list` that contains all the
             :class:`rtcclient.models.FoundIn` objects
         :rtype: list
@@ -754,7 +754,7 @@ class RTCClient(RTCBase):
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the filedagainst is
+        :param archived: (default is False) whether the filedagainst is
             archived
         :return: the :class:`rtcclient.models.FiledAgainst` object
         :rtype: rtcclient.models.FiledAgainst
@@ -795,7 +795,7 @@ class RTCClient(RTCBase):
         :param projectarea_id: the :class:`rtcclient.project_area.ProjectArea`
             id
         :param projectarea_name: the project area name
-        :param archived (default is False): whether the filedagainsts are
+        :param archived: (default is False) whether the filedagainsts are
             archived
         :return: a :class:`list` that contains all the
             :class:`rtcclient.models.FiledAgainst` objects
@@ -946,7 +946,7 @@ class RTCClient(RTCBase):
         :param projectarea_name: the project area name
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
-        :param archived (default is False): whether the workitems are archived
+        :param archived: (default is False) whether the workitems are archived
         :return: a :class:`list` that contains all the
             :class:`rtcclient.workitem.Workitem` objects
         :rtype: list
@@ -1496,7 +1496,7 @@ class RTCClient(RTCBase):
         :param projectarea_name: the project area name
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
-        :param archived (default is False): whether the workitems are archived
+        :param archived: (default is False) whether the workitems are archived
         :return: a :class:`list` that contains the queried
             :class:`rtcclient.workitem.Workitem` objects
         :rtype: list

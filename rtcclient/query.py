@@ -41,7 +41,7 @@ class Query(RTCBase):
             :class:`rtcclient.project_area.ProjectArea` name
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
-        :param archived (default is False): whether the
+        :param archived: (default is False) whether the
             :class:`rtcclient.workitem.Workitem` is archived
         :return: a :class:`list` that contains the queried
             :class:`rtcclient.workitem.Workitem` objects

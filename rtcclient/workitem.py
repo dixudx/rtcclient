@@ -16,7 +16,7 @@ class Workitem(FieldBase):
     :param url: the workitem url
     :param rtc_obj: a reference to the
         :class:`rtcclient.client.RTCClient` object
-    :param workitem_id (default is `None`): the id of the workitem, which
+    :param workitem_id: (default is `None`) the id of the workitem, which
         will be retrieved if not specified
     :param raw_data: the raw data ( OrderedDict ) of the request response
     """

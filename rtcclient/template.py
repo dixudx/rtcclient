@@ -157,7 +157,7 @@ class Templater(RTCBase):
 
         :param copied_from: the to-be-copied
             :class:`rtcclient.workitem.Workitem` id
-        :param keep (default is False): If `True`, some of below parameters
+        :param keep: (default is False) If `True`, some of below parameters
             (which will not be included in some customized
             :class:`rtcclient.workitem.Workitem` type ) will remain
             unchangeable with the to-be-copied
@@ -207,7 +207,7 @@ class Templater(RTCBase):
             equivalent string)
         :param template_name: the template file name
         :param template_folder: the folder to store template file
-        :param keep (default is False): If `True`, some of below parameters
+        :param keep: (default is False) If `True`, some of below parameters
             (which may not be included in some customized
             :class:`rtcclient.workitem.Workitem` type ) will remain
             unchangeable with the to-be-copied
@@ -220,7 +220,7 @@ class Templater(RTCBase):
                 * severity(Severity)
                 * priority(Priority)
                 * filedAgainst(Filed Against)
-        :param encoding (default is "UTF-8"): coding format
+        :param encoding: (default is "UTF-8") coding format
         :return:
 
             * a :class:`string` object: if `template_name` is not specified
@@ -379,9 +379,9 @@ class Templater(RTCBase):
             postfix
         :param template_folder: refer to
             :class:`rtcclient.template.Templater.getTemplate`
-        :param keep (default is False): refer to
+        :param keep: (default is False) refer to
             :class:`rtcclient.template.Templater.getTemplate`
-        :param encoding (default is "UTF-8"): refer to
+        :param encoding: (default is "UTF-8") refer to
             :class:`rtcclient.template.Templater.getTemplate`
         """
 
