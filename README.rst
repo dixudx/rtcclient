@@ -7,12 +7,11 @@ rtcclient
 .. image:: https://img.shields.io/pypi/v/rtcclient.svg
     :target: https://pypi.python.org/pypi/rtcclient
 
-.. image:: https://img.shields.io/pypi/dm/rtcclient.svg
-    :target: https://pypi.python.org/pypi/rtcclient
-
 .. image:: https://api.travis-ci.org/dixudx/rtcclient.svg?branch=master
     :target: https://pypi.python.org/pypi/rtcclient
 
+.. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
+    :target: https://saythanks.io/to/dixudx
 
 A Python-based Client/API for Rational Team Concert (RTC)
 
