@@ -1,13 +1,20 @@
 CHANGES
 =======
 
+0.6.0
+-----
+
+* minor doc updates for 0.6.0 release
+* add method to download attachment file
+* Insure that before files will not be overridden
+* upload and get attachments: implement issue #84
+* fix errors in testcases due to code changes in #78
 * new feature #78 add support for proxies
-* downgrade flake8 version due to flake8 no longer supports Python 2.6
 * Fix keyerror for directories changes
 * Fix changes == None issue
+* downgrade flake8 version due to flake8 no longer supports Python 2.6
 * fix issue #74
 * fix issue #73
-* remove redundant blank lines
 * minor bugs fix on fetching changed files
 * add doc for Change
 * implement new feature - issue #72
