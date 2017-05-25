@@ -14,6 +14,7 @@ from rtcclient.template import Templater
 from rtcclient import _search_path
 from rtcclient.query import Query
 import six
+from rtcclient.utils import capitalize
 
 
 class RTCClient(RTCBase):
@@ -1154,7 +1155,7 @@ class RTCClient(RTCBase):
         # get rdf:resource by keywords
         for keyword in kwargs.keys():
             try:
-                keyword_cls = eval("self.get" + keyword.capitalize())
+                keyword_cls = eval("self.get" + capitalize(keyword))
                 keyword_obj = keyword_cls(kwargs[keyword],
                                           projectarea_id=projectarea_id)
                 kwargs[keyword] = keyword_obj.url
