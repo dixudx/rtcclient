@@ -10,6 +10,9 @@ rtcclient
 .. image:: https://api.travis-ci.org/dixudx/rtcclient.svg?branch=master
     :target: https://pypi.python.org/pypi/rtcclient
 
+.. image:: https://img.shields.io/badge/slack-rtcclient-blue.svg
+    :target: https://rtcclient.slack.com
+
 .. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
     :target: https://saythanks.io/to/dixudx
 
