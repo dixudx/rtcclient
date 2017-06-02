@@ -354,7 +354,7 @@ class Templater(RTCBase):
 
         match_str_list = ["rtc_cm:com.ibm.",
                           "calm:"]
-        for key in wk_raw_data.keys():
+        for key in list(wk_raw_data.keys()):
             for match_str in match_str_list:
                 if key.startswith(match_str):
                     try:
