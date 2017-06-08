@@ -110,6 +110,12 @@ class RTCClient(RTCBase):
             raise exception.RTCException("Authentication Failed: "
                                          "Invalid username or password")
 
+        # header changes in 6.0.3, issue #92
+        authfailedloc = resp.headers.get("Location")
+        if authfailedloc is not None and authfailedloc.endswith("authfailed"):
+            raise exception.RTCException("Authentication Failed: "
+                                         "Invalid username or password")
+
         # fix issue #68
         if not _allow_redirects:
             if resp.headers.get("set-cookie") is not None:
