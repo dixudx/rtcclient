@@ -8,6 +8,7 @@ from rtcclient import exception
 from rtcclient import _search_path
 import six
 from rtcclient.utils import remove_empty_elements
+from xml.sax.saxutils import escape
 
 
 class Templater(RTCBase):
@@ -72,6 +73,12 @@ class Templater(RTCBase):
         :return: the :class:`string` object
         :rtype: string
         """
+
+        if kwargs.get("title", None) is not None:
+            kwargs["title"] = escape(kwargs["title"])
+
+        if kwargs.get("description", None) is not None:
+            kwargs["description"] = escape(kwargs["description"])
 
         try:
             temp = self.environment.get_template(template)
