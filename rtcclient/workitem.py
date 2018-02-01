@@ -608,7 +608,10 @@ class Workitem(FieldBase):
 
         # retrieve current children
         cur_children = self.getChildren(returned_properties="dc:identifier")
-        cur_child_ids = [cur_child.identifier for cur_child in cur_children]
+        if cur_children:
+            cur_child_ids = [cur_child.identifier for cur_child in cur_children if cur_child]
+        else:
+            cur_child_ids = []
 
         # add current children to list
         for child_id in cur_child_ids:
