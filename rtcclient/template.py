@@ -7,6 +7,8 @@ import jinja2.meta
 from rtcclient import exception
 from rtcclient import _search_path
 import six
+from rtcclient.utils import remove_empty_elements
+from xml.sax.saxutils import escape
 
 
 class Templater(RTCBase):
@@ -72,6 +74,12 @@ class Templater(RTCBase):
         :rtype: string
         """
 
+        if kwargs.get("title", None) is not None:
+            kwargs["title"] = escape(kwargs["title"])
+
+        if kwargs.get("description", None) is not None:
+            kwargs["description"] = escape(kwargs["description"])
+
         try:
             temp = self.environment.get_template(template)
             return temp.render(**kwargs)
@@ -129,7 +137,9 @@ class Templater(RTCBase):
                                                 template_folder=None,
                                                 keep=keep,
                                                 encoding=encoding))
-        return temp.render(**kwargs)
+
+        rendered_data = temp.render(**kwargs)
+        return remove_empty_elements(rendered_data)
 
     def listFields(self, template):
         """List all the attributes to be rendered from the template file
@@ -328,9 +338,10 @@ class Templater(RTCBase):
                           ("rtc_cm:filedAgainst", "{{ filedAgainst }}")]
         for field in replace_fields:
             try:
-                wk_raw_data[field[0]]["@rdf:resource"] = field[1]
-                self.log.debug("Successfully replace field [%s] with [%s]",
-                               field[0], field[1])
+                if field[0] in wk_raw_data:
+                    wk_raw_data[field[0]]["@rdf:resource"] = field[1]
+                    self.log.debug("Successfully replace field [%s] with [%s]",
+                                   field[0], field[1])
             except:
                 self.log.warning("Cannot replace field [%s]", field[0])
                 continue
@@ -340,8 +351,7 @@ class Templater(RTCBase):
                           template_file_path)
 
         return xmltodict.unparse(raw_data, output=output,
-                                 encoding=encoding,
-                                 pretty=True)
+                                 encoding=encoding)
 
     def _remove_long_fields(self, wk_raw_data):
         """Remove long fields: These fields are can only customized after
@@ -351,7 +361,7 @@ class Templater(RTCBase):
 
         match_str_list = ["rtc_cm:com.ibm.",
                           "calm:"]
-        for key in wk_raw_data.keys():
+        for key in list(wk_raw_data.keys()):
             for match_str in match_str_list:
                 if key.startswith(match_str):
                     try:

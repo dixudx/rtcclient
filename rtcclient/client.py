@@ -14,6 +14,7 @@ from rtcclient.template import Templater
 from rtcclient import _search_path
 from rtcclient.query import Query
 import six
+from rtcclient.utils import capitalize
 
 
 class RTCClient(RTCBase):
@@ -106,6 +107,12 @@ class RTCClient(RTCBase):
         # authfailed
         authfailed = resp.headers.get("x-com-ibm-team-repository-web-auth-msg")
         if authfailed == "authfailed":
+            raise exception.RTCException("Authentication Failed: "
+                                         "Invalid username or password")
+
+        # header changes in 6.0.3, issue #92
+        authfailedloc = resp.headers.get("Location")
+        if authfailedloc is not None and authfailedloc.endswith("authfailed"):
             raise exception.RTCException("Authentication Failed: "
                                          "Invalid username or password")
 
@@ -1098,13 +1105,16 @@ class RTCClient(RTCBase):
             if prefix is not None:
                 description = prefix + description
 
-        self.log.info("Start to create a new <Workitem>, copied from ",
+        self.log.info("Start to create a new <Workitem>, copied from "
                       "<Workitem %s>", copied_from)
+
+        projectarea = self.getProjectAreaByID(copied_wi.contextId)
+        itemtype = projectarea.getItemType(copied_wi.type)
 
         wi_url_post = "/".join([self.url,
                                 "oslc/contexts/%s" % copied_wi.contextId,
                                 "workitems",
-                                "%s" % copied_wi.type.split("/")[-1]])
+                                "%s" % itemtype.identifier])
         wi_raw = self.templater.renderFromWorkitem(copied_from,
                                                    keep=True,
                                                    encoding="UTF-8",
@@ -1154,7 +1164,7 @@ class RTCClient(RTCBase):
         # get rdf:resource by keywords
         for keyword in kwargs.keys():
             try:
-                keyword_cls = eval("self.get" + keyword.capitalize())
+                keyword_cls = eval("self.get" + capitalize(keyword))
                 keyword_obj = keyword_cls(kwargs[keyword],
                                           projectarea_id=projectarea_id)
                 kwargs[keyword] = keyword_obj.url

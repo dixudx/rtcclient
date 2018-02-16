@@ -2,7 +2,9 @@ import logging
 import functools
 from xml.parsers.expat import ExpatError
 import xmltodict
-from rtcclient.exception import RTCException
+from rtcclient.exception import RTCException, BadValue
+import six
+from lxml import etree
 
 
 def setup_basic_logging():
@@ -42,3 +44,31 @@ def token_expire_handler(func):
                     raise ExpatError(excp)
 
     return wrapper
+
+
+def capitalize(keyword):
+    """Only capitalize the first character and make the left unchanged
+
+    :param keyword: the input string
+    :return: the capitalized string
+    """
+
+    if keyword is None:
+        raise BadValue("Invalid value. None is not supported")
+
+    if isinstance(keyword, six.string_types):
+        if len(keyword) > 1:
+            return keyword[0].upper() + keyword[1:]
+        else:
+            return keyword.capitalize()
+    else:
+        raise BadValue("Input value %s is not string type" % keyword)
+
+
+def remove_empty_elements(docs):
+    root = etree.fromstring(str(docs))
+    for element in root.xpath("//*[not(node())]"):
+        if "rdf:resource" not in etree.tostring(element):
+            element.getparent().remove(element)
+
+    return etree.tostring(root)
