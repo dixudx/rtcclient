@@ -14,6 +14,8 @@ from rtcclient.template import Templater
 from rtcclient import _search_path
 from rtcclient.query import Query
 import six
+import urllib
+import httplib2
 
 
 class RTCClient(RTCBase):
@@ -47,7 +49,7 @@ class RTCClient(RTCBase):
     log = logging.getLogger("client.RTCClient")
 
     def __init__(self, url, username, password, proxies=None, searchpath=None,
-                 ends_with_jazz=True):
+                 ends_with_jazz=False):
         """Initialization
 
         See params above
@@ -77,56 +79,24 @@ class RTCClient(RTCBase):
         return self
 
     def _get_headers(self):
-        if self.jazz is True:
-            _allow_redirects = True
-        else:
-            _allow_redirects = False
-
+        self.http = httplib2.Http()
         _headers = {"Content-Type": self.CONTENT_XML}
-        resp = self.get(self.url + "/authenticated/identity",
-                        verify=False,
-                        headers=_headers,
-                        proxies=self.proxies,
-                        allow_redirects=_allow_redirects)
-
         _headers["Content-Type"] = self.CONTENT_URL_ENCODED
-        if resp.headers.get("set-cookie") is not None:
-            _headers["Cookie"] = resp.headers.get("set-cookie")
-
-        credentials = urlencode({"j_username": self.username,
-                                 "j_password": self.password})
-
-        resp = self.post(self.url + "/authenticated/j_security_check",
-                         data=credentials,
-                         verify=False,
-                         headers=_headers,
-                         proxies=self.proxies,
-                         allow_redirects=_allow_redirects)
-
-        # authfailed
-        authfailed = resp.headers.get("x-com-ibm-team-repository-web-auth-msg")
-        if authfailed == "authfailed":
-            raise exception.RTCException("Authentication Failed: "
-                                         "Invalid username or password")
-
-        # fix issue #68
-        if not _allow_redirects:
-            if resp.headers.get("set-cookie") is not None:
-                _headers["Cookie"] = resp.headers.get("set-cookie")
-
-        resp = self.get(self.url + "/authenticated/identity",
-                        verify=False,
-                        headers=_headers,
-                        proxies=self.proxies,
-                        allow_redirects=_allow_redirects)
-
-        # fix issue #68
-        if not _allow_redirects:
-            _headers["Cookie"] += "; " + resp.headers.get("set-cookie")
-        else:
-            _headers["Cookie"] = resp.headers.get("set-cookie")
-
         _headers["Accept"] = self.CONTENT_XML
+        _headers["OSLC-Core-Version"] = self.OSLC_CORE_VERSION
+        
+        # Start the authentication via j_security_check page
+        resp, content = self.http.request(self.url + '/web/j_security_check', 'POST', headers=_headers,
+                                          body=urllib.urlencode({'j_username': self.username, 'j_password': self.password}))
+        
+        # Save the new cookie returned here
+        _headers["Cookie"] = resp["set-cookie"]
+        
+        # Note: You can add exception check here. The following is the example. You need to enter your URL here.
+        # Raise exception if username and/or password are invalid
+        # if resp['location'] == 'https://rtc-ccm-1.int.xxx.com:9443/ccm/auth/authfailed':
+        #    raise exception.RTCException("Authentication Failed: Invalid username or password")
+
         return _headers
 
     def relogin(self):
@@ -912,7 +882,7 @@ class RTCClient(RTCBase):
                             proxies=self.proxies,
                             headers=self.headers)
             raw_data = xmltodict.parse(resp.content)
-            workitem_raw = raw_data["oslc_cm:ChangeRequest"]
+            workitem_raw = raw_data["rdf:RDF"]
 
             return Workitem(workitem_url,
                             self,
