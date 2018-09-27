@@ -66,9 +66,9 @@ def capitalize(keyword):
 
 
 def remove_empty_elements(docs):
-    root = etree.fromstring(str(docs))
+    root = etree.fromstring(bytes(docs, 'utf-8'))
     for element in root.xpath("//*[not(node())]"):
-        if "rdf:resource" not in etree.tostring(element):
+        if "rdf:resource" not in str(etree.tostring(element)):
             element.getparent().remove(element)
 
     return etree.tostring(root)
