@@ -1027,7 +1027,7 @@ class RTCClient(RTCBase):
         :param keep: refer to `keep` in
             :class:`rtcclient.template.Templater.getTemplate`. Only works when
             `template` is not specified
-        :param \*\*kwargs: Optional/mandatory arguments when creating a new
+        :param kwargs: Optional/mandatory arguments when creating a new
             workitem. More details, please refer to `kwargs` in
             :class:`rtcclient.template.Templater.render`
         :return: the :class:`rtcclient.workitem.Workitem` object

@@ -296,7 +296,7 @@ class Change(FieldBase):
         resp = self.get(file_url,
                         verify=False,
                         headers=self.rtc_obj.headers)
-        file_name = re.findall(".+filename\*=UTF-8''(.+)",
+        file_name = re.findall(r".+filename\*=UTF-8''(.+)",
                                resp.headers["content-disposition"])[0]
         file_path = os.path.join(file_folder, file_name)
 

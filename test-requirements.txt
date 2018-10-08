@@ -1,7 +1,4 @@
-flake8<=2.6.2
-pep8!=1.6.0,!=1.6.1,!=1.6.2,>=1.5.7
+pycodestyle
 pytest
 pytest-env
-pytest-flake8<=0.5
 pytest-mock>=0.6.0
-pytest-pep8

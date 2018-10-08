@@ -68,7 +68,7 @@ class RTCBase(object):
             before giving up, as a float, or a :ref:`(connect timeout, read
             timeout) <timeouts>` tuple.
         :type timeout: float or tuple
-        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :param kwargs: Optional arguments that ``request`` takes.
         :return: :class:`Response <Response>` object
         :rtype: requests.Response
         """
@@ -104,7 +104,7 @@ class RTCBase(object):
             before giving up, as a float, or a :ref:`(connect timeout, read
             timeout) <timeouts>` tuple.
         :type timeout: float or tuple
-        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :param kwargs: Optional arguments that ``request`` takes.
         :return: :class:`Response <Response>` object
         :rtype: requests.Response
         """
@@ -141,7 +141,7 @@ class RTCBase(object):
             before giving up, as a float, or a :ref:`(connect timeout, read
             timeout) <timeouts>` tuple.
         :type timeout: float or tuple
-        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :param kwargs: Optional arguments that ``request`` takes.
         :return: :class:`Response <Response>` object
         :rtype: requests.Response
         """
@@ -174,7 +174,7 @@ class RTCBase(object):
             before giving up, as a float, or a :ref:`(connect timeout, read
             timeout) <timeouts>` tuple.
         :type timeout: float or tuple
-        :param \*\*kwargs: Optional arguments that ``request`` takes.
+        :param kwargs: Optional arguments that ``request`` takes.
         :return: :class:`Response <Response>` object
         :rtype: requests.Response
         """
