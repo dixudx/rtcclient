@@ -351,17 +351,21 @@ class Templater(RTCBase):
 
         match_str_list = ["rtc_cm:com.ibm.",
                           "calm:"]
+        to_delete = []
         for key in wk_raw_data.keys():
             for match_str in match_str_list:
                 if key.startswith(match_str):
-                    try:
-                        wk_raw_data.pop(key)
-                        self.log.debug("Successfully remove field [%s] from "
-                                       "the template", key)
-                    except:
-                        self.log.warning("Cannot remove field [%s] from the "
-                                         "template", key)
+                    to_delete.append(key)
                     continue
+
+        for key in to_delete:
+            try:
+                del wk_raw_data[key]
+                self.log.debug("Successfully removed field [%s] from "
+                               "the template", key)
+            except:
+                self.log.warning("Cannot remove field [%s] from the "
+                                 "template", key)
 
     def getTemplates(self, workitems, template_folder=None,
                      template_names=None, keep=False, encoding="UTF-8"):
