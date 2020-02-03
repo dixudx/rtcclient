@@ -257,20 +257,23 @@ class FieldBase(RTCBase):
     def __initializeFromRaw(self):
         """Initialze from raw data (OrderedDict)"""
 
+        attr_map = self.rtc_obj.attribute_map
+        if attr_map is None:
+            attr_map = {}
+
         for (key, value) in self.raw_data.items():
             if key.startswith("@"):
                 # be compatible with IncludedInBuild
                 if "@oslc_cm:label" != key:
                     continue
 
-            attr = key.split(":")[-1].replace("-", "_")
-            attr_list = attr.split(".")
-
-            # ignore long attributes
-            if len(attr_list) > 1:
-                # attr = "_".join([attr_list[-2],
-                #                  attr_list[-1]])
-                continue
+            if key in attr_map:
+                attr = attr_map[key]
+            else:
+                # ignore long attributes
+                if '.' in key:
+                    continue
+                attr = key.split(":")[-1].replace("-", "_")
 
             self.field_alias[attr] = key
 

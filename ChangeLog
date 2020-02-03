@@ -1,6 +1,9 @@
 CHANGES
 =======
 
+* Fixes issue #124
+* remove broken PyPI downloads badge and add saythanks badge
+
 0.6.0
 -----
 
