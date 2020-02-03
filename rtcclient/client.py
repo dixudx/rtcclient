@@ -32,6 +32,11 @@ class RTCClient(RTCBase):
         the url ends with 'jazz', otherwise to `False` if with 'ccm'
         (Refer to issue #68 for details)
     :type ends_with_jazz: bool
+    :param attribute_map: (optional) Dictionary mapping RTC attributes to
+        keys. If ommitted, the default mapping will be, for example,
+        {'ns:some-attr': 'some_attr', 'other_ns:otherattr': 'otherattr', ...}
+        Also, long attributes with dots in their names will be discarded
+        unless present in the `attribute_map`.
 
     Tips: You can also customize your preferred properties to be returned
     by specified `returned_properties` when the called methods have
@@ -47,7 +52,7 @@ class RTCClient(RTCBase):
     log = logging.getLogger("client.RTCClient")
 
     def __init__(self, url, username, password, proxies=None, searchpath=None,
-                 ends_with_jazz=True):
+                 ends_with_jazz=True, attribute_map=None):
         """Initialization
 
         See params above
@@ -56,6 +61,7 @@ class RTCClient(RTCBase):
         self.username = username
         self.password = password
         self.proxies = proxies
+        self.attribute_map = attribute_map
         RTCBase.__init__(self, url)
 
         if not isinstance(ends_with_jazz, bool):
