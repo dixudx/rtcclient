@@ -127,5 +127,5 @@ the tests using pytest_ with the following command:
     virtualenv
     source .venv/bin/active
     (venv) tox -e py27
-    (venv) tox -e py33
+    (venv) tox -e py35
     (venv) tox -e pycodestyle
