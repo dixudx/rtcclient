@@ -85,24 +85,11 @@ class RTCClient(RTCBase):
 
         _headers = {"Content-Type": self.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
+                        auth=(self.username,self.password),
                         verify=False,
                         headers=_headers,
                         proxies=self.proxies,
                         allow_redirects=_allow_redirects)
-
-        _headers["Content-Type"] = self.CONTENT_URL_ENCODED
-        if resp.headers.get("set-cookie") is not None:
-            _headers["Cookie"] = resp.headers.get("set-cookie")
-
-        credentials = urlencode({"j_username": self.username,
-                                 "j_password": self.password})
-
-        resp = self.post(self.url + "/authenticated/j_security_check",
-                         data=credentials,
-                         verify=False,
-                         headers=_headers,
-                         proxies=self.proxies,
-                         allow_redirects=_allow_redirects)
 
         # authfailed
         authfailed = resp.headers.get("x-com-ibm-team-repository-web-auth-msg")
@@ -122,6 +109,7 @@ class RTCClient(RTCBase):
                 _headers["Cookie"] = resp.headers.get("set-cookie")
 
         resp = self.get(self.url + "/authenticated/identity",
+                        auth=(self.username,self.password),
                         verify=False,
                         headers=_headers,
                         proxies=self.proxies,
