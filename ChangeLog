@@ -1,6 +1,31 @@
 CHANGES
 =======
 
+0.7.0
+-----
+
+* update docs for tag 0.7.0
+* test against more python versions in tox and travis
+* fix test error
+* fix pep8 error
+* Added auth tuple to the get request. Work with 6.0.6.1 Removed Post statement
+* update tox command in README
+* remove travis check for python 2.6
+* upgrade tox and travis python version to 3.5
+* fix #115: OrderedDict mutated during iteration
+* test against py34 instead of py33
+* Pep8 is dead, long live pycodestyle
+* fix unicode error when removing empty elements
+* fix #96: escape xml post data
+* fix bug on empty children ids: #95
+* fix issue #92: Authentication not working for bad login in 6.0.3
+* fix issue #90: item type identifier
+* fix RuntimeError: OrderedDict mutated during iteration on Python 3
+* fix issue #88: workitem creation bug
+* add slack badge
+* fix issue #86: keyword capitalize error
+* remove broken PyPI downloads badge and add saythanks badge
+
 0.6.0
 -----
 
