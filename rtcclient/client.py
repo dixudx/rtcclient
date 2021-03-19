@@ -85,7 +85,7 @@ class RTCClient(RTCBase):
 
         _headers = {"Content-Type": self.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
-                        auth=(self.username,self.password),
+                        auth=(self.username, self.password),
                         verify=False,
                         headers=_headers,
                         proxies=self.proxies,
@@ -109,7 +109,7 @@ class RTCClient(RTCBase):
                 _headers["Cookie"] = resp.headers.get("set-cookie")
 
         resp = self.get(self.url + "/authenticated/identity",
-                        auth=(self.username,self.password),
+                        auth=(self.username, self.password),
                         verify=False,
                         headers=_headers,
                         proxies=self.proxies,
