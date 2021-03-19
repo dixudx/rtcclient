@@ -19,7 +19,7 @@ def test_headers(mocker):
     mocked_get.return_value = mock_rsp
     mocked_post.return_value = mock_rsp
 
-    expected_headers = {"Content-Type": "application/x-www-form-urlencoded",
+    expected_headers = {"Content-Type": "text/xml",
                         "Cookie": "cookie-id",
                         "Accept": "text/xml"}
 
