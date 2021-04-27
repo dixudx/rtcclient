@@ -76,10 +76,11 @@ class RTCBase(object):
         self.log.debug("Get response from %s", url)
         response = requests.get(url, verify=verify, headers=headers,
                                 proxies=proxies, timeout=timeout, **kwargs)
-        if response.status_code != 200:
-            self.log.error('Failed GET request at <%s> with response: %s',
+        if response.status_code != 200 and response.status_code != 302:
+            self.log.error('Failed GET request at <%s> with response: %s (%d)',
                            url,
-                           response.content)
+                           response.content,
+                           response.status_code)
             response.raise_for_status()
         return response
 
@@ -115,10 +116,11 @@ class RTCBase(object):
                                  verify=verify, headers=headers,
                                  proxies=proxies, timeout=timeout, **kwargs)
 
-        if response.status_code not in [200, 201]:
-            self.log.error('Failed POST request at <%s> with response: %s',
+        if response.status_code not in [200, 201, 302]:
+            self.log.error('Failed POST request at <%s> with response: %s (%d)',
                            url,
-                           response.content)
+                           response.content,
+                           response.status_code)
             self.log.info(response.status_code)
             response.raise_for_status()
         return response
