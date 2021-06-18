@@ -28,7 +28,7 @@ class Query(RTCBase):
 
     def queryWorkitems(self, query_str, projectarea_id=None,
                        projectarea_name=None, returned_properties=None,
-                       archived=False):
+                       archived=False, order_by="-dc:modified"):
         """Query workitems with the query string in a certain
         :class:`rtcclient.project_area.ProjectArea`
 
@@ -43,6 +43,14 @@ class Query(RTCBase):
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
         :param archived: (default is False) whether the
             :class:`rtcclient.workitem.Workitem` is archived
+        :param order_by: (default is "-dc:modified") order the query results with descending/assending order.
+            Possible value could be,
+                - "-dc:modified": descending order by last modified time
+                - "+dc:modified": assending order by last modified time
+                - "-dc:created": descending order by created time
+                - "+dc:created": assending order by created time
+                - "-rtc_cm:resolved": descending order by resolved time
+                - "+rtc_cm:resolved": assending order by resolved time
         :return: a :class:`list` that contains the queried
             :class:`rtcclient.workitem.Workitem` objects
         :rtype: list
@@ -58,12 +66,13 @@ class Query(RTCBase):
         rp = returned_properties
 
         return (self.rtc_obj
-                    ._get_paged_resources("Query",
-                                          projectarea_id=pa_id,
-                                          customized_attr=query_str,
-                                          page_size="100",
-                                          returned_properties=rp,
-                                          archived=archived))
+                ._get_paged_resources("Query",
+                                      projectarea_id=pa_id,
+                                      customized_attr=query_str,
+                                      page_size="100",
+                                      returned_properties=rp,
+                                      archived=archived,
+                                      order_by=order_by))
 
     def getAllSavedQueries(self, projectarea_id=None, projectarea_name=None,
                            creator=None, saved_query_name=None):

@@ -1213,7 +1213,7 @@ class RTCClient(RTCBase):
     def _get_paged_resources(self, resource_name, projectarea_id=None,
                              workitem_id=None, customized_attr=None,
                              page_size="100", archived=False,
-                             returned_properties=None, filter_rule=None):
+                             returned_properties=None, filter_rule=None, order_by=""):
         # TODO: multi-thread
 
         self.log.debug("Start to fetch all %ss with [ProjectArea ID: %s] "
@@ -1331,6 +1331,12 @@ class RTCClient(RTCBase):
                                 "?" if resource_name != "Query"
                                 else "&",
                                 "oslc_cm.pageSize={1}&_startIndex=0"])
+
+        # we have to replace manually -. because urllib doesn't do it
+        if len(order_by.strip()) > 0:
+            resource_url = "".join(resource_url,
+                                   "&oslc.orderBy=",
+                                   urlquote(order_by.strip()).replace("-", "%2D"))
 
         resource_url = resource_url.format(res_map[resource_name],
                                            page_size)
