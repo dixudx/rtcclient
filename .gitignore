@@ -61,4 +61,5 @@ target/
 
 # virtual env
 venv/
+.venv/
 
