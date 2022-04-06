@@ -1,6 +1,20 @@
 CHANGES
 =======
 
+0.8.0
+-----
+
+* update Changelog for 0.8.0
+* change description file back to rst file
+* Revert "README: use markdown instead of rst"
+* Further speed improvements
+* Formatting with tox
+* Updating .gitignore
+* Adding multiprocessing to _get_paged_resources
+* fix pbr version issue and update classifier
+* README: use markdown instead of rst
+* update git ignore
+
 0.7.0
 -----
 
