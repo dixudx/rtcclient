@@ -1,4 +1,3 @@
-from pathos.pools import ProcessPool
 from rtcclient.base import RTCBase
 import xmltodict
 from rtcclient import exception
@@ -1366,54 +1365,44 @@ class RTCClient(RTCBase):
 
         resources_list = []
 
-        with ProcessPool() as executor:
         while True:
-                entries = raw_data.get("oslc_cm:Collection", {}).get(entry_map[resource_name])
+            entries = (raw_data.get("oslc_cm:Collection")
+                               .get(entry_map[resource_name]))
 
             if entries is None:
                 break
 
             # for the last single entry
             if isinstance(entries, OrderedDict):
-                    resource = self._handle_resource_entry(
-                        resource_name,
+                resource = self._handle_resource_entry(resource_name,
                                                        entries,
                                                        projectarea_url=pa_url,
                                                        archived=archived,
-                        filter_rule=filter_rule,
-                    )
+                                                       filter_rule=filter_rule)
                 if resource is not None:
                     resources_list.append(resource)
                 break
 
-                def handle_resource_entry(entry):
-                    return self._handle_resource_entry(
-                        resource_name,
+            # iterate all the entries
+            for entry in entries:
+                resource = self._handle_resource_entry(resource_name,
                                                        entry,
                                                        projectarea_url=pa_url,
                                                        archived=archived,
-                        filter_rule=filter_rule,
-                    )
-
-                # process all the entries
-                resources = executor.imap(
-                    handle_resource_entry,
-                    entries,
-                )
+                                                       filter_rule=filter_rule)
+                if resource is not None:
+                    resources_list.append(resource)
 
             # find the next page
-                url_next = raw_data.get("oslc_cm:Collection").get("@oslc_cm:next")
+            url_next = raw_data.get('oslc_cm:Collection').get('@oslc_cm:next')
             if url_next:
-                    resp = self.get(
-                        url_next, verify=False, proxies=self.proxies, headers=self.headers
-                    )
+                resp = self.get(url_next,
+                                verify=False,
+                                proxies=self.proxies,
+                                headers=self.headers)
                 raw_data = xmltodict.parse(resp.content)
             else:
-                    raw_data = {}
-
-                for resource in list(resources):
-                    if resource is not None:
-                        resources_list.append(resource)
+                break
 
         if not resources_list:
             self.log.warning("No %ss are found with [ProjectArea ID: %s] "
