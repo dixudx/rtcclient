@@ -1,6 +1,6 @@
-from rtcclient.base import RTCBase, FieldBase
-import pytest
 import requests
+
+from rtcclient.base import RTCBase
 
 
 class BaseTestRTC(RTCBase):
@@ -14,24 +14,26 @@ class BaseTestRTC(RTCBase):
 
 class TestRTCBase:
 
-    test_urls = ["http://test.url:9443/////",
-                 "http://test.url:9443/jazz////",
-                 "http://test.url:9443/jazz"]
+    test_urls = [
+        "http://test.url:9443/////", "http://test.url:9443/jazz////",
+        "http://test.url:9443/jazz"
+    ]
 
-    valid_test_urls = ["http://test.url:9443",
-                       "http://test.url:9443/jazz",
-                       "http://test.url:9443/jazz"]
+    valid_test_urls = [
+        "http://test.url:9443", "http://test.url:9443/jazz",
+        "http://test.url:9443/jazz"
+    ]
 
     def test_validate_url(self):
         for idx, test_url in enumerate(self.test_urls):
             test_rtc = BaseTestRTC(test_url)
-            assert (test_rtc.validate_url(test_url) ==
-                    self.valid_test_urls[idx])
+            assert (
+                test_rtc.validate_url(test_url) == self.valid_test_urls[idx])
 
     def test_validate_url_cls(self):
         for idx, test_url in enumerate(self.test_urls):
-            assert (BaseTestRTC.validate_url(test_url) ==
-                    self.valid_test_urls[idx])
+            assert (
+                BaseTestRTC.validate_url(test_url) == self.valid_test_urls[idx])
 
     def test_str(self):
         for test_url in self.test_urls:

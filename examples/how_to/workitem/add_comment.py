@@ -1,7 +1,6 @@
 from rtcclient.client import RTCClient
 from rtcclient.utils import setup_basic_logging
 
-
 if __name__ == "__main__":
     # you can remove this if you don't need logging
     # default logging for console output

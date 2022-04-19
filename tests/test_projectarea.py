@@ -14,18 +14,20 @@ class TestProjectArea:
         return myclient
 
     def test_init_projectarea_exception(self, myrtcclient):
-        pa_url = "/".join(["http://test.url:9443/jazz/oslc",
-                           "projectareas/_0qMJUMfiEd6yW_0tvNlbrw"])
+        pa_url = "/".join([
+            "http://test.url:9443/jazz/oslc",
+            "projectareas/_0qMJUMfiEd6yW_0tvNlbrw"
+        ])
         with pytest.raises(EmptyAttrib):
             ProjectArea(pa_url, myrtcclient, raw_data=None)
 
     @pytest.fixture(autouse=True)
     def mypa(self, myrtcclient):
-        pa_url = "/".join(["http://test.url:9443/jazz/oslc",
-                           "projectareas/_CuZu0HUwEeKicpXBddtqNA"])
-        return ProjectArea(pa_url,
-                           myrtcclient,
-                           utils_test.pa2)
+        pa_url = "/".join([
+            "http://test.url:9443/jazz/oslc",
+            "projectareas/_CuZu0HUwEeKicpXBddtqNA"
+        ])
+        return ProjectArea(pa_url, myrtcclient, utils_test.pa2)
 
     @pytest.fixture
     def mock_get_roles(self, mocker):
@@ -38,33 +40,31 @@ class TestProjectArea:
 
     def test_get_roles(self, mypa, mock_get_roles, myrtcclient):
         # Role1
-        role1_url = "/".join(["http://test.url:9443/jazz/process",
-                              "project-areas/_vsoCMN-TEd6VxeRBsGx82Q",
-                              "roles/Product%20Owner"])
-        role1 = Role(role1_url,
-                     myrtcclient,
-                     utils_test.role1)
+        role1_url = "/".join([
+            "http://test.url:9443/jazz/process",
+            "project-areas/_vsoCMN-TEd6VxeRBsGx82Q", "roles/Product%20Owner"
+        ])
+        role1 = Role(role1_url, myrtcclient, utils_test.role1)
         assert str(role1) == "Product Owner"
         assert role1.url == role1_url
         assert role1.id == "Product Owner"
-        assert role1.description == " ".join(["The person responsible for",
-                                              "managing the Product Backlog."])
+        assert role1.description == " ".join(
+            ["The person responsible for", "managing the Product Backlog."])
 
         # Role2
-        role2_url = "/".join(["http://test.url:9443/jazz/process",
-                              "project-areas_vsoCMN-TEd6VxeRBsGx82Q"
-                              "roles/Test%20Team"])
-        role2 = Role(role2_url,
-                     myrtcclient,
-                     utils_test.role2)
+        role2_url = "/".join([
+            "http://test.url:9443/jazz/process",
+            "project-areas_vsoCMN-TEd6VxeRBsGx82Q"
+            "roles/Test%20Team"
+        ])
+        role2 = Role(role2_url, myrtcclient, utils_test.role2)
 
         # Role3
-        role3_url = "/".join(["http://test.url:9443/jazz/process",
-                              "project-areas/_vsoCMN-TEd6VxeRBsGx82Q",
-                              "roles/default"])
-        role3 = Role(role3_url,
-                     myrtcclient,
-                     utils_test.role3)
+        role3_url = "/".join([
+            "http://test.url:9443/jazz/process",
+            "project-areas/_vsoCMN-TEd6VxeRBsGx82Q", "roles/default"
+        ])
+        role3 = Role(role3_url, myrtcclient, utils_test.role3)
 
         roles = mypa.getRoles()
         assert roles == [role1, role2, role3]
@@ -77,12 +77,11 @@ class TestProjectArea:
                 mypa.getRole(invalid_label)
 
         # Role1
-        role1_url = "/".join(["http://test.url:9443/jazz/process"
-                              "project-areas_vsoCMN-TEd6VxeRBsGx82Q",
-                              "roles/Product%20Owner"])
-        role1 = Role(role1_url,
-                     myrtcclient,
-                     utils_test.role1)
+        role1_url = "/".join([
+            "http://test.url:9443/jazz/process"
+            "project-areas_vsoCMN-TEd6VxeRBsGx82Q", "roles/Product%20Owner"
+        ])
+        role1 = Role(role1_url, myrtcclient, utils_test.role1)
 
         # valid role label
         role_valid_names = ["Product Owner", u"Product Owner"]
@@ -109,8 +108,7 @@ class TestProjectArea:
 
         # Member1
         m1 = Member("http://test.url:9443/jts/users/tester1%40email.com",
-                    myrtcclient,
-                    utils_test.member1)
+                    myrtcclient, utils_test.member1)
         assert str(m1) == "tester1"
         assert m1.email == "tester1@email.com"
         assert m1.userId == "tester1@email.com"
@@ -122,8 +120,7 @@ class TestProjectArea:
 
         # Member2
         m2 = Member("http://test.url:9443/jts/users/tester2%40email.com",
-                    myrtcclient,
-                    utils_test.member2)
+                    myrtcclient, utils_test.member2)
         assert str(m2) == "tester2"
         assert m2.email == "tester2@email.com"
         assert m2.userId == "tester2@email.com"
@@ -135,8 +132,7 @@ class TestProjectArea:
 
         # Member3
         m3 = Member("http://test.url:9443/jts/users/tester3%40email.com",
-                    myrtcclient,
-                    utils_test.member3)
+                    myrtcclient, utils_test.member3)
         assert str(m3) == "tester3"
         assert m3.email == "tester3@email.com"
         assert m3.userId == "tester3@email.com"
@@ -151,16 +147,17 @@ class TestProjectArea:
 
     def test_get_member(self, mypa, myrtcclient, mock_get_members):
         # invalid email address
-        invalid_emails = ["", u"", None, True, False, "test.com", u"test.com"
-                          "test%40email.com", u"test%40email.com"]
+        invalid_emails = [
+            "", u"", None, True, False, "test.com", u"test.com"
+            "test%40email.com", u"test%40email.com"
+        ]
         for invalid_email in invalid_emails:
             with pytest.raises(BadValue):
                 mypa.getMember(invalid_email)
 
         # Member1
         m1 = Member("http://test.url:9443/jts/users/tester1%40email.com",
-                    myrtcclient,
-                    utils_test.member1)
+                    myrtcclient, utils_test.member1)
 
         # valid email address
         member_valid_names = ["tester1@email.com", u"tester1@email.com"]
@@ -185,42 +182,42 @@ class TestProjectArea:
 
     def test_get_itemtypes(self, mypa, mock_get_itemtypes, myrtcclient):
         # ItemType1
-        it1_url = "/".join(["http://test.url:9443/jazz/oslc",
-                            "types/_CuZu0HUwEeKicpXBddtqNA/defect"])
-        it1 = ItemType(it1_url,
-                       myrtcclient,
-                       utils_test.itemtype1)
+        it1_url = "/".join([
+            "http://test.url:9443/jazz/oslc",
+            "types/_CuZu0HUwEeKicpXBddtqNA/defect"
+        ])
+        it1 = ItemType(it1_url, myrtcclient, utils_test.itemtype1)
         assert it1.url == it1_url
         assert str(it1) == "Defect"
         assert it1.identifier == "defect"
         assert it1.title == "Defect"
-        assert it1.iconUrl == "".join(["http://test.url:9443/jazz/service/",
-                                       "com.ibm.team.workitem.common.",
-                                       "internal.model.IImageContentService/",
-                                       "processattachment/",
-                                       "_CuZu0HUwEeKicpXBddtqNA/workitemtype",
-                                       "/bug.gif"])
+        assert it1.iconUrl == "".join([
+            "http://test.url:9443/jazz/service/",
+            "com.ibm.team.workitem.common.",
+            "internal.model.IImageContentService/", "processattachment/",
+            "_CuZu0HUwEeKicpXBddtqNA/workitemtype", "/bug.gif"
+        ])
         assert it1.dimmedIconUrl is None
         assert it1.category == "defect_task"
         # fake data: pls ignore the value
         assert it1.projectArea == ["Defect", "Task"]
 
         # ItemType2
-        it2_url = "/".join(["http://test.url:9443/jazz/oslc",
-                            "types/_CuZu0HUwEeKicpXBddtqNA/task"])
-        it2 = ItemType(it2_url,
-                       myrtcclient,
-                       utils_test.itemtype2)
+        it2_url = "/".join([
+            "http://test.url:9443/jazz/oslc",
+            "types/_CuZu0HUwEeKicpXBddtqNA/task"
+        ])
+        it2 = ItemType(it2_url, myrtcclient, utils_test.itemtype2)
         assert it2.url == it2_url
         assert str(it2) == "Task"
         assert it2.identifier == "task"
         assert it2.title == "Task"
-        assert it2.iconUrl == "".join(["http://test.url:9443/jazz/service/",
-                                       "com.ibm.team.workitem.common.",
-                                       "internal.model.IImageContentService/",
-                                       "processattachment/",
-                                       "_CuZu0HUwEeKicpXBddtqNA/workitemtype",
-                                       "/task.gif"])
+        assert it2.iconUrl == "".join([
+            "http://test.url:9443/jazz/service/",
+            "com.ibm.team.workitem.common.",
+            "internal.model.IImageContentService/", "processattachment/",
+            "_CuZu0HUwEeKicpXBddtqNA/workitemtype", "/task.gif"
+        ])
         assert it2.dimmedIconUrl is None
         assert it2.category == "task"
         # fake data: pls ignore the value
@@ -237,11 +234,11 @@ class TestProjectArea:
                 mypa.getItemType(invalid_title)
 
         # ItemType1
-        it1_url = "/".join(["http://test.url:9443/jazz/oslc",
-                            "types/_CuZu0HUwEeKicpXBddtqNA/defect"])
-        it1 = ItemType(it1_url,
-                       myrtcclient,
-                       utils_test.itemtype1)
+        it1_url = "/".join([
+            "http://test.url:9443/jazz/oslc",
+            "types/_CuZu0HUwEeKicpXBddtqNA/defect"
+        ])
+        it1 = ItemType(it1_url, myrtcclient, utils_test.itemtype1)
 
         itemtype_valid_names = ["Defect", u"Defect"]
         for itemtype_name in itemtype_valid_names:
@@ -266,9 +263,7 @@ class TestProjectArea:
     def test_get_admins(self, mypa, mock_get_admins, myrtcclient):
         # Administrator
         admin_url = "http://test.url:9443/jts/users/tester1%40email.com"
-        admin = Administrator(admin_url,
-                              myrtcclient,
-                              utils_test.admin)
+        admin = Administrator(admin_url, myrtcclient, utils_test.admin)
         assert str(admin) == "tester1"
         assert admin.url == admin_url
         assert admin.userId == "tester1@email.com"
@@ -283,17 +278,17 @@ class TestProjectArea:
 
     def test_get_admin(self, mypa, myrtcclient, mock_get_admins):
         # invalid email address
-        invalid_emails = ["", u"", None, True, False, "test.com", u"test.com",
-                          "test%40email.com", u"test%40email.com"]
+        invalid_emails = [
+            "", u"", None, True, False, "test.com", u"test.com",
+            "test%40email.com", u"test%40email.com"
+        ]
         for invalid_email in invalid_emails:
             with pytest.raises(BadValue):
                 mypa.getAdministrator(invalid_email)
 
         # Administrator
         ad_url = "http://test.url:9443/jts/users/tester1%40email.com"
-        ad = Administrator(ad_url,
-                           myrtcclient,
-                           utils_test.admin)
+        ad = Administrator(ad_url, myrtcclient, utils_test.admin)
 
         # valid email address
         admin_valid_names = ["tester1@email.com", u"tester1@email.com"]

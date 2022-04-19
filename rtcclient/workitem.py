@@ -1,13 +1,15 @@
-from rtcclient.base import FieldBase
-import logging
-import xmltodict
 import copy
-from rtcclient import exception, OrderedDict
-from requests.exceptions import HTTPError
-from rtcclient.models import Comment, Attachment
-import six
 import json
+import logging
 import os
+
+import six
+import xmltodict
+from requests.exceptions import HTTPError
+
+from rtcclient import exception, OrderedDict
+from rtcclient.base import FieldBase
+from rtcclient.models import Comment, Attachment
 
 
 class Workitem(FieldBase):
@@ -67,11 +69,9 @@ class Workitem(FieldBase):
         except (ValueError, TypeError):
             raise exception.BadValue("Please input valid comment id")
 
-        comment_url = "/".join([self.url,
-                                "rtc_cm:comments/%s" % comment_id])
+        comment_url = "/".join([self.url, "rtc_cm:comments/%s" % comment_id])
         try:
-            return Comment(comment_url,
-                           self.rtc_obj)
+            return Comment(comment_url, self.rtc_obj)
         except HTTPError:
             self.log.error("Comment %s does not exist", comment_id)
             raise exception.BadValue("Comment %s does not exist" % comment_id)
@@ -100,8 +100,7 @@ class Workitem(FieldBase):
 </rdf:RDF>
 '''
 
-        comments_url = "/".join([self.url,
-                                 "rtc_cm:comments"])
+        comments_url = "/".join([self.url, "rtc_cm:comments"])
         headers = copy.deepcopy(self.rtc_obj.headers)
         resp = self.get(comments_url,
                         verify=False,
@@ -111,8 +110,7 @@ class Workitem(FieldBase):
         raw_data = xmltodict.parse(resp.content)
 
         total_cnt = raw_data["oslc_cm:Collection"]["@oslc_cm:totalCount"]
-        comment_url = "/".join([comments_url,
-                                total_cnt])
+        comment_url = "/".join([comments_url, total_cnt])
 
         comment_msg = origin_comment.format(comment_url, msg)
 
@@ -120,16 +118,15 @@ class Workitem(FieldBase):
         headers["Accept"] = self.OSLC_CR_RDF
         headers["OSLC-Core-Version"] = "2.0"
         headers["If-Match"] = resp.headers.get("etag")
-        req_url = "/".join([comments_url,
-                            "oslc:comment"])
+        req_url = "/".join([comments_url, "oslc:comment"])
 
         resp = self.post(req_url,
                          verify=False,
                          headers=headers,
                          proxies=self.rtc_obj.proxies,
                          data=comment_msg)
-        self.log.info("Successfully add comment: [%s] for <Workitem %s>",
-                      msg, self)
+        self.log.info("Successfully add comment: [%s] for <Workitem %s>", msg,
+                      self)
 
         raw_data = xmltodict.parse(resp.content)
         return Comment(comment_url,
@@ -233,8 +230,8 @@ class Workitem(FieldBase):
                       emails_list, self)
 
     def _update_subscribe(self, headers, raw_data):
-        subscribers_url = "".join([self.url,
-                                   "?oslc_cm.properties=rtc_cm:subscribers"])
+        subscribers_url = "".join(
+            [self.url, "?oslc_cm.properties=rtc_cm:subscribers"])
         self.put(subscribers_url,
                  verify=False,
                  proxies=self.rtc_obj.proxies,
@@ -242,8 +239,8 @@ class Workitem(FieldBase):
                  data=xmltodict.unparse(raw_data))
 
     def _perform_subscribe(self):
-        subscribers_url = "".join([self.url,
-                                   "?oslc_cm.properties=rtc_cm:subscribers"])
+        subscribers_url = "".join(
+            [self.url, "?oslc_cm.properties=rtc_cm:subscribers"])
         headers = copy.deepcopy(self.rtc_obj.headers)
         headers["Content-Type"] = self.OSLC_CR_RDF
         headers["Accept"] = self.OSLC_CR_RDF
@@ -276,8 +273,8 @@ class Workitem(FieldBase):
         else:
             if isinstance(subs, OrderedDict):
                 # only one subscriber exist
-                existed_flag = self._check_exist_subscriber(new_subscriber,
-                                                            subs)
+                existed_flag = self._check_exist_subscriber(
+                    new_subscriber, subs)
                 if not existed_flag:
                     subs = [subs]
                     subs.append(new_sub)
@@ -286,8 +283,8 @@ class Workitem(FieldBase):
                 # a list: several subscribers
                 # check existing
                 for exist_sub in subs:
-                    existed_flag = self._check_exist_subscriber(new_subscriber,
-                                                                exist_sub)
+                    existed_flag = self._check_exist_subscriber(
+                        new_subscriber, exist_sub)
                     if existed_flag:
                         break
                 else:
@@ -307,25 +304,23 @@ class Workitem(FieldBase):
         subs = description.get("rtc_cm:subscribers", None)
         if subs is None:
             # no subscribers
-            self.log.error("No subscribers for <Workitem %s>",
-                           self)
+            self.log.error("No subscribers for <Workitem %s>", self)
         else:
             if isinstance(subs, OrderedDict):
                 # only one subscriber exist
-                missing_flag = self._check_missing_subscriber(del_sub,
-                                                              subs)
+                missing_flag = self._check_missing_subscriber(del_sub, subs)
                 if not missing_flag:
                     description.pop("rtc_cm:subscribers")
                 else:
-                    self.log.error("The subscriber %s has not been "
-                                   "added. No need to unsubscribe",
-                                   del_sub.email)
+                    self.log.error(
+                        "The subscriber %s has not been "
+                        "added. No need to unsubscribe", del_sub.email)
             else:
                 # a list: several subscribers
                 # check existing
                 for exist_sub in subs:
-                    missing_flag = self._check_missing_subscriber(del_sub,
-                                                                  exist_sub)
+                    missing_flag = self._check_missing_subscriber(
+                        del_sub, exist_sub)
                     if not missing_flag:
                         subs.remove(exist_sub)
 
@@ -335,17 +330,17 @@ class Workitem(FieldBase):
 
                         break
                 else:
-                    self.log.error("The subscriber %s has not been "
-                                   "added. No need to unsubscribe",
-                                   del_sub.email)
+                    self.log.error(
+                        "The subscriber %s has not been "
+                        "added. No need to unsubscribe", del_sub.email)
 
         return missing_flag, raw_data
 
     def _check_exist_subscriber(self, new_subscriber, exist_sub):
         if new_subscriber.url == exist_sub["@rdf:resource"]:
-            self.log.error("The subscriber %s has already been "
-                           "added. No need to re-add",
-                           new_subscriber.email)
+            self.log.error(
+                "The subscriber %s has already been "
+                "added. No need to re-add", new_subscriber.email)
             return True
         return False
 
@@ -407,9 +402,8 @@ class Workitem(FieldBase):
             filter_rule = self.rtc_obj._add_filter_rule(filter_rule,
                                                         faction_rule)
 
-        cust_attr = (self.raw_data.get("rtc_cm:state")
-                                  .get("@rdf:resource")
-                                  .split("/")[-2])
+        cust_attr = (self.raw_data.get("rtc_cm:state").get(
+            "@rdf:resource").split("/")[-2])
         return self.rtc_obj._get_paged_resources("Action",
                                                  projectarea_id=self.contextId,
                                                  customized_attr=cust_attr,
@@ -424,9 +418,8 @@ class Workitem(FieldBase):
         :rtype: list
         """
 
-        cust_attr = (self.raw_data.get("rtc_cm:state")
-                         .get("@rdf:resource")
-                         .split("/")[-2])
+        cust_attr = (self.raw_data.get("rtc_cm:state").get(
+            "@rdf:resource").split("/")[-2])
         return self.rtc_obj._get_paged_resources("State",
                                                  projectarea_id=self.contextId,
                                                  customized_attr=cust_attr,
@@ -465,12 +458,11 @@ class Workitem(FieldBase):
         parent_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
                       "parentworkitem.parent")
         rp = returned_properties
-        parent = (self.rtc_obj
-                      ._get_paged_resources("Parent",
-                                            workitem_id=self.identifier,
-                                            customized_attr=parent_tag,
-                                            page_size="5",
-                                            returned_properties=rp))
+        parent = (self.rtc_obj._get_paged_resources("Parent",
+                                                    workitem_id=self.identifier,
+                                                    customized_attr=parent_tag,
+                                                    page_size="5",
+                                                    returned_properties=rp))
 
         # No more than one parent
         if parent:
@@ -492,12 +484,11 @@ class Workitem(FieldBase):
         children_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
                         "parentworkitem.children")
         rp = returned_properties
-        return (self.rtc_obj
-                    ._get_paged_resources("Children",
-                                          workitem_id=self.identifier,
-                                          customized_attr=children_tag,
-                                          page_size="10",
-                                          returned_properties=rp))
+        return (self.rtc_obj._get_paged_resources("Children",
+                                                  workitem_id=self.identifier,
+                                                  customized_attr=children_tag,
+                                                  page_size="10",
+                                                  returned_properties=rp))
 
     def getChangeSets(self):
         """Get all the ChangeSets of this workitem
@@ -509,11 +500,10 @@ class Workitem(FieldBase):
 
         changeset_tag = ("rtc_cm:com.ibm.team.filesystem.workitems."
                          "change_set.com.ibm.team.scm.ChangeSet")
-        return (self.rtc_obj
-                    ._get_paged_resources("ChangeSet",
-                                          workitem_id=self.identifier,
-                                          customized_attr=changeset_tag,
-                                          page_size="10"))
+        return (self.rtc_obj._get_paged_resources("ChangeSet",
+                                                  workitem_id=self.identifier,
+                                                  customized_attr=changeset_tag,
+                                                  page_size="10"))
 
     def addParent(self, parent_id):
         """Add a parent to current workitem
@@ -532,16 +522,16 @@ class Workitem(FieldBase):
         if not isinstance(parent_id, int):
             raise exception.BadValue("Please input a valid workitem id")
 
-        self.log.debug("Try to add a parent <Workitem %s> to current "
-                       "<Workitem %s>",
-                       parent_id,
-                       self)
+        self.log.debug(
+            "Try to add a parent <Workitem %s> to current "
+            "<Workitem %s>", parent_id, self)
 
         headers = copy.deepcopy(self.rtc_obj.headers)
         headers["Content-Type"] = self.OSLC_CR_JSON
-        req_url = "".join([self.url,
-                           "?oslc_cm.properties=com.ibm.team.workitem.",
-                           "linktype.parentworkitem.parent"])
+        req_url = "".join([
+            self.url, "?oslc_cm.properties=com.ibm.team.workitem.",
+            "linktype.parentworkitem.parent"
+        ])
 
         parent_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
                       "parentworkitem.parent")
@@ -555,10 +545,9 @@ class Workitem(FieldBase):
                  proxies=self.rtc_obj.proxies,
                  headers=headers,
                  data=json.dumps(parent_original))
-        self.log.info("Successfully add a parent <Workitem %s> to current "
-                      "<Workitem %s>",
-                      parent_id,
-                      self)
+        self.log.info(
+            "Successfully add a parent <Workitem %s> to current "
+            "<Workitem %s>", parent_id, self)
 
     def addChild(self, child_id):
         """Add a child to current workitem
@@ -567,15 +556,13 @@ class Workitem(FieldBase):
             (integer or equivalent string)
         """
 
-        self.log.debug("Try to add a child <Workitem %s> to current "
-                       "<Workitem %s>",
-                       child_id,
-                       self)
+        self.log.debug(
+            "Try to add a child <Workitem %s> to current "
+            "<Workitem %s>", child_id, self)
         self._addChildren([child_id])
-        self.log.info("Successfully add a child <Workitem %s> to current "
-                      "<Workitem %s>",
-                      child_id,
-                      self)
+        self.log.info(
+            "Successfully add a child <Workitem %s> to current "
+            "<Workitem %s>", child_id, self)
 
     def addChildren(self, child_ids):
         """Add children to current workitem
@@ -589,15 +576,13 @@ class Workitem(FieldBase):
             self.log.error(error_msg)
             raise exception.BadValue(error_msg)
 
-        self.log.debug("Try to add children <Workitem %s> to current "
-                       "<Workitem %s>",
-                       child_ids,
-                       self)
+        self.log.debug(
+            "Try to add children <Workitem %s> to current "
+            "<Workitem %s>", child_ids, self)
         self._addChildren(child_ids)
-        self.log.info("Successfully add children <Workitem %s> to current "
-                      "<Workitem %s>",
-                      child_ids,
-                      self)
+        self.log.info(
+            "Successfully add children <Workitem %s> to current "
+            "<Workitem %s>", child_ids, self)
 
     def _addChildren(self, child_ids):
         child_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
@@ -608,8 +593,11 @@ class Workitem(FieldBase):
 
         # retrieve current children
         cur_children = self.getChildren(returned_properties="dc:identifier")
-        cur_child_ids = [cur_child.identifier for cur_child
-                         in (cur_children or []) if cur_child is not None]
+        cur_child_ids = [
+            cur_child.identifier
+            for cur_child in (cur_children or [])
+            if cur_child is not None
+        ]
 
         # add current children to list
         for child_id in cur_child_ids:
@@ -622,9 +610,10 @@ class Workitem(FieldBase):
         # update children workitems
         headers = copy.deepcopy(self.rtc_obj.headers)
         headers["Content-Type"] = self.OSLC_CR_JSON
-        req_url = "".join([self.url,
-                           "?oslc_cm.properties=com.ibm.team.workitem.",
-                           "linktype.parentworkitem.children"])
+        req_url = "".join([
+            self.url, "?oslc_cm.properties=com.ibm.team.workitem.",
+            "linktype.parentworkitem.children"
+        ])
         self.put(req_url,
                  verify=False,
                  headers=headers,
@@ -637,26 +626,22 @@ class Workitem(FieldBase):
 
         # check data type
         if isinstance(child_id, bool):
-            raise exception.BadValue("Invalid workitem id: %s",
-                                     child_id)
+            raise exception.BadValue("Invalid workitem id: %s", child_id)
         if isinstance(child_id, six.string_types):
             child_id = int(child_id)
         if not isinstance(child_id, int):
-            raise exception.BadValue("Invalid workitem id: %s",
-                                     child_id)
+            raise exception.BadValue("Invalid workitem id: %s", child_id)
 
         # add child url
         child_url = ("{0}/resource/itemName/com.ibm.team."
-                     "workitem.WorkItem/{1}".format(self.rtc_obj.url,
-                                                    child_id))
+                     "workitem.WorkItem/{1}".format(self.rtc_obj.url, child_id))
         new_child = {"rdf:resource": child_url}
         if new_child not in children_original[child_tag]:
             children_original[child_tag].append(new_child)
         else:
-            self.log.debug("Child <Workitem %s> has already been added to "
-                           "current <Workitem %s>. Ignore it.",
-                           child_id,
-                           self)
+            self.log.debug(
+                "Child <Workitem %s> has already been added to "
+                "current <Workitem %s>. Ignore it.", child_id, self)
 
     def removeParent(self):
         """Remove the parent workitem from current workitem
@@ -666,15 +651,16 @@ class Workitem(FieldBase):
 
         """
 
-        self.log.debug("Try to remove the parent workitem from current "
-                       "<Workitem %s>",
-                       self)
+        self.log.debug(
+            "Try to remove the parent workitem from current "
+            "<Workitem %s>", self)
 
         headers = copy.deepcopy(self.rtc_obj.headers)
         headers["Content-Type"] = self.OSLC_CR_JSON
-        req_url = "".join([self.url,
-                           "?oslc_cm.properties=com.ibm.team.workitem.",
-                           "linktype.parentworkitem.parent"])
+        req_url = "".join([
+            self.url, "?oslc_cm.properties=com.ibm.team.workitem.",
+            "linktype.parentworkitem.parent"
+        ])
 
         parent_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
                       "parentworkitem.parent")
@@ -685,9 +671,9 @@ class Workitem(FieldBase):
                  proxies=self.rtc_obj.proxies,
                  headers=headers,
                  data=json.dumps(parent_original))
-        self.log.info("Successfully remove the parent workitem of current "
-                      "<Workitem %s>",
-                      self)
+        self.log.info(
+            "Successfully remove the parent workitem of current "
+            "<Workitem %s>", self)
 
     def removeChild(self, child_id):
         """Remove a child from current workitem
@@ -696,15 +682,13 @@ class Workitem(FieldBase):
             (integer or equivalent string)
         """
 
-        self.log.debug("Try to remove a child <Workitem %s> from current "
-                       "<Workitem %s>",
-                       child_id,
-                       self)
+        self.log.debug(
+            "Try to remove a child <Workitem %s> from current "
+            "<Workitem %s>", child_id, self)
         self._removeChildren([child_id])
-        self.log.info("Successfully remove a child <Workitem %s> from "
-                      "current <Workitem %s>",
-                      child_id,
-                      self)
+        self.log.info(
+            "Successfully remove a child <Workitem %s> from "
+            "current <Workitem %s>", child_id, self)
 
     def removeChildren(self, child_ids):
         """Remove children from current workitem
@@ -718,15 +702,13 @@ class Workitem(FieldBase):
             self.log.error(error_msg)
             raise exception.BadValue(error_msg)
 
-        self.log.debug("Try to remove children <Workitem %s> from current "
-                       "<Workitem %s>",
-                       child_ids,
-                       self)
+        self.log.debug(
+            "Try to remove children <Workitem %s> from current "
+            "<Workitem %s>", child_ids, self)
         self._removeChildren(child_ids)
-        self.log.info("Successfully remove children <Workitem %s> from "
-                      "current <Workitem %s>",
-                      child_ids,
-                      self)
+        self.log.info(
+            "Successfully remove children <Workitem %s> from "
+            "current <Workitem %s>", child_ids, self)
 
     def _removeChildren(self, child_ids):
         child_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
@@ -749,9 +731,10 @@ class Workitem(FieldBase):
         # update children workitems
         headers = copy.deepcopy(self.rtc_obj.headers)
         headers["Content-Type"] = self.OSLC_CR_JSON
-        req_url = "".join([self.url,
-                           "?oslc_cm.properties=com.ibm.team.workitem.",
-                           "linktype.parentworkitem.children"])
+        req_url = "".join([
+            self.url, "?oslc_cm.properties=com.ibm.team.workitem.",
+            "linktype.parentworkitem.children"
+        ])
         self.put(req_url,
                  verify=False,
                  headers=headers,
@@ -780,12 +763,11 @@ class Workitem(FieldBase):
         fileh = open(filepath, "rb")
         files = {"attach": (filename, fileh, "application/octet-stream")}
 
-        params = {"projectId": proj_id,
-                  "multiple": "true",
-                  "category": fa_id}
-        req_url = "".join([self.rtc_obj.url,
-                           "/service/com.ibm.team.workitem.service.",
-                           "internal.rest.IAttachmentRestService/"])
+        params = {"projectId": proj_id, "multiple": "true", "category": fa_id}
+        req_url = "".join([
+            self.rtc_obj.url, "/service/com.ibm.team.workitem.service.",
+            "internal.rest.IAttachmentRestService/"
+        ])
         resp = self.post(req_url,
                          verify=False,
                          headers=headers,
@@ -798,9 +780,12 @@ class Workitem(FieldBase):
         return self._add_attachment_link(attachment_info)
 
     def _add_attachment_link(self, attachment_info):
-        payload = {"rdf:resource": attachment_info["url"],
-                   "dcterms:title": ": ".join([str(attachment_info["id"]),
-                                               attachment_info["name"]])}
+        payload = {
+            "rdf:resource":
+                attachment_info["url"],
+            "dcterms:title":
+                ": ".join([str(attachment_info["id"]), attachment_info["name"]])
+        }
         attachment_tag = ("/rtc_cm:com.ibm.team.workitem.linktype."
                           "attachment.attachment")
         attachment_collection_url = self.url + attachment_tag
@@ -827,8 +812,8 @@ class Workitem(FieldBase):
 
         attachment_tag = ("rtc_cm:com.ibm.team.workitem.linktype."
                           "attachment.attachment")
-        return (self.rtc_obj
-                    ._get_paged_resources("Attachment",
-                                          workitem_id=self.identifier,
-                                          customized_attr=attachment_tag,
-                                          page_size="10"))
+        return (self.rtc_obj._get_paged_resources(
+            "Attachment",
+            workitem_id=self.identifier,
+            customized_attr=attachment_tag,
+            page_size="10"))

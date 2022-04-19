@@ -1,9 +1,11 @@
-from rtcclient.base import FieldBase
-from rtcclient import urlunquote, OrderedDict
 import logging
-import xmltodict
-import re
 import os
+import re
+
+import xmltodict
+
+from rtcclient import urlunquote, OrderedDict
+from rtcclient.base import FieldBase
 
 
 class Role(FieldBase):
@@ -181,10 +183,11 @@ class ChangeSet(FieldBase):
         """
 
         identifier = self.url.split("/")[-1]
-        resource_url = "/".join(["%s" % self.rtc_obj.url,
-                                 "resource/itemOid",
-                                 "com.ibm.team.scm.ChangeSet",
-                                 "%s?_mediaType=text/xml" % identifier])
+        resource_url = "/".join([
+            "%s" % self.rtc_obj.url, "resource/itemOid",
+            "com.ibm.team.scm.ChangeSet",
+            "%s?_mediaType=text/xml" % identifier
+        ])
         resp = self.get(resource_url,
                         verify=False,
                         proxies=self.rtc_obj.proxies,
@@ -205,17 +208,13 @@ class ChangeSet(FieldBase):
         if isinstance(changes, OrderedDict):
             # only one single change
             changes.update(common_changes)
-            change_objs.append(Change(None,
-                                      self.rtc_obj,
-                                      raw_data=changes))
+            change_objs.append(Change(None, self.rtc_obj, raw_data=changes))
 
         elif isinstance(changes, list):
             # multiple changes
             for change in changes:
                 change.update(common_changes)
-                change_objs.append(Change(None,
-                                          self.rtc_obj,
-                                          raw_data=change))
+                change_objs.append(Change(None, self.rtc_obj, raw_data=change))
 
         return change_objs
 
@@ -279,23 +278,20 @@ class Change(FieldBase):
         if self.raw_data['item']['@xsi:type'] == 'scm:FolderHandle':
             return
 
-        file_url = "/".join(["{0}/service",
-                             ("com.ibm.team.filesystem.service.internal."
-                              "rest.IFilesystemContentService"),
-                             "-",
-                             ("{1}?itemId={2}&stateId={3}"
-                              "&platformLineDelimiter=CRLF")])
+        file_url = "/".join([
+            "{0}/service",
+            ("com.ibm.team.filesystem.service.internal."
+             "rest.IFilesystemContentService"), "-",
+            ("{1}?itemId={2}&stateId={3}"
+             "&platformLineDelimiter=CRLF")
+        ])
 
-        file_url = file_url.format(self.rtc_obj.url,
-                                   self.component,
-                                   self.item,
+        file_url = file_url.format(self.rtc_obj.url, self.component, self.item,
                                    state_id)
 
         self.log.debug("Start fetching file from %s ..." % file_url)
 
-        resp = self.get(file_url,
-                        verify=False,
-                        headers=self.rtc_obj.headers)
+        resp = self.get(file_url, verify=False, headers=self.rtc_obj.headers)
         file_name = re.findall(r".+filename\*=UTF-8''(.+)",
                                resp.headers["content-disposition"])[0]
         file_path = os.path.join(file_folder, file_name)
@@ -306,8 +302,8 @@ class Change(FieldBase):
         with open(file_path, "wb") as file_content:
             file_content.write(resp.content)
 
-        self.log.info("Successfully Fetching '%s' to '%s'" % (file_name,
-                                                              file_path))
+        self.log.info("Successfully Fetching '%s' to '%s'" %
+                      (file_name, file_path))
         return file_path
 
 

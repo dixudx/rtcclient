@@ -21,8 +21,8 @@ class TestTemplater:
         assert mytemplater.url == "http://test.url:9443/jazz"
         assert mytemplater.searchpath == utils_test._search_path
         assert mytemplater.rtc_obj == myrtcclient
-        assert str(mytemplater) == "".join(["Templater for RTC Server ",
-                                            "at http://test.url:9443/jazz"])
+        assert str(mytemplater) == "".join(
+            ["Templater for RTC Server ", "at http://test.url:9443/jazz"])
 
     def test_list_fields(self, mytemplater):
         # invalid template names
@@ -39,9 +39,10 @@ class TestTemplater:
 
         # existent template
         fields = mytemplater.listFields(utils_test.template_name)
-        fields_set = set(["severity", "title", "teamArea",
-                          "description", "filedAgainst", "priority",
-                          "ownedBy", "plannedFor"])
+        fields_set = set([
+            "severity", "title", "teamArea", "description", "filedAgainst",
+            "priority", "ownedBy", "plannedFor"
+        ])
         assert fields == fields_set
 
     def test_render(self, mytemplater):
@@ -76,13 +77,14 @@ class TestTemplater:
                                                    template_folder=None,
                                                    keep=False,
                                                    encoding="UTF-8")
-            assert (list(xmltodict.parse(template_161).items()).sort() ==
-                    list(utils_test.template_ordereddict.items()).sort())
+            assert (list(xmltodict.parse(template_161).items()).sort() == list(
+                utils_test.template_ordereddict.items()).sort())
 
     def test_get_templates_exception(self, mytemplater):
         # invalid workitem ids
-        invalid_names = [None, True, False, "", u"", "test", u"test",
-                         123, 123.4]
+        invalid_names = [
+            None, True, False, "", u"", "test", u"test", 123, 123.4
+        ]
         for invalid_name in invalid_names:
             with pytest.raises(BadValue):
                 mytemplater.getTemplates(invalid_name,

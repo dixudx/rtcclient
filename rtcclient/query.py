@@ -1,8 +1,10 @@
-from rtcclient.base import RTCBase
 import logging
-from rtcclient import urlquote
-from rtcclient import exception
+
 import six
+
+from rtcclient import exception
+from rtcclient import urlquote
+from rtcclient.base import RTCBase
 
 
 class Query(RTCBase):
@@ -26,8 +28,11 @@ class Query(RTCBase):
     def get_rtc_obj(self):
         return self.rtc_obj
 
-    def queryWorkitems(self, query_str, projectarea_id=None,
-                       projectarea_name=None, returned_properties=None,
+    def queryWorkitems(self,
+                       query_str,
+                       projectarea_id=None,
+                       projectarea_name=None,
+                       returned_properties=None,
                        archived=False):
         """Query workitems with the query string in a certain
         :class:`rtcclient.project_area.ProjectArea`
@@ -48,25 +53,26 @@ class Query(RTCBase):
         :rtype: list
         """
 
-        pa_id = (self.rtc_obj
-                     ._pre_get_resource(projectarea_id=projectarea_id,
-                                        projectarea_name=projectarea_name))
+        pa_id = (self.rtc_obj._pre_get_resource(
+            projectarea_id=projectarea_id, projectarea_name=projectarea_name))
 
         self.log.info("Start to query workitems with query string: %s",
                       query_str)
         query_str = urlquote(query_str)
         rp = returned_properties
 
-        return (self.rtc_obj
-                    ._get_paged_resources("Query",
-                                          projectarea_id=pa_id,
-                                          customized_attr=query_str,
-                                          page_size="100",
-                                          returned_properties=rp,
-                                          archived=archived))
+        return (self.rtc_obj._get_paged_resources("Query",
+                                                  projectarea_id=pa_id,
+                                                  customized_attr=query_str,
+                                                  page_size="100",
+                                                  returned_properties=rp,
+                                                  archived=archived))
 
-    def getAllSavedQueries(self, projectarea_id=None, projectarea_name=None,
-                           creator=None, saved_query_name=None):
+    def getAllSavedQueries(self,
+                           projectarea_id=None,
+                           projectarea_name=None,
+                           creator=None,
+                           saved_query_name=None):
         """Get all saved queries created by somebody (optional)
         in a certain project area (optional, either `projectarea_id`
         or `projectarea_name` is needed if specified)
@@ -94,17 +100,16 @@ class Query(RTCBase):
         :rtype: list
         """
 
-        pa_id = (self.rtc_obj
-                     ._pre_get_resource(projectarea_id=projectarea_id,
-                                        projectarea_name=projectarea_name))
+        pa_id = (self.rtc_obj._pre_get_resource(
+            projectarea_id=projectarea_id, projectarea_name=projectarea_name))
 
         filter_rule = None
         if creator is not None:
             fcreator = self.rtc_obj.getOwnedBy(creator).url
-            filter_rule = [("dc:creator", "@rdf:resource",
-                            fcreator)]
-            self.log.debug("Add rules for fetching all saved queries: "
-                           "created by %s", creator)
+            filter_rule = [("dc:creator", "@rdf:resource", fcreator)]
+            self.log.debug(
+                "Add rules for fetching all saved queries: "
+                "created by %s", creator)
 
         if saved_query_name is not None:
             ftitle_rule = ("dc:title", None, saved_query_name)
@@ -112,17 +117,20 @@ class Query(RTCBase):
                 filter_rule = [ftitle_rule]
             else:
                 filter_rule.append(ftitle_rule)
-            self.log.debug("Add rules for fetching all saved queries: "
-                           "saved query title is %s", saved_query_name)
+            self.log.debug(
+                "Add rules for fetching all saved queries: "
+                "saved query title is %s", saved_query_name)
 
-        return (self.rtc_obj
-                    ._get_paged_resources("SavedQuery",
-                                          projectarea_id=pa_id,
-                                          page_size="100",
-                                          filter_rule=filter_rule))
+        return (self.rtc_obj._get_paged_resources("SavedQuery",
+                                                  projectarea_id=pa_id,
+                                                  page_size="100",
+                                                  filter_rule=filter_rule))
 
-    def getSavedQueriesByName(self, saved_query_name, projectarea_id=None,
-                              projectarea_name=None, creator=None):
+    def getSavedQueriesByName(self,
+                              saved_query_name,
+                              projectarea_id=None,
+                              projectarea_name=None,
+                              creator=None):
         """Get all saved queries match the name created by somebody (optional)
         in a certain project area (optional, either `projectarea_id`
         or `projectarea_name` is needed if specified)
@@ -152,7 +160,9 @@ class Query(RTCBase):
                                        creator=creator,
                                        saved_query_name=saved_query_name)
 
-    def getMySavedQueries(self, projectarea_id=None, projectarea_name=None,
+    def getMySavedQueries(self,
+                          projectarea_id=None,
+                          projectarea_name=None,
                           saved_query_name=None):
         """Get all saved queries created by me in a certain project
         area (optional, either `projectarea_id` or `projectarea_name` is
@@ -198,7 +208,7 @@ class Query(RTCBase):
             saved_query_id = saved_query_url.split("=")[-1]
             if not saved_query_id:
                 raise exception.BadValue()
-        except:
+        except Exception:
             error_msg = "No saved query id is found in the url"
             self.log.error(error_msg)
             raise exception.BadValue(error_msg)
@@ -248,7 +258,7 @@ class Query(RTCBase):
 
         try:
             saved_query_id = saved_query_obj.results.split("/")[-2]
-        except:
+        except BaseException:
             error_msg = "Cannot get the correct saved query id"
             self.log.error(error_msg)
             raise exception.RTCException(error_msg)
@@ -257,8 +267,8 @@ class Query(RTCBase):
 
     def _runSavedQuery(self, saved_query_id, returned_properties=None):
         rp = returned_properties
-        return (self.rtc_obj
-                    ._get_paged_resources("RunQuery",
-                                          page_size="100",
-                                          customized_attr=saved_query_id,
-                                          returned_properties=rp))
+        return (self.rtc_obj._get_paged_resources(
+            "RunQuery",
+            page_size="100",
+            customized_attr=saved_query_id,
+            returned_properties=rp))
