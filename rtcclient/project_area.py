@@ -1,9 +1,11 @@
-from rtcclient.base import FieldBase
-import xmltodict
 import logging
-from rtcclient import exception
-from rtcclient.models import Role
+
 import six
+import xmltodict
+
+from rtcclient import exception
+from rtcclient.base import FieldBase
+from rtcclient.models import Role
 
 
 class ProjectArea(FieldBase):
@@ -45,10 +47,10 @@ class ProjectArea(FieldBase):
         # no need to retrieve all the entries from _get_paged_resources
         # role raw data is very simple that contains no other links
 
-        self.log.info("Get all the roles in <ProjectArea %s>",
-                      self)
-        roles_url = "/".join([self.rtc_obj.url,
-                              "process/project-areas/%s/roles" % self.id])
+        self.log.info("Get all the roles in <ProjectArea %s>", self)
+        roles_url = "/".join(
+            [self.rtc_obj.url,
+             "process/project-areas/%s/roles" % self.id])
         resp = self.get(roles_url,
                         verify=False,
                         proxies=self.rtc_obj.proxies,
@@ -58,8 +60,7 @@ class ProjectArea(FieldBase):
         raw_data = xmltodict.parse(resp.content)
         roles_raw = raw_data['jp06:roles']['jp06:role']
         if not roles_raw:
-            self.log.warning("There are no roles in <ProjectArea %s>",
-                             self)
+            self.log.warning("There are no roles in <ProjectArea %s>", self)
             return None
 
         for role_raw in roles_raw:
@@ -86,12 +87,11 @@ class ProjectArea(FieldBase):
         if roles is not None:
             for role in roles:
                 if role.label == label:
-                    self.log.info("Get <Role %s> in <ProjectArea %s>",
-                                  role, self)
+                    self.log.info("Get <Role %s> in <ProjectArea %s>", role,
+                                  self)
                     return role
 
-        excp_msg = "No role's label is %s in <ProjectArea %s>" % (label,
-                                                                  self)
+        excp_msg = "No role's label is %s in <ProjectArea %s>" % (label, self)
         self.log.error(excp_msg)
         raise exception.NotFound(excp_msg)
 
@@ -131,12 +131,10 @@ class ProjectArea(FieldBase):
                                    email=email)
         if members is not None:
             member = members[0]
-            self.log.info("Get <Member %s> in <ProjectArea %s>",
-                          member, self)
+            self.log.info("Get <Member %s> in <ProjectArea %s>", member, self)
             return member
 
-        excp_msg = "No member's email is %s in <ProjectArea %s>" % (email,
-                                                                    self)
+        excp_msg = "No member's email is %s in <ProjectArea %s>" % (email, self)
         self.log.error(excp_msg)
         raise exception.NotFound(excp_msg)
 
@@ -190,8 +188,8 @@ class ProjectArea(FieldBase):
                                        title=title)
         if itemtypes is not None:
             itemtype = itemtypes[0]
-            self.log.info("Get <ItemType %s> in <ProjectArea %s>",
-                          itemtype, self)
+            self.log.info("Get <ItemType %s> in <ProjectArea %s>", itemtype,
+                          self)
             return itemtype
 
         excp_msg = "No itemtype's name is %s in <ProjectArea %s>" % (title,
@@ -204,8 +202,7 @@ class ProjectArea(FieldBase):
         filter_rule = None
         if title is not None:
             fit_rule = ("dc:title", None, title)
-            filter_rule = self.rtc_obj._add_filter_rule(filter_rule,
-                                                        fit_rule)
+            filter_rule = self.rtc_obj._add_filter_rule(filter_rule, fit_rule)
         return self.rtc_obj._get_paged_resources("ItemType",
                                                  projectarea_id=self.id,
                                                  page_size='10',
@@ -244,8 +241,7 @@ class ProjectArea(FieldBase):
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
 
-        self.log.debug("Try to get Administrator whose email is %s",
-                       email)
+        self.log.debug("Try to get Administrator whose email is %s", email)
         rp = returned_properties
         administrators = self._getAdministrators(returned_properties=rp,
                                                  email=email)

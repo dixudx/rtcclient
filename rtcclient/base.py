@@ -1,9 +1,11 @@
 import abc
 import logging
-from rtcclient import requests
+
 import xmltodict
-from rtcclient import urlunquote, OrderedDict
+
 from rtcclient import exception
+from rtcclient import requests
+from rtcclient import urlunquote, OrderedDict
 from rtcclient.utils import token_expire_handler
 
 
@@ -20,8 +22,7 @@ class RTCBase(object):
         self.url = self.validate_url(url)
 
     def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__,
-                            str(self))
+        return "<%s %s>" % (self.__class__.__name__, str(self))
 
     @abc.abstractmethod
     def __str__(self):
@@ -41,7 +42,7 @@ class RTCBase(object):
     def getattr(self, attr):
         try:
             return self.__getattribute__(attr)
-        except:
+        except Exception:
             return None
 
     def __getitem__(self, key):
@@ -52,9 +53,13 @@ class RTCBase(object):
         pass
 
     @token_expire_handler
-    def get(self, url,
-            verify=False, headers=None, proxies=None,
-            timeout=60, **kwargs):
+    def get(self,
+            url,
+            verify=False,
+            headers=None,
+            proxies=None,
+            timeout=60,
+            **kwargs):
         """Sends a GET request. Refactor from requests module
 
         :param url: URL for the new :class:`Request` object.
@@ -74,19 +79,28 @@ class RTCBase(object):
         """
 
         self.log.debug("Get response from %s", url)
-        response = requests.get(url, verify=verify, headers=headers,
-                                proxies=proxies, timeout=timeout, **kwargs)
+        response = requests.get(url,
+                                verify=verify,
+                                headers=headers,
+                                proxies=proxies,
+                                timeout=timeout,
+                                **kwargs)
         if response.status_code != 200:
-            self.log.error('Failed GET request at <%s> with response: %s',
-                           url,
+            self.log.error('Failed GET request at <%s> with response: %s', url,
                            response.content)
             response.raise_for_status()
         return response
 
     @token_expire_handler
-    def post(self, url, data=None, json=None,
-             verify=False, headers=None, proxies=None,
-             timeout=60, **kwargs):
+    def post(self,
+             url,
+             data=None,
+             json=None,
+             verify=False,
+             headers=None,
+             proxies=None,
+             timeout=60,
+             **kwargs):
         """Sends a POST request. Refactor from requests module
 
         :param url: URL for the new :class:`Request` object.
@@ -109,23 +123,33 @@ class RTCBase(object):
         :rtype: requests.Response
         """
 
-        self.log.debug("Post a request to %s with data: %s and json: %s",
-                       url, data, json)
-        response = requests.post(url, data=data, json=json,
-                                 verify=verify, headers=headers,
-                                 proxies=proxies, timeout=timeout, **kwargs)
+        self.log.debug("Post a request to %s with data: %s and json: %s", url,
+                       data, json)
+        response = requests.post(url,
+                                 data=data,
+                                 json=json,
+                                 verify=verify,
+                                 headers=headers,
+                                 proxies=proxies,
+                                 timeout=timeout,
+                                 **kwargs)
 
         if response.status_code not in [200, 201]:
-            self.log.error('Failed POST request at <%s> with response: %s',
-                           url,
+            self.log.error('Failed POST request at <%s> with response: %s', url,
                            response.content)
             self.log.info(response.status_code)
             response.raise_for_status()
         return response
 
     @token_expire_handler
-    def put(self, url, data=None, verify=False,
-            headers=None, proxies=None, timeout=60, **kwargs):
+    def put(self,
+            url,
+            data=None,
+            verify=False,
+            headers=None,
+            proxies=None,
+            timeout=60,
+            **kwargs):
         """Sends a PUT request. Refactor from requests module
 
         :param url: URL for the new :class:`Request` object.
@@ -146,21 +170,28 @@ class RTCBase(object):
         :rtype: requests.Response
         """
 
-        self.log.debug("Put a request to %s with data: %s",
-                       url, data)
-        response = requests.put(url, data=data,
-                                verify=verify, headers=headers,
-                                proxies=proxies, timeout=timeout, **kwargs)
+        self.log.debug("Put a request to %s with data: %s", url, data)
+        response = requests.put(url,
+                                data=data,
+                                verify=verify,
+                                headers=headers,
+                                proxies=proxies,
+                                timeout=timeout,
+                                **kwargs)
         if response.status_code not in [200, 201]:
-            self.log.error('Failed PUT request at <%s> with response: %s',
-                           url,
+            self.log.error('Failed PUT request at <%s> with response: %s', url,
                            response.content)
             response.raise_for_status()
         return response
 
     @token_expire_handler
-    def delete(self, url, headers=None, verify=False, proxies=None,
-               timeout=60, **kwargs):
+    def delete(self,
+               url,
+               headers=None,
+               verify=False,
+               proxies=None,
+               timeout=60,
+               **kwargs):
         """Sends a DELETE request. Refactor from requests module
 
         :param url: URL for the new :class:`Request` object.
@@ -179,8 +210,7 @@ class RTCBase(object):
         :rtype: requests.Response
         """
 
-        self.log.debug("Delete a request to %s",
-                       url)
+        self.log.debug("Delete a request to %s", url)
         response = requests.delete(url,
                                    headers=headers,
                                    verify=verify,
@@ -189,8 +219,7 @@ class RTCBase(object):
                                    **kwargs)
         if response.status_code not in [200, 201]:
             self.log.error('Failed DELETE request at <%s> with response: %s',
-                           url,
-                           response.content)
+                           url, response.content)
             response.raise_for_status()
         return response
 
@@ -236,8 +265,7 @@ class FieldBase(RTCBase):
     def _initialize(self):
         """Initialize the object from the request"""
 
-        self.log.debug("Start initializing data from %s",
-                       self.url)
+        self.log.debug("Start initializing data from %s", self.url)
         resp = self.get(self.url,
                         verify=False,
                         proxies=self.rtc_obj.proxies,
@@ -318,8 +346,10 @@ class FieldBase(RTCBase):
         else:
             # multiple resource
             result_list = list()
-            entry_keys = [entry_key for entry_key in raw_data[root_key].keys()
-                          if not entry_key.startswith("@")]
+            entry_keys = [
+                entry_key for entry_key in raw_data[root_key].keys()
+                if not entry_key.startswith("@")
+            ]
             for entry_key in entry_keys:
                 entries = raw_data[root_key][entry_key]
                 if isinstance(entries, OrderedDict):
@@ -336,9 +366,7 @@ class FieldBase(RTCBase):
 
     def __handle_rdf_entry(self, entry):
         # only return useful info instead of the whole object
-        return_fields = ["rtc_cm:userId",
-                         "dc:title",
-                         "dc:description"]
+        return_fields = ["rtc_cm:userId", "dc:title", "dc:description"]
         subkeys = entry.keys()
         for return_field in return_fields:
             if return_field in subkeys:

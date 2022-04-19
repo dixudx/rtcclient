@@ -69,8 +69,9 @@ class TestQuery:
         # test for valid projectarea id
         mocked_check_pa_id.return_value = True
         query_valid_strs = ["valid_query_str", u"valid_query_str"]
-        projectarea_ids = ["_CuZu0HUwEeKicpXBddtqNA",
-                           u"_CuZu0HUwEeKicpXBddtqNA"]
+        projectarea_ids = [
+            "_CuZu0HUwEeKicpXBddtqNA", u"_CuZu0HUwEeKicpXBddtqNA"
+        ]
         for query_str in query_valid_strs:
             for pa_id in projectarea_ids:
                 queried_wis = myquery.queryWorkitems(query_str=query_str,
@@ -83,8 +84,7 @@ class TestQuery:
         assert queried_wis == [workitem2]
 
         # test for other valid id
-        projectarea_other_ids = ["valid_id",
-                                 u"valid_id"]
+        projectarea_other_ids = ["valid_id", u"valid_id"]
         for query_str in query_valid_strs:
             for pa_id in projectarea_other_ids:
                 # archived
@@ -108,14 +108,12 @@ class TestQuery:
         mocked_get.return_value = mock_resp
         return mocked_get
 
-    def test_get_saved_queries(self, myrtcclient, mock_getsavedqueries,
-                               mocker):
+    def test_get_saved_queries(self, myrtcclient, mock_getsavedqueries, mocker):
         # SavedQuery1
         saved_query1_url = ("http://test.url:9443/jazz/resource/"
                             "itemOid/com.ibm.team.workitem.query."
                             "QueryDescriptor/_1CR5MMfiEd6yW_0tvNlbrw")
-        saved_query1 = SavedQuery(saved_query1_url,
-                                  myrtcclient,
+        saved_query1 = SavedQuery(saved_query1_url, myrtcclient,
                                   utils_test.savedquery1)
         assert saved_query1.url == saved_query1_url
         assert saved_query1.identifier is None
@@ -130,24 +128,22 @@ class TestQuery:
         assert saved_query1.modifiedBy == "ADMIN"
 
         # ignore this fake data
-        assert saved_query1.projectArea == ["Closed created by me",
-                                            "Open Track Build Items",
-                                            "Open Adoptions"]
+        assert saved_query1.projectArea == [
+            "Closed created by me", "Open Track Build Items", "Open Adoptions"
+        ]
 
         # SavedQuery2
         saved_query2_url = ("http://test.url:9443/jazz/resource/itemOid/"
                             "com.ibm.team.workitem.query.QueryDescriptor/"
                             "_1CTHUMfiEd6yW_0tvNlbrw")
-        saved_query2 = SavedQuery(saved_query2_url,
-                                  myrtcclient,
+        saved_query2 = SavedQuery(saved_query2_url, myrtcclient,
                                   utils_test.savedquery2)
 
         # SavedQuery3
         saved_query3_url = ("http://test.url:9443/jazz/resource/itemOid/"
                             "com.ibm.team.workitem.query.QueryDescriptor/"
                             "_1CU8gMfiEd6yW_0tvNlbrw")
-        saved_query3 = SavedQuery(saved_query3_url,
-                                  myrtcclient,
+        saved_query3 = SavedQuery(saved_query3_url, myrtcclient,
                                   utils_test.savedquery3)
 
         myquery = myrtcclient.query
@@ -209,32 +205,28 @@ class TestQuery:
         saved_queries = myquery.getAllSavedQueries(creator="tester2@email.com")
         assert saved_queries == [saved_query2, saved_query3]
 
-    def test_get_saved_queries_by_name(self, myrtcclient,
-                                       mock_getsavedqueries):
+    def test_get_saved_queries_by_name(self, myrtcclient, mock_getsavedqueries):
         myquery = myrtcclient.query
 
         # SavedQuery1
         saved_query1_url = ("http://test.url:9443/jazz/resource/"
                             "itemOid/com.ibm.team.workitem.query."
                             "QueryDescriptor/_1CR5MMfiEd6yW_0tvNlbrw")
-        saved_query1 = SavedQuery(saved_query1_url,
-                                  myrtcclient,
+        saved_query1 = SavedQuery(saved_query1_url, myrtcclient,
                                   utils_test.savedquery1)
 
         # SavedQuery2
         saved_query2_url = ("http://test.url:9443/jazz/resource/itemOid/"
                             "com.ibm.team.workitem.query.QueryDescriptor/"
                             "_1CTHUMfiEd6yW_0tvNlbrw")
-        saved_query2 = SavedQuery(saved_query2_url,
-                                  myrtcclient,
+        saved_query2 = SavedQuery(saved_query2_url, myrtcclient,
                                   utils_test.savedquery2)
 
         # SavedQuery3
         saved_query3_url = ("http://test.url:9443/jazz/resource/itemOid/"
                             "com.ibm.team.workitem.query.QueryDescriptor/"
                             "_1CU8gMfiEd6yW_0tvNlbrw")
-        saved_query3 = SavedQuery(saved_query3_url,
-                                  myrtcclient,
+        saved_query3 = SavedQuery(saved_query3_url, myrtcclient,
                                   utils_test.savedquery3)
 
         sqname = "Closed created by me"
@@ -246,8 +238,7 @@ class TestQuery:
         assert saved_queries == [saved_query2]
 
         creator = "tester2@email.com"
-        saved_queries = myquery.getSavedQueriesByName(sqname,
-                                                      creator=creator)
+        saved_queries = myquery.getSavedQueriesByName(sqname, creator=creator)
         assert saved_queries == [saved_query2]
 
         sqname = "Open Adoptions"
@@ -262,8 +253,7 @@ class TestQuery:
         saved_query1_url = ("http://test.url:9443/jazz/resource/"
                             "itemOid/com.ibm.team.workitem.query."
                             "QueryDescriptor/_1CR5MMfiEd6yW_0tvNlbrw")
-        saved_query1 = SavedQuery(saved_query1_url,
-                                  myrtcclient,
+        saved_query1 = SavedQuery(saved_query1_url, myrtcclient,
                                   utils_test.savedquery1)
 
         saved_queries = myquery.getMySavedQueries()
@@ -311,24 +301,21 @@ class TestQuery:
         saved_query1_url = ("http://test.url:9443/jazz/resource/"
                             "itemOid/com.ibm.team.workitem.query."
                             "QueryDescriptor/_1CR5MMfiEd6yW_0tvNlbrw")
-        saved_query1 = SavedQuery(saved_query1_url,
-                                  myrtcclient,
+        saved_query1 = SavedQuery(saved_query1_url, myrtcclient,
                                   utils_test.savedquery1)
 
         # SavedQuery2
         saved_query2_url = ("http://test.url:9443/jazz/resource/itemOid/"
                             "com.ibm.team.workitem.query.QueryDescriptor/"
                             "_1CTHUMfiEd6yW_0tvNlbrw")
-        saved_query2 = SavedQuery(saved_query2_url,
-                                  myrtcclient,
+        saved_query2 = SavedQuery(saved_query2_url, myrtcclient,
                                   utils_test.savedquery2)
 
         # SavedQuery3
         saved_query3_url = ("http://test.url:9443/jazz/resource/itemOid/"
                             "com.ibm.team.workitem.query.QueryDescriptor/"
                             "_1CU8gMfiEd6yW_0tvNlbrw")
-        saved_query3 = SavedQuery(saved_query3_url,
-                                  myrtcclient,
+        saved_query3 = SavedQuery(saved_query3_url, myrtcclient,
                                   utils_test.savedquery3)
 
         # Workitem1
@@ -368,8 +355,10 @@ class TestQuery:
             assert query_workitems == [workitem1]
 
         # invalid saved query urls
-        invalid_urls = [None, "", True, False, "http://test.xxx",
-                        "http://xxxxx=", "http://xxxx=xxxx="]
+        invalid_urls = [
+            None, "", True, False, "http://test.xxx", "http://xxxxx=",
+            "http://xxxx=xxxx="
+        ]
         for invalid_url in invalid_urls:
             with pytest.raises(exception.BadValue):
                 myquery.runSavedQueryByUrl(invalid_url)
@@ -377,9 +366,7 @@ class TestQuery:
     def test_run_saved_query_by_id(self, myrtcclient, mock_get_workitems):
         myquery = myrtcclient.query
 
-        valid_ids = ["_1CR5MMfiEd6yW_0tvNlbrw",
-                     "12345678",
-                     "ABCDEFG"]
+        valid_ids = ["_1CR5MMfiEd6yW_0tvNlbrw", "12345678", "ABCDEFG"]
 
         # Workitem1
         workitem1 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",

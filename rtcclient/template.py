@@ -1,14 +1,15 @@
-from rtcclient.base import RTCBase
 import logging
-import xmltodict
 import os
+from xml.sax.saxutils import escape
+
 import jinja2
 import jinja2.meta
-from rtcclient import exception
-from rtcclient import _search_path
 import six
+import xmltodict
+
+from rtcclient import exception
+from rtcclient.base import RTCBase
 from rtcclient.utils import remove_empty_elements
-from xml.sax.saxutils import escape
 
 
 class Templater(RTCBase):
@@ -29,7 +30,8 @@ class Templater(RTCBase):
         self.rtc_obj = rtc_obj
         RTCBase.__init__(self, self.rtc_obj.url)
         if searchpath is None:
-            self.searchpath = _search_path
+            self.searchpath = os.path.join(
+                os.path.realpath(os.path.dirname(__file__)), 'templates')
         else:
             self.searchpath = searchpath
         self.loader = jinja2.FileSystemLoader(searchpath=self.searchpath)
@@ -88,8 +90,11 @@ class Templater(RTCBase):
             self.log.error(err_msg)
             raise exception.BadValue(err_msg)
 
-    def renderFromWorkitem(self, copied_from, keep=False,
-                           encoding="UTF-8", **kwargs):
+    def renderFromWorkitem(self,
+                           copied_from,
+                           keep=False,
+                           encoding="UTF-8",
+                           **kwargs):
         """Render the template directly from some to-be-copied
         :class:`rtcclient.workitem.Workitem` without saving to a file
 
@@ -132,11 +137,12 @@ class Templater(RTCBase):
         :rtype: string
         """
 
-        temp = jinja2.Template(self.getTemplate(copied_from,
-                                                template_name=None,
-                                                template_folder=None,
-                                                keep=keep,
-                                                encoding=encoding))
+        temp = jinja2.Template(
+            self.getTemplate(copied_from,
+                             template_name=None,
+                             template_folder=None,
+                             keep=keep,
+                             encoding=encoding))
 
         rendered_data = temp.render(**kwargs)
         return remove_empty_elements(rendered_data)
@@ -153,8 +159,8 @@ class Templater(RTCBase):
         """
 
         try:
-            temp_source = self.environment.loader.get_source(self.environment,
-                                                             template)
+            temp_source = self.environment.loader.get_source(
+                self.environment, template)
             return self.listFieldsFromSource(temp_source)
         except AttributeError:
             err_msg = "Invalid value for 'template'"
@@ -203,8 +209,12 @@ class Templater(RTCBase):
         ast = self.environment.parse(template_source)
         return jinja2.meta.find_undeclared_variables(ast)
 
-    def getTemplate(self, copied_from, template_name=None,
-                    template_folder=None, keep=False, encoding="UTF-8"):
+    def getTemplate(self,
+                    copied_from,
+                    template_name=None,
+                    template_folder=None,
+                    keep=False,
+                    encoding="UTF-8"):
         """Get template from some to-be-copied
         :class:`rtcclient.workitem.Workitem`
 
@@ -258,15 +268,13 @@ class Templater(RTCBase):
 
         # identify whether output to a file
         if template_name is not None:
-            template_file_path = os.path.join(template_folder,
-                                              template_name)
+            template_file_path = os.path.join(template_folder, template_name)
             output = open(template_file_path, "w")
         else:
             template_file_path = None
             output = None
 
-        workitem_url = "/".join([self.url,
-                                 "oslc/workitems/%s" % copied_from])
+        workitem_url = "/".join([self.url, "oslc/workitems/%s" % copied_from])
         resp = self.get(workitem_url,
                         verify=False,
                         proxies=self.rtc_obj.proxies,
@@ -281,41 +289,28 @@ class Templater(RTCBase):
 
         # Be cautious when you want to modify these fields
         # These fields have been tested as must-removed one
-        remove_fields = ["@rdf:about",
-                         "dc:created",
-                         "dc:creator",
-                         "dc:identifier",
-                         "rtc_cm:contextId",
-                         "rtc_cm:comments",
-                         "rtc_cm:state",
-                         "dc:type",
-                         "rtc_cm:subscribers",
-                         "dc:modified",
-                         "rtc_cm:modifiedBy",
-                         "rtc_cm:resolved",
-                         "rtc_cm:resolvedBy",
-                         "rtc_cm:resolution",
-                         "rtc_cm:startDate",
-                         "rtc_cm:timeSpent",
-                         "rtc_cm:progressTracking",
-                         "rtc_cm:projectArea",
-                         "oslc_cm:relatedChangeManagement",
-                         "oslc_cm:trackedWorkItem",
-                         "oslc_cm:tracksWorkItem",
-                         "rtc_cm:timeSheet",
-                         "oslc_pl:schedule"]
+        remove_fields = [
+            "@rdf:about", "dc:created", "dc:creator", "dc:identifier",
+            "rtc_cm:contextId", "rtc_cm:comments", "rtc_cm:state", "dc:type",
+            "rtc_cm:subscribers", "dc:modified", "rtc_cm:modifiedBy",
+            "rtc_cm:resolved", "rtc_cm:resolvedBy", "rtc_cm:resolution",
+            "rtc_cm:startDate", "rtc_cm:timeSpent", "rtc_cm:progressTracking",
+            "rtc_cm:projectArea", "oslc_cm:relatedChangeManagement",
+            "oslc_cm:trackedWorkItem", "oslc_cm:tracksWorkItem",
+            "rtc_cm:timeSheet", "oslc_pl:schedule"
+        ]
 
         for remove_field in remove_fields:
             try:
                 wk_raw_data.pop(remove_field)
-                self.log.debug("Successfully remove field [%s] from the "
-                               "template originated from <Workitem %s>",
-                               remove_field,
-                               copied_from)
-            except:
-                self.log.warning("No field named [%s] in this template "
-                                 "from <Workitem %s>", remove_field,
-                                 copied_from)
+                self.log.debug(
+                    "Successfully remove field [%s] from the "
+                    "template originated from <Workitem %s>", remove_field,
+                    copied_from)
+            except Exception:
+                self.log.warning(
+                    "No field named [%s] in this template "
+                    "from <Workitem %s>", remove_field, copied_from)
                 continue
 
         wk_raw_data["dc:description"] = "{{ description }}"
@@ -325,7 +320,8 @@ class Templater(RTCBase):
             if template_file_path:
                 self.log.info("Writing the template to file %s",
                               template_file_path)
-            return xmltodict.unparse(raw_data, output=output,
+            return xmltodict.unparse(raw_data,
+                                     output=output,
                                      encoding=encoding,
                                      pretty=True)
 
@@ -342,16 +338,14 @@ class Templater(RTCBase):
                     wk_raw_data[field[0]]["@rdf:resource"] = field[1]
                     self.log.debug("Successfully replace field [%s] with [%s]",
                                    field[0], field[1])
-            except:
+            except Exception:
                 self.log.warning("Cannot replace field [%s]", field[0])
                 continue
 
         if template_file_path:
-            self.log.info("Writing the template to file %s",
-                          template_file_path)
+            self.log.info("Writing the template to file %s", template_file_path)
 
-        return xmltodict.unparse(raw_data, output=output,
-                                 encoding=encoding)
+        return xmltodict.unparse(raw_data, output=output, encoding=encoding)
 
     def _remove_long_fields(self, wk_raw_data):
         """Remove long fields: These fields are can only customized after
@@ -359,23 +353,28 @@ class Templater(RTCBase):
 
         """
 
-        match_str_list = ["rtc_cm:com.ibm.",
-                          "calm:"]
+        match_str_list = ["rtc_cm:com.ibm.", "calm:"]
         keys = list(wk_raw_data.keys())
         for key in keys:
             for match_str in match_str_list:
                 if key.startswith(match_str):
                     try:
                         wk_raw_data.pop(key)
-                        self.log.debug("Successfully remove field [%s] from "
-                                       "the template", key)
-                    except:
-                        self.log.warning("Cannot remove field [%s] from the "
-                                         "template", key)
+                        self.log.debug(
+                            "Successfully remove field [%s] from "
+                            "the template", key)
+                    except Exception:
+                        self.log.warning(
+                            "Cannot remove field [%s] from the "
+                            "template", key)
                     continue
 
-    def getTemplates(self, workitems, template_folder=None,
-                     template_names=None, keep=False, encoding="UTF-8"):
+    def getTemplates(self,
+                     workitems,
+                     template_folder=None,
+                     template_names=None,
+                     keep=False,
+                     encoding="UTF-8"):
         """Get templates from a group of to-be-copied :class:`Workitems` and
         write them to files named after the names in `template_names`
         respectively.
@@ -397,8 +396,7 @@ class Templater(RTCBase):
         """
 
         if (not workitems or isinstance(workitems, six.string_types) or
-                isinstance(workitems, int) or
-                isinstance(workitems, float) or
+                isinstance(workitems, int) or isinstance(workitems, float) or
                 not hasattr(workitems, "__iter__")):
             error_msg = "Input parameter 'workitems' is not iterable"
             self.log.error(error_msg)
@@ -411,8 +409,10 @@ class Templater(RTCBase):
                 raise exception.BadValue(error_msg)
 
             if len(workitems) != len(template_names):
-                error_msg = "".join(["Input parameters 'workitems' and ",
-                                     "'template_names' have different length"])
+                error_msg = "".join([
+                    "Input parameters 'workitems' and ",
+                    "'template_names' have different length"
+                ])
                 self.log.error(error_msg)
                 raise exception.BadValue(error_msg)
 
@@ -428,9 +428,10 @@ class Templater(RTCBase):
                                  keep=keep,
                                  encoding=encoding)
             except Exception as excp:
-                self.log.error("Exception occurred when fetching"
-                               "template from <Workitem %s>: %s",
-                               str(wk_id), excp)
+                self.log.error(
+                    "Exception occurred when fetching"
+                    "template from <Workitem %s>: %s", str(wk_id), excp)
                 continue
-        self.log.info("Successfully fetch all the templates from "
-                      "workitems: %s", workitems)
+        self.log.info(
+            "Successfully fetch all the templates from "
+            "workitems: %s", workitems)

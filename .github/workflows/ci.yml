@@ -1,0 +1,56 @@
+name: CI
+on:
+  # Run this workflow every time a new commit pushed to upstream/fork repository.
+  # Run workflow on fork repository will help contributors find and resolve issues before sending a PR.
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  codeformat:
+    name: check-code-format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: autoyapf
+        id: autoyapf
+        uses: mritunjaysharma394/autoyapf@v2
+        with:
+          args: --style google --recursive --in-place .
+      - name: Check for modified files
+        run: |
+          if git diff-index --quiet HEAD --; then
+            exit 0
+          else
+            git diff;
+            exit 1
+          fi
+
+  ci:
+    name: run-unit-tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [ '2.7', '3.7', '3.8', '3.9', '3.10']
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Display Python version
+        run: python --version
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r test-requirements.txt
+          pip install -U flake8
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # The GitHub editor is 127 chars wide
+          flake8 . --count --max-complexity=20 --max-line-length=127 --statistics
+      - name: Test with pytest
+        run: PYTHONPATH=. pytest -v
