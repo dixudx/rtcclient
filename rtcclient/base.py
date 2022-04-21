@@ -53,7 +53,13 @@ class RTCBase(object):
         pass
 
     @token_expire_handler
-    def get(self, url, verify=False, headers=None, proxies=None, timeout=60, **kwargs):
+    def get(self,
+            url,
+            verify=False,
+            headers=None,
+            proxies=None,
+            timeout=60,
+            **kwargs):
         """Sends a GET request. Refactor from requests module
 
         :param url: URL for the new :class:`Request` object.
@@ -73,33 +79,28 @@ class RTCBase(object):
         """
 
         self.log.debug("Get response from %s", url)
-        response = requests.get(
-            url,
-            verify=verify,
-            headers=headers,
-            proxies=proxies,
-            timeout=timeout,
-            **kwargs
-        )
+        response = requests.get(url,
+                                verify=verify,
+                                headers=headers,
+                                proxies=proxies,
+                                timeout=timeout,
+                                **kwargs)
         if response.status_code != 200:
-            self.log.error(
-                "Failed GET request at <%s> with response: %s", url, response.content
-            )
+            self.log.error("Failed GET request at <%s> with response: %s", url,
+                           response.content)
             response.raise_for_status()
         return response
 
     @token_expire_handler
-    def post(
-        self,
-        url,
-        data=None,
-        json=None,
-        verify=False,
-        headers=None,
-        proxies=None,
-        timeout=60,
-        **kwargs
-    ):
+    def post(self,
+             url,
+             data=None,
+             json=None,
+             verify=False,
+             headers=None,
+             proxies=None,
+             timeout=60,
+             **kwargs):
         """Sends a POST request. Refactor from requests module
 
         :param url: URL for the new :class:`Request` object.
@@ -122,39 +123,33 @@ class RTCBase(object):
         :rtype: requests.Response
         """
 
-        self.log.debug(
-            "Post a request to %s with data: %s and json: %s", url, data, json
-        )
-        response = requests.post(
-            url,
-            data=data,
-            json=json,
-            verify=verify,
-            headers=headers,
-            proxies=proxies,
-            timeout=timeout,
-            **kwargs
-        )
+        self.log.debug("Post a request to %s with data: %s and json: %s", url,
+                       data, json)
+        response = requests.post(url,
+                                 data=data,
+                                 json=json,
+                                 verify=verify,
+                                 headers=headers,
+                                 proxies=proxies,
+                                 timeout=timeout,
+                                 **kwargs)
 
         if response.status_code not in [200, 201]:
-            self.log.error(
-                "Failed POST request at <%s> with response: %s", url, response.content
-            )
+            self.log.error("Failed POST request at <%s> with response: %s", url,
+                           response.content)
             self.log.info(response.status_code)
             response.raise_for_status()
         return response
 
     @token_expire_handler
-    def put(
-        self,
-        url,
-        data=None,
-        verify=False,
-        headers=None,
-        proxies=None,
-        timeout=60,
-        **kwargs
-    ):
+    def put(self,
+            url,
+            data=None,
+            verify=False,
+            headers=None,
+            proxies=None,
+            timeout=60,
+            **kwargs):
         """Sends a PUT request. Refactor from requests module
 
         :param url: URL for the new :class:`Request` object.
@@ -176,26 +171,27 @@ class RTCBase(object):
         """
 
         self.log.debug("Put a request to %s with data: %s", url, data)
-        response = requests.put(
-            url,
-            data=data,
-            verify=verify,
-            headers=headers,
-            proxies=proxies,
-            timeout=timeout,
-            **kwargs
-        )
+        response = requests.put(url,
+                                data=data,
+                                verify=verify,
+                                headers=headers,
+                                proxies=proxies,
+                                timeout=timeout,
+                                **kwargs)
         if response.status_code not in [200, 201]:
-            self.log.error(
-                "Failed PUT request at <%s> with response: %s", url, response.content
-            )
+            self.log.error("Failed PUT request at <%s> with response: %s", url,
+                           response.content)
             response.raise_for_status()
         return response
 
     @token_expire_handler
-    def delete(
-        self, url, headers=None, verify=False, proxies=None, timeout=60, **kwargs
-    ):
+    def delete(self,
+               url,
+               headers=None,
+               verify=False,
+               proxies=None,
+               timeout=60,
+               **kwargs):
         """Sends a DELETE request. Refactor from requests module
 
         :param url: URL for the new :class:`Request` object.
@@ -215,18 +211,15 @@ class RTCBase(object):
         """
 
         self.log.debug("Delete a request to %s", url)
-        response = requests.delete(
-            url,
-            headers=headers,
-            verify=verify,
-            proxies=proxies,
-            timeout=timeout,
-            **kwargs
-        )
+        response = requests.delete(url,
+                                   headers=headers,
+                                   verify=verify,
+                                   proxies=proxies,
+                                   timeout=timeout,
+                                   **kwargs)
         if response.status_code not in [200, 201]:
-            self.log.error(
-                "Failed DELETE request at <%s> with response: %s", url, response.content
-            )
+            self.log.error("Failed DELETE request at <%s> with response: %s",
+                           url, response.content)
             response.raise_for_status()
         return response
 
@@ -280,9 +273,8 @@ class FieldBase(RTCBase):
             headers=self.rtc_obj.headers,
         )
         self.__initialize(resp)
-        self.log.info(
-            "Finish the initialization for <%s %s>", self.__class__.__name__, self
-        )
+        self.log.info("Finish the initialization for <%s %s>",
+                      self.__class__.__name__, self)
 
     def __initialize(self, resp):
         """Initialize from the response"""
@@ -296,7 +288,8 @@ class FieldBase(RTCBase):
         """Initialze from raw data (OrderedDict)"""
 
         with Pool() as pool:
-            for processed in pool.map(self.__process_items, self.raw_data.items()):
+            for processed in pool.map(self.__process_items,
+                                      self.raw_data.items()):
                 if processed is None:
                     continue
                 key, attr, value = processed
@@ -362,14 +355,12 @@ class FieldBase(RTCBase):
             # only single resource
             # compatible with IncludedInBuild
             return raw_data[root_key].get("dc:title") or raw_data[root_key].get(
-                "foaf:nick"
-            )
+                "foaf:nick")
         else:
             # multiple resource
             result_list = list()
             entry_keys = [
-                entry_key
-                for entry_key in raw_data[root_key].keys()
+                entry_key for entry_key in raw_data[root_key].keys()
                 if not entry_key.startswith("@")
             ]
             for entry_key in entry_keys:
