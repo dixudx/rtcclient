@@ -42,7 +42,7 @@ class RTCBase(object):
     def getattr(self, attr):
         try:
             return self.__getattribute__(attr)
-        except:
+        except Exception:
             return None
 
     def __getitem__(self, key):
