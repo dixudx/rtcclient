@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - development
   pull_request:
 jobs:
   codeformat:
@@ -32,7 +33,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        python-version: [ '2.7', '3.7', '3.8', '3.9', '3.10']
+        python-version: [ '3.7', '3.8', '3.9', '3.10']
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -51,6 +52,6 @@ jobs:
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # The GitHub editor is 127 chars wide
-          flake8 . --count --max-complexity=20 --max-line-length=127 --statistics
+          flake8 . --count --exit-zero --max-complexity=20 --max-line-length=127 --statistics
       - name: Test with pytest
         run: PYTHONPATH=. pytest -v
