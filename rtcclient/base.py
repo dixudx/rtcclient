@@ -5,6 +5,8 @@ import xmltodict
 from rtcclient import urlunquote, OrderedDict
 from rtcclient import exception
 from rtcclient.utils import token_expire_handler
+from multiprocessing.pool import ThreadPool as Pool
+from typing import Tuple
 
 
 class RTCBase(object):
@@ -257,36 +259,44 @@ class FieldBase(RTCBase):
     def __initializeFromRaw(self):
         """Initialze from raw data (OrderedDict)"""
 
-        for (key, value) in self.raw_data.items():
-            if key.startswith("@"):
-                # be compatible with IncludedInBuild
-                if "@oslc_cm:label" != key:
+        with Pool() as pool:
+            for processed in pool.map(self.__process_items, self.raw_data.items()):
+                if processed is None:
                     continue
+                key, attr, value = processed
+                self.field_alias[attr] = key
+                self.setattr(attr, value)
 
-            attr = key.split(":")[-1].replace("-", "_")
-            attr_list = attr.split(".")
+    def __process_items(self, item) -> Tuple:
+        """Process a single work item element"""
+        key, value = item
+        if key.startswith("@"):
+            # be compatible with IncludedInBuild
+            if "@oslc_cm:label" != key:
+                return None
 
-            # ignore long attributes
-            if len(attr_list) > 1:
-                # attr = "_".join([attr_list[-2],
-                #                  attr_list[-1]])
-                continue
+        attr = key.split(":")[-1].replace("-", "_")
+        attr_list = attr.split(".")
 
-            self.field_alias[attr] = key
+        # ignore long attributes
+        if len(attr_list) > 1:
+            # attr = "_".join([attr_list[-2],
+            #                  attr_list[-1]])
+            return None
 
-            if isinstance(value, OrderedDict):
-                value_text = value.get("#text")
-                if value_text is not None:
-                    value = value_text
-                else:
-                    # request detailed info using rdf:resource
-                    value = list(value.values())[0]
+        if isinstance(value, OrderedDict):
+            value_text = value.get("#text")
+            if value_text is not None:
+                value = value_text
+            else:
+                # request detailed info using rdf:resource
+                value = list(value.values())[0]
 
-                    try:
-                        value = self.__get_rdf_resource_title(value)
-                    except (exception.RTCException, Exception):
-                        self.log.error("Unable to handle %s", value)
-            self.setattr(attr, value)
+                try:
+                    value = self.__get_rdf_resource_title(value)
+                except (exception.RTCException, Exception):
+                    self.log.error("Unable to handle %s", value)
+        return key, attr, value
 
     def __get_rdf_resource_title(self, rdf_url):
         # handle for /jts/users

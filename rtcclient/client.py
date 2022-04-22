@@ -14,6 +14,7 @@ from rtcclient.template import Templater
 from rtcclient import _search_path
 from rtcclient.query import Query
 import six
+from multiprocessing.pool import ThreadPool as Pool
 
 
 class RTCClient(RTCBase):
@@ -1386,14 +1387,13 @@ class RTCClient(RTCBase):
                 break
 
             # iterate all the entries
-            for entry in entries:
-                resource = self._handle_resource_entry(resource_name,
-                                                       entry,
-                                                       projectarea_url=pa_url,
-                                                       archived=archived,
-                                                       filter_rule=filter_rule)
-                if resource is not None:
-                    resources_list.append(resource)
+            with Pool() as p:
+                resources_list = list(
+                    filter(
+                        None,
+                        p.starmap(self._handle_resource_entry,
+                                  [(resource_name, entry, pa_url, archived,
+                                    filter_rule) for entry in entries])))
 
             # find the next page
             url_next = raw_data.get('oslc_cm:Collection').get('@oslc_cm:next')
