@@ -1,6 +1,26 @@
 CHANGES
 =======
 
+0.8.1
+-----
+
+* release 0.8.1
+* Using tox also for CI
+* Extending CI tests to multiple OS
+* Dropping Python 2.7 + adding Python 3.10
+* Extending tox by flake8 + fixes
+* Fixing lint error for Python 2.7
+* Formatting code + tox extension
+* Formatting introduced CI error
+* Adding Threadpool for initializeFromRaw
+* Updating pre-commit config
+* use ThreadPool for multi-thread
+* format and fix pep8 errors
+* add ci workflow
+* Revert "Adding multiprocessing to _get_paged_resources"
+* Revert "Formatting with tox"
+* Revert "Further speed improvements"
+
 0.8.0
 -----
 
