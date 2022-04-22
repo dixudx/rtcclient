@@ -3,7 +3,7 @@ import xmltodict
 from rtcclient import OrderedDict
 
 _path = os.path.realpath(os.path.dirname(__file__))
-_search_path = os.path.join(_path, 'fixtures')
+_search_path = os.path.join(_path, "fixtures")
 
 
 def read_fixture(file_name):
@@ -104,14 +104,14 @@ action1 = (xmltodict.parse(read_fixture("actions.xml")).get(
 action2 = (xmltodict.parse(read_fixture("actions.xml")).get(
     "oslc_cm:Collection").get("rtc_cm:Action")[1])
 
-role1 = (xmltodict.parse(
-    read_fixture("roles.xml")).get("jp06:roles").get("jp06:role")[0])
+role1 = xmltodict.parse(
+    read_fixture("roles.xml")).get("jp06:roles").get("jp06:role")[0]
 
-role2 = (xmltodict.parse(
-    read_fixture("roles.xml")).get("jp06:roles").get("jp06:role")[1])
+role2 = xmltodict.parse(
+    read_fixture("roles.xml")).get("jp06:roles").get("jp06:role")[1]
 
-role3 = (xmltodict.parse(
-    read_fixture("roles.xml")).get("jp06:roles").get("jp06:role")[2])
+role3 = xmltodict.parse(
+    read_fixture("roles.xml")).get("jp06:roles").get("jp06:role")[2]
 
 state1 = (xmltodict.parse(read_fixture("states.xml")).get(
     "oslc_cm:Collection").get("rtc_cm:Status")[0])

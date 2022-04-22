@@ -1,5 +1,6 @@
 import copy
 import logging
+from multiprocessing.pool import ThreadPool as Pool
 
 import six
 import xmltodict
@@ -1279,7 +1280,6 @@ class RTCClient(RTCBase):
                              archived=False,
                              returned_properties=None,
                              filter_rule=None):
-        # TODO: multi-thread
 
         self.log.debug(
             "Start to fetch all %ss with [ProjectArea ID: %s] "
@@ -1453,14 +1453,13 @@ class RTCClient(RTCBase):
                 break
 
             # iterate all the entries
-            for entry in entries:
-                resource = self._handle_resource_entry(resource_name,
-                                                       entry,
-                                                       projectarea_url=pa_url,
-                                                       archived=archived,
-                                                       filter_rule=filter_rule)
-                if resource is not None:
-                    resources_list.append(resource)
+            with Pool() as p:
+                resources_list = list(
+                    filter(
+                        None,
+                        p.starmap(self._handle_resource_entry,
+                                  [(resource_name, entry, pa_url, archived,
+                                    filter_rule) for entry in entries])))
 
             # find the next page
             url_next = raw_data.get('oslc_cm:Collection').get('@oslc_cm:next')
