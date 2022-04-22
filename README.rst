@@ -42,7 +42,7 @@ This library can help you:
 Python & Rational Team Concert Versions
 ---------------------------------------
 
-This project has been tested against multiple Python versions, such as 2.7, 3.5, 3.6, 3.7, 3.8 and 3.9.
+This project has been tested against multiple Python versions, such as 3.5, 3.6, 3.7, 3.8 and 3.9.
 
 Currently the newest release of **rtcclient** is **0.7.0**, which works well with ``Rational Team Concert`` 6.0.6.1 and ``ELM`` 7.0.
 
@@ -128,6 +128,5 @@ the tests using pytest_ with the following command:
 
     virtualenv
     source .venv/bin/active
-    (venv) tox -e py27
     (venv) tox -e py35
     (venv) tox -e pycodestyle
