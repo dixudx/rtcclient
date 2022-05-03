@@ -74,6 +74,15 @@ class RTCBase(object):
         """
 
         self.log.debug("Get response from %s", url)
+
+        requests.packages.urllib3.disable_warnings()
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        try:
+            requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        except AttributeError:
+            # no pyopenssl support used / needed / available
+            pass
+
         response = requests.get(url, verify=verify, headers=headers,
                                 proxies=proxies, timeout=timeout, **kwargs)
         if response.status_code != 200:

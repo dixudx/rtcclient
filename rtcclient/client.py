@@ -14,7 +14,8 @@ from rtcclient.template import Templater
 from rtcclient import _search_path
 from rtcclient.query import Query
 import six
-
+from rtcclient import requests
+import urllib.parse
 
 class RTCClient(RTCBase):
     """A wrapped class for :class:`RTC Client` to perform all related
@@ -988,6 +989,255 @@ class RTCClient(RTCBase):
                              "with ids: %s" % projectarea_ids)
             return None
         return workitems_list
+
+##################
+
+    def getChildrenInfo(self, parent_id):
+        child_ids = []
+
+        headers = copy.deepcopy(self.headers)
+        verify=False
+        proxies=None
+        timeout=60
+        kwargs={}
+        url="https://rtcus1.ta.philips.com/ccm/oslc/workitems/"+parent_id+"/rtc_cm:com.ibm.team.workitem.linktype.parentworkitem.children"
+
+        requests.packages.urllib3.disable_warnings()
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        try:
+            requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        except AttributeError:
+            # no pyopenssl support used / needed / available
+            pass
+
+        response = requests.get(url, verify=verify, headers=headers, proxies=proxies, timeout=timeout, **kwargs)
+        if response.status_code != 200:
+            self.log.error('Failed GET request at <%s> with response: %s', url, response.content)
+            response.raise_for_status()
+        
+        #retreive user email from xml
+        raw_data = xmltodict.parse(response.content)
+        root_key = list(raw_data.keys())[0]
+        #get type of changeRequest field
+        fieldType = type(raw_data[root_key].get("oslc_cm:ChangeRequest"))
+        # print('getChildrenInfo() fieldType='+str(fieldType))
+        if raw_data[root_key].get("oslc_cm:ChangeRequest") is None:
+            child_ids={}
+        else:
+            child_ids={}
+            #if type is list, than there are more then one child
+            if fieldType == list:
+                #get number of child tickets
+                number_of_children = len(raw_data[root_key].get("oslc_cm:ChangeRequest"))
+                for i in range(number_of_children):
+                    # print("getting child " + str(i) + " out of " + str(number_of_children))
+                    
+                    #get child id
+                    child_id = raw_data[root_key].get("oslc_cm:ChangeRequest")[i].get("@oslc_cm:label")
+                    child_id = child_id.partition(':')[0]
+
+                    # print("child_id = "+ str(child_id))
+
+                    #get child ticket type
+                    child_type=''
+                    error_status='false'
+                    try:
+                        # get child type and convert to lowercase
+                        wip_child_type=(raw_data[root_key].get("oslc_cm:ChangeRequest")[i]["dc:type"].get("@rdf:resource")).lower()
+
+                        # get everything after last slash '/'
+                        wip_child_type = wip_child_type.split("/")[-1]
+
+                        # if period char '.' exists in string, get everything after that char
+                        if '.' in wip_child_type:
+                            wip_child_type = wip_child_type.split(".")[-1]
+
+                        # this will be our child type
+                        child_type = wip_child_type
+
+                    except Exception as e:
+                        errMsg = "unable to get child_type, err = "+str(e)
+                        error_status=errMsg
+                        print(errMsg) 
+
+                    # print("child_type = "+str(child_type))
+
+                    #append to child_ids
+                    child_ids[str(child_id)]={
+                        'type':child_type, 
+                        'error_status':error_status
+                    }
+                    # child_ids.append({'id':child_id, 'type':child_type, 'error_status':error_status})
+
+            #else if type is not list, there is only one child
+            else:
+                #get single child id
+                child_id = raw_data[root_key].get("oslc_cm:ChangeRequest").get("@oslc_cm:label")
+                child_id = child_id.partition(':')[0]
+                #get single child type
+                # child_type = (raw_data[root_key].get("oslc_cm:ChangeRequest")["dc:type"].get("@rdf:resource")).split(".")[-1]
+
+                # get child type and convert to lowercase
+                wip_child_type=(raw_data[root_key].get("oslc_cm:ChangeRequest")["dc:type"].get("@rdf:resource")).lower()
+
+                # get everything after last slash '/'
+                wip_child_type = wip_child_type.split("/")[-1]
+
+                # if period char '.' exists in string, get everything after that char
+                if '.' in wip_child_type:
+                    wip_child_type = wip_child_type.split(".")[-1]
+
+                # this will be our child type
+                child_type = wip_child_type
+
+                #append to child_ids
+                # child_ids.append({'id':child_id, 'type':child_type})
+                child_ids[str(child_id)]={
+                    'type':child_type, 
+                }
+
+        return child_ids
+
+    def getXmlField(self, url, field):
+        headers = copy.deepcopy(self.headers)
+        verify=False
+        proxies=None
+        timeout=60
+        kwargs={}
+        requests.packages.urllib3.disable_warnings()
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        try:
+            requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        except AttributeError:
+            # no pyopenssl support used / needed / available
+            pass
+
+        response = requests.get(url, verify=verify, headers=headers, proxies=proxies, timeout=timeout, **kwargs)
+        if response.status_code != 200:
+            self.log.error('Failed GET request at <%s> with response: %s', url, response.content)
+            response.raise_for_status()
+
+        #retreive user email from xml
+        raw_data = xmltodict.parse(response.content)
+        root_key = list(raw_data.keys())[0]
+        #get type of changeRequest field
+        xmlVal = raw_data[root_key].get(field)
+        return xmlVal
+
+    def getTeamTrackBool(self, url):
+        headers = copy.deepcopy(self.headers)
+        verify=False
+        proxies=None
+        timeout=60
+        kwargs={}
+        requests.packages.urllib3.disable_warnings()
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        try:
+            requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        except AttributeError:
+            # no pyopenssl support used / needed / available
+            pass
+
+        response = requests.get(url, verify=verify, headers=headers, proxies=proxies, timeout=timeout, **kwargs)
+        if response.status_code != 200:
+            self.log.error('Failed GET request at <%s> with response: %s', url, response.content)
+            response.raise_for_status()
+
+        #retreive user email from xml
+        raw_data = xmltodict.parse(response.content)
+        root_key = list(raw_data.keys())[0]
+        #get type of changeRequest field
+        teamTrackVal = raw_data[root_key].get("dc:title")
+        return teamTrackVal
+
+    def getXmlDict(self, url):
+        headers = copy.deepcopy(self.headers)
+        verify=False
+        proxies=None
+        timeout=60
+        kwargs={}
+        requests.packages.urllib3.disable_warnings()
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        try:
+            requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        except AttributeError:
+            # no pyopenssl support used / needed / available
+            pass
+
+        response = requests.get(url, verify=verify, headers=headers, proxies=proxies, timeout=timeout, **kwargs)
+        if response.status_code != 200:
+            self.log.error('Failed GET request at <%s> with response: %s', url, response.content)
+            response.raise_for_status()
+        else:
+            #retreive user email from xml
+            raw_data = xmltodict.parse(response.content)
+            root_key = list(raw_data.keys())[0]
+            #get type of changeRequest field
+            retVal = raw_data[root_key]
+            return retVal 
+
+    def getFeaturePlannedForValue(self, url):
+        headers = copy.deepcopy(self.headers)
+        verify=False
+        proxies=None
+        timeout=60
+        kwargs={}
+        requests.packages.urllib3.disable_warnings()
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        try:
+            requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        except AttributeError:
+            # no pyopenssl support used / needed / available
+            pass
+
+        response = requests.get(url, verify=verify, headers=headers, proxies=proxies, timeout=timeout, **kwargs)
+        if response.status_code != 200:
+            self.log.error('Failed GET request at <%s> with response: %s', url, response.content)
+            response.raise_for_status()
+        else:
+            #retreive user email from xml
+            raw_data = xmltodict.parse(response.content)
+            root_key = list(raw_data.keys())[0]
+            #get type of changeRequest field
+            retVal = raw_data[root_key].get("dc:identifier")
+            return retVal
+
+    def getUserEmail(self, user_id):
+        userEmail = ""
+
+        headers = copy.deepcopy(self.headers)
+        verify=False
+        proxies=None
+        timeout=60
+        kwargs={}
+        url="https://rtcus1.ta.philips.com/ccm/oslc/users/"+user_id
+
+        requests.packages.urllib3.disable_warnings()
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        try:
+            requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        except AttributeError:
+            # no pyopenssl support used / needed / available
+            pass
+
+        response = requests.get(url, verify=verify, headers=headers,
+                                proxies=proxies, timeout=timeout, **kwargs)
+        if response.status_code != 200:
+            self.log.error('Failed GET request at <%s> with response: %s',
+                           url,
+                           response.content)
+            response.raise_for_status()
+        
+        #retreive user email from xml
+        raw_data = xmltodict.parse(response.content)
+        root_key = list(raw_data.keys())[0]
+        userEmail = raw_data[root_key].get("rtc_cm:emailAddress")
+        #url decode and trim 'mailto:'
+        userEmail = urllib.parse.unquote(userEmail).replace('mailto:', '')
+
+        return userEmail
+
+##################
 
     def _validate_returned_properties(self, returned_properties=None):
         if returned_properties is not None:

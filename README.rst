@@ -1,5 +1,25 @@
 rtcclient
 =========
+Changes made by Martin Barker:
+- Added the following code to base.py to support older RTC version:
+```
+requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+try:
+    requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+except AttributeError:
+    # no pyopenssl support used / needed / available
+    pass
+```
+- Added the following functions to client.py:
+    - getChildrenInfo()
+    - getXmlField()
+    - getTeamTrackBool()
+    - getXmlDict()
+    - getFeaturePlannedForValue()
+    - getUserEmail()
+    
+=========
 
 .. image:: https://readthedocs.org/projects/rtcclient/badge/?version=latest
     :target: https://readthedocs.org/projects/rtcclient
@@ -7,12 +27,14 @@ rtcclient
 .. image:: https://img.shields.io/pypi/v/rtcclient.svg
     :target: https://pypi.python.org/pypi/rtcclient
 
-.. image:: https://img.shields.io/pypi/dm/rtcclient.svg
-    :target: https://pypi.python.org/pypi/rtcclient
-
 .. image:: https://api.travis-ci.org/dixudx/rtcclient.svg?branch=master
     :target: https://pypi.python.org/pypi/rtcclient
 
+.. image:: https://img.shields.io/badge/slack-rtcclient-blue.svg
+    :target: https://rtcclient.slack.com
+
+.. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
+    :target: https://saythanks.io/to/dixudx
 
 A Python-based Client/API for Rational Team Concert (RTC)
 
@@ -40,9 +62,11 @@ This library can help you:
 Python & Rational Team Concert Versions
 ---------------------------------------
 
-The project has been tested against ``Rational Team Concert`` **5.0.1**,
-**5.0.2** and **6.0** on Python 2.6, 2.7 and 3.3.
+This project has been tested against multiple Python versions, such as 2.7, 3.5, 3.6, 3.7, 3.8 and 3.9.
 
+Currently the newest release of **rtcclient** is **0.7.0**, which works well with ``Rational Team Concert`` 6.0.6.1 and ``ELM`` 7.0.
+
+For ``Rational Team Concert`` with version **5.0.1**, **5.0.2**, it is suggested to install **rtcclient** with version **0.6.0**.
 
 Important Links
 ---------------
@@ -125,5 +149,5 @@ the tests using pytest_ with the following command:
     virtualenv
     source .venv/bin/active
     (venv) tox -e py27
-    (venv) tox -e py33
-    (venv) tox -e pep8
+    (venv) tox -e py35
+    (venv) tox -e pycodestyle
