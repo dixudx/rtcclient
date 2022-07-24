@@ -31,7 +31,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
         python-version: ["3.5", "3.6", "3.7", "3.8", "3.9", "3.10"]
     steps:
       - uses: actions/checkout@v3
@@ -48,4 +48,5 @@ jobs:
         run: |
           tox -e flake
       - name: Test with pytest
-        run: tox -e test
+        run: |
+          tox -e test
