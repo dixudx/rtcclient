@@ -14,6 +14,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import setuptools
+from setuptools import setup, find_packages
 
-setuptools.setup(setup_requires=['pbr>=0.6,!=0.7,<1.0'], pbr=True)
+CLIENT_VERSION = "0.8.3"
+PACKAGE_NAME = "rtcclient"
+DEVELOPMENT_STATUS = "5 - Production/Stable"
+
+
+def readme():
+    with open('README.rst') as f:
+        return f.read()
+
+
+with open('requirements.txt') as f:
+    REQUIRES = f.read().splitlines()
+
+with open('test-requirements.txt') as f:
+    TESTS_REQUIRES = f.read().splitlines()
+
+setup(
+    name=PACKAGE_NAME,
+    version=CLIENT_VERSION,
+    description="RTCClient for Rational Team Concert",
+    author_email="stephenhsu90@gmail.com",
+    author="Di Xu",
+    license="Apache License Version 2.0",
+    url="https://github.com/dixudx/rtcclient",
+    keywords=["rtcclient", "Rational Team Concert", "RTC"],
+    install_requires=REQUIRES,
+    tests_require=TESTS_REQUIRES,
+    packages=find_packages(exclude=['tests.*', 'tests']),
+    include_package_data=True,
+    long_description=readme(),
+    python_requires='>=3.6',
+    classifiers=[
+        "Development Status :: %s" % DEVELOPMENT_STATUS,
+        "Topic :: Utilities",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "Intended Audience :: System Administrators",
+        "Intended Audience :: Information Technology",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+    ],
+)
