@@ -6,6 +6,9 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
+    branches:
+      - main
 jobs:
   codeformat:
     name: check-code-format
