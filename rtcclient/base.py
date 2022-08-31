@@ -56,6 +56,7 @@ class RTCBase(object):
             url,
             verify=False,
             headers=None,
+            cookies=None,
             proxies=None,
             timeout=60,
             **kwargs):
@@ -65,6 +66,8 @@ class RTCBase(object):
         :param verify: (optional) if ``True``, the SSL cert will be verified.
             A CA_BUNDLE path can also be provided.
         :param headers: (optional) Dictionary of HTTP Headers to send with
+            the :class:`Request`.
+        :param cookies: (optional) Dict or CookieJar object to send with
             the :class:`Request`.
         :param proxies: (optional) Dictionary mapping protocol to the URL of
             the proxy.
@@ -81,6 +84,7 @@ class RTCBase(object):
         response = requests.get(url,
                                 verify=verify,
                                 headers=headers,
+                                cookies=cookies,
                                 proxies=proxies,
                                 timeout=timeout,
                                 **kwargs)
@@ -97,6 +101,7 @@ class RTCBase(object):
              json=None,
              verify=False,
              headers=None,
+             cookies=None,
              proxies=None,
              timeout=60,
              **kwargs):
@@ -110,6 +115,8 @@ class RTCBase(object):
         :param verify: (optional) if ``True``, the SSL cert will be verified.
             A CA_BUNDLE path can also be provided.
         :param headers: (optional) Dictionary of HTTP Headers to send with
+            the :class:`Request`.
+        :param cookies: (optional) Dict or CookieJar object to send with
             the :class:`Request`.
         :param proxies: (optional) Dictionary mapping protocol to the URL of
             the proxy.
@@ -129,6 +136,7 @@ class RTCBase(object):
                                  json=json,
                                  verify=verify,
                                  headers=headers,
+                                 cookies=cookies,
                                  proxies=proxies,
                                  timeout=timeout,
                                  **kwargs)
@@ -146,6 +154,7 @@ class RTCBase(object):
             data=None,
             verify=False,
             headers=None,
+            cookies=None,
             proxies=None,
             timeout=60,
             **kwargs):
@@ -157,6 +166,8 @@ class RTCBase(object):
         :param verify: (optional) if ``True``, the SSL cert will be verified.
             A CA_BUNDLE path can also be provided.
         :param headers: (optional) Dictionary of HTTP Headers to send with
+            the :class:`Request`.
+        :param cookies: (optional) Dict or CookieJar object to send with
             the :class:`Request`.
         :param proxies: (optional) Dictionary mapping protocol to the URL of
             the proxy.
@@ -174,6 +185,7 @@ class RTCBase(object):
                                 data=data,
                                 verify=verify,
                                 headers=headers,
+                                cookies=cookies,
                                 proxies=proxies,
                                 timeout=timeout,
                                 **kwargs)
@@ -187,6 +199,7 @@ class RTCBase(object):
     def delete(self,
                url,
                headers=None,
+               cookies=None,
                verify=False,
                proxies=None,
                timeout=60,
@@ -195,6 +208,8 @@ class RTCBase(object):
 
         :param url: URL for the new :class:`Request` object.
         :param headers: (optional) Dictionary of HTTP Headers to send with
+            the :class:`Request`.
+        :param cookies: (optional) Dict or CookieJar object to send with
             the :class:`Request`.
         :param verify: (optional) if ``True``, the SSL cert will be verified.
             A CA_BUNDLE path can also be provided.
@@ -212,6 +227,7 @@ class RTCBase(object):
         self.log.debug("Delete a request to %s", url)
         response = requests.delete(url,
                                    headers=headers,
+                                   cookies=cookies,
                                    verify=verify,
                                    proxies=proxies,
                                    timeout=timeout,
@@ -270,6 +286,7 @@ class FieldBase(RTCBase):
             verify=False,
             proxies=self.rtc_obj.proxies,
             headers=self.rtc_obj.headers,
+            cookies=self.rtc_obj.cookies,
         )
         self.__initialize(resp)
         self.log.info("Finish the initialization for <%s %s>",
@@ -344,6 +361,7 @@ class FieldBase(RTCBase):
             verify=False,
             proxies=self.rtc_obj.proxies,
             headers=self.rtc_obj.headers,
+            cookies=self.rtc_obj.cookies,
         )
         raw_data = xmltodict.parse(resp.content)
 

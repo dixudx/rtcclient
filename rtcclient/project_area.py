@@ -54,7 +54,8 @@ class ProjectArea(FieldBase):
         resp = self.get(roles_url,
                         verify=False,
                         proxies=self.rtc_obj.proxies,
-                        headers=self.rtc_obj.headers)
+                        headers=self.rtc_obj.headers,
+                        cookies=self.rtc_obj.cookies)
 
         roles_list = list()
         raw_data = xmltodict.parse(resp.content)
