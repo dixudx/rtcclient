@@ -125,6 +125,40 @@ class RTCClient(RTCBase):
         else:
             _headers["Cookie"] = resp.headers.get("set-cookie")
 
+        # For Form Challenge
+        auth_msg = resp.headers.get("X-com-ibm-team-repository-web-auth-msg")
+        if auth_msg == "authrequired":
+            post_data = {
+                'j_username': self.username,
+                'j_password': self.password
+            }
+            temp_headers = {"Content-Type": self.CONTENT_URL_ENCODED}
+            resp = self.post(self.url + "/authenticated/j_security_check",
+                            data=post_data,
+                            verify=False,
+                            headers=temp_headers,
+                            proxies=self.proxies,
+                            allow_redirects=True)
+
+            authfailed = resp.headers.get("x-com-ibm-team-repository-web-auth-msg")
+            if authfailed == "authfailed":
+                raise exception.RTCException("Authentication Failed: "
+                                            "Invalid username or password")
+            else:
+                if resp.status_code == 302:
+                    authfailedloc = resp.headers.get("Location")
+                    if authfailedloc is not None and authfailedloc in "/auth/authfailed":
+                        raise exception.RTCException("Authentication Failed: "
+                                                    "Invalid username or password")
+                elif resp.status_code != 200:
+                    raise exception.RTCException("Authentication Failed: "
+                                                "Invalid username or password")
+
+        if not _allow_redirects:
+            _headers["Cookie"] += "; " + resp.headers.get("set-cookie")
+        else:
+            _headers["Cookie"] = resp.headers.get("set-cookie")
+
         _headers["Accept"] = self.CONTENT_XML
         return _headers
 
