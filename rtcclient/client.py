@@ -133,15 +133,15 @@ class RTCClient(RTCBase):
                 'j_password': self.password
             }
             temp_headers = {"Content-Type": self.CONTENT_URL_ENCODED}
-            resp = self.post(
-                self.url + "/authenticated/j_security_check",
-                data=post_data,
-                verify=False,
-                headers=temp_headers,
-                proxies=self.proxies,
-                allow_redirects=True)
+            resp = self.post(self.url + "/authenticated/j_security_check",
+                             data=post_data,
+                             verify=False,
+                             headers=temp_headers,
+                             proxies=self.proxies,
+                             allow_redirects=True)
 
-            authfailed = resp.headers.get("x-com-ibm-team-repository-web-auth-msg")
+            authfailed = resp.headers.get(
+                "x-com-ibm-team-repository-web-auth-msg")
             if authfailed == "authfailed":
                 raise exception.RTCException("Authentication Failed: "
                                              "Invalid username or password")
@@ -149,8 +149,9 @@ class RTCClient(RTCBase):
                 if resp.status_code == 302:
                     authfailedloc = resp.headers.get("Location")
                     if authfailedloc is not None and authfailedloc in "/auth/authfailed":
-                        raise exception.RTCException("Authentication Failed: "
-                                                     "Invalid username or password")
+                        raise exception.RTCException(
+                            "Authentication Failed: "
+                            "Invalid username or password")
                 elif resp.status_code != 200:
                     raise exception.RTCException("Authentication Failed: "
                                                  "Invalid username or password")
@@ -1489,12 +1490,13 @@ class RTCClient(RTCBase):
 
             # iterate all the entries
             with Pool() as p:
-                resources_list.extend(list(
-                    filter(
-                        None,
-                        p.starmap(self._handle_resource_entry,
-                                  [(resource_name, entry, pa_url, archived,
-                                    filter_rule) for entry in entries]))))
+                resources_list.extend(
+                    list(
+                        filter(
+                            None,
+                            p.starmap(self._handle_resource_entry,
+                                      [(resource_name, entry, pa_url, archived,
+                                        filter_rule) for entry in entries]))))
 
             # find the next page
             url_next = raw_data.get('oslc_cm:Collection').get('@oslc_cm:next')
