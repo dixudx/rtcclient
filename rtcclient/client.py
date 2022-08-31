@@ -1454,12 +1454,12 @@ class RTCClient(RTCBase):
 
             # iterate all the entries
             with Pool() as p:
-                resources_list = list(
+                resources_list.extend(list(
                     filter(
                         None,
                         p.starmap(self._handle_resource_entry,
                                   [(resource_name, entry, pa_url, archived,
-                                    filter_rule) for entry in entries])))
+                                    filter_rule) for entry in entries]))))
 
             # find the next page
             url_next = raw_data.get('oslc_cm:Collection').get('@oslc_cm:next')
