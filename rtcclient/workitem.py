@@ -105,7 +105,8 @@ class Workitem(FieldBase):
         resp = self.get(comments_url,
                         verify=False,
                         proxies=self.rtc_obj.proxies,
-                        headers=headers)
+                        headers=headers,
+                        cookies=self.rtc_obj.cookies)
 
         raw_data = xmltodict.parse(resp.content)
 
@@ -123,6 +124,7 @@ class Workitem(FieldBase):
         resp = self.post(req_url,
                          verify=False,
                          headers=headers,
+                         cookies=self.rtc_obj.cookies,
                          proxies=self.rtc_obj.proxies,
                          data=comment_msg)
         self.log.info("Successfully add comment: [%s] for <Workitem %s>", msg,
@@ -236,6 +238,7 @@ class Workitem(FieldBase):
                  verify=False,
                  proxies=self.rtc_obj.proxies,
                  headers=headers,
+                 cookies=self.rtc_obj.cookies,
                  data=xmltodict.unparse(raw_data))
 
     def _perform_subscribe(self):
@@ -248,7 +251,8 @@ class Workitem(FieldBase):
         resp = self.get(subscribers_url,
                         verify=False,
                         proxies=self.rtc_obj.proxies,
-                        headers=headers)
+                        headers=headers,
+                        cookies=self.rtc_obj.cookies)
         headers["If-Match"] = resp.headers.get("etag")
         raw_data = xmltodict.parse(resp.content)
         return headers, raw_data
@@ -544,6 +548,7 @@ class Workitem(FieldBase):
                  verify=False,
                  proxies=self.rtc_obj.proxies,
                  headers=headers,
+                 cookies=self.rtc_obj.cookies,
                  data=json.dumps(parent_original))
         self.log.info(
             "Successfully add a parent <Workitem %s> to current "
@@ -617,6 +622,7 @@ class Workitem(FieldBase):
         self.put(req_url,
                  verify=False,
                  headers=headers,
+                 cookies=self.rtc_obj.cookies,
                  proxies=self.rtc_obj.proxies,
                  data=json.dumps(children_original))
 
@@ -670,6 +676,7 @@ class Workitem(FieldBase):
                  verify=False,
                  proxies=self.rtc_obj.proxies,
                  headers=headers,
+                 cookies=self.rtc_obj.cookies,
                  data=json.dumps(parent_original))
         self.log.info(
             "Successfully remove the parent workitem of current "
@@ -738,6 +745,7 @@ class Workitem(FieldBase):
         self.put(req_url,
                  verify=False,
                  headers=headers,
+                 cookies=self.rtc_obj.cookies,
                  proxies=self.rtc_obj.proxies,
                  data=json.dumps(children_original))
 
@@ -771,6 +779,7 @@ class Workitem(FieldBase):
         resp = self.post(req_url,
                          verify=False,
                          headers=headers,
+                         cookies=self.rtc_obj.cookies,
                          proxies=self.rtc_obj.proxies,
                          params=params,
                          files=files)
@@ -794,6 +803,7 @@ class Workitem(FieldBase):
                          payload,
                          verify=False,
                          headers=self.rtc_obj.headers,
+                         cookies=self.rtc_obj.cookies,
                          proxies=self.rtc_obj.proxies)
         raw_data = xmltodict.parse(resp.content)
 
