@@ -21,13 +21,14 @@ def test_headers(mocker):
 
     expected_headers = {
         "Content-Type": "text/xml",
-        "Cookie": "cookie-id",
         "Accept": "text/xml"
+    }
+    expected_cookies = {
+        "set-cookie": "cookie-id"
     }
 
     # auth failed
     mock_rsp.headers = {
-        "set-cookie": "cookie-id",
         "x-com-ibm-team-repository-web-auth-msg": "authfailed"
     }
     with pytest.raises(RTCException):
@@ -35,11 +36,13 @@ def test_headers(mocker):
                   username="user",
                   password="password")
 
-    mock_rsp.headers = {"set-cookie": "cookie-id"}
+    mock_rsp.headers = {}
+    mock_rsp.cookies = {"set-cookie": "cookie-id"}
     client = RTCClient(url="http://test.url:9443/jazz",
                        username="user",
                        password="password")
     assert client.headers == expected_headers
+    assert client.cookies == expected_cookies
 
 
 class TestRTCClient:
