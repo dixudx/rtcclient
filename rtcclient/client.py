@@ -94,11 +94,9 @@ class RTCClient(RTCBase):
         else:
             _allow_redirects = False
 
-        _headers = {"Content-Type": self.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
                         auth=(self.username, self.password),
                         verify=False,
-                        headers=_headers,
                         proxies=self.proxies,
                         allow_redirects=_allow_redirects)
 
@@ -123,7 +121,6 @@ class RTCClient(RTCBase):
         resp = self.get(self.url + "/authenticated/identity",
                         auth=(self.username, self.password),
                         verify=False,
-                        headers=_headers,
                         cookies=_cookies,
                         proxies=self.proxies,
                         allow_redirects=_allow_redirects)

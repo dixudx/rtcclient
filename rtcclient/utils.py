@@ -39,6 +39,7 @@ def token_expire_handler(func):
                     except RTCException:
                         raise RTCException("Relogin Failed: "
                                            "Invalid username or password")
+                    kwargs["cookies"] = rtc_obj.cookies
                     return func(*args, **kwargs)
                 else:
                     # not expires
