@@ -71,6 +71,7 @@ class RTCClient(RTCBase):
 
         self.jazz = ends_with_jazz
         self.headers = self._get_headers()
+        self.cookies = self._get_cookies()
         self.searchpath = searchpath
         self.templater = Templater(self, searchpath=self.searchpath)
         self.query = Query(self)
@@ -82,16 +83,20 @@ class RTCClient(RTCBase):
         return self
 
     def _get_headers(self):
+        _headers = {}
+        _headers["Content-Type"] = self.CONTENT_XML
+        _headers["Accept"] = self.CONTENT_XML
+        return _headers
+
+    def _get_cookies(self):
         if self.jazz is True:
             _allow_redirects = True
         else:
             _allow_redirects = False
 
-        _headers = {"Content-Type": self.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
                         auth=(self.username, self.password),
                         verify=False,
-                        headers=_headers,
                         proxies=self.proxies,
                         allow_redirects=_allow_redirects)
 
@@ -107,23 +112,25 @@ class RTCClient(RTCBase):
             raise exception.RTCException("Authentication Failed: "
                                          "Invalid username or password")
 
+        _cookies = None
+
         # fix issue #68
         if not _allow_redirects:
-            if resp.headers.get("set-cookie") is not None:
-                _headers["Cookie"] = resp.headers.get("set-cookie")
+            _cookies = resp.cookies
 
         resp = self.get(self.url + "/authenticated/identity",
                         auth=(self.username, self.password),
                         verify=False,
-                        headers=_headers,
+                        cookies=_cookies,
                         proxies=self.proxies,
                         allow_redirects=_allow_redirects)
 
         # fix issue #68
         if not _allow_redirects:
-            _headers["Cookie"] += "; " + resp.headers.get("set-cookie")
+            for cookie in resp.cookies:
+                _cookies.set_cookie(cookie)
         else:
-            _headers["Cookie"] = resp.headers.get("set-cookie")
+            _cookies = resp.cookies
 
         # For Form Challenge
         auth_msg = resp.headers.get("X-com-ibm-team-repository-web-auth-msg")
@@ -137,6 +144,7 @@ class RTCClient(RTCBase):
                              data=post_data,
                              verify=False,
                              headers=temp_headers,
+                             cookies=_cookies,
                              proxies=self.proxies,
                              allow_redirects=True)
 
@@ -157,12 +165,12 @@ class RTCClient(RTCBase):
                                                  "Invalid username or password")
 
         if not _allow_redirects:
-            _headers["Cookie"] += "; " + resp.headers.get("set-cookie")
+            for cookie in resp.cookies:
+                _cookies.set_cookie(cookie)
         else:
-            _headers["Cookie"] = resp.headers.get("set-cookie")
+            _cookies = resp.cookies
 
-        _headers["Accept"] = self.CONTENT_XML
-        return _headers
+        return _cookies
 
     def relogin(self):
         """Relogin the RTC Server/Jazz when the token expires
@@ -172,6 +180,7 @@ class RTCClient(RTCBase):
         self.log.info("Cookie expires. Relogin to get a new cookie.")
         self.headers = None
         self.headers = self._get_headers()
+        self.cookies = self._get_cookies()
         self.log.debug("Successfully relogin.")
 
     def getProjectAreas(self, archived=False, returned_properties=None):
@@ -988,7 +997,8 @@ class RTCClient(RTCBase):
             resp = self.get(req_url,
                             verify=False,
                             proxies=self.proxies,
-                            headers=self.headers)
+                            headers=self.headers,
+                            cookies=self.cookies)
             raw_data = xmltodict.parse(resp.content)
             workitem_raw = raw_data["oslc_cm:ChangeRequest"]
 
@@ -1213,6 +1223,7 @@ class RTCClient(RTCBase):
         resp = self.post(url_post,
                          verify=False,
                          headers=headers,
+                         cookies=self.cookies,
                          proxies=self.proxies,
                          data=workitem_raw)
 
@@ -1456,7 +1467,8 @@ class RTCClient(RTCBase):
         resp = self.get(resource_url,
                         verify=False,
                         proxies=self.proxies,
-                        headers=self.headers)
+                        headers=self.headers,
+                        cookies=self.cookies)
         raw_data = xmltodict.parse(resp.content)
 
         try:
@@ -1504,7 +1516,8 @@ class RTCClient(RTCBase):
                 resp = self.get(url_next,
                                 verify=False,
                                 proxies=self.proxies,
-                                headers=self.headers)
+                                headers=self.headers,
+                                cookies=self.cookies)
                 raw_data = xmltodict.parse(resp.content)
             else:
                 break

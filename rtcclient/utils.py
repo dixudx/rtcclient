@@ -21,7 +21,7 @@ def token_expire_handler(func):
     def wrapper(*args, **kwargs):
         rtc_obj = args[0].get_rtc_obj()
 
-        if not hasattr(rtc_obj, "headers") or rtc_obj.headers is None:
+        if not hasattr(rtc_obj, "cookies") or rtc_obj.cookies is None:
             # still in the initialization or relogin
             # directly call the method
             return func(*args, **kwargs)
@@ -39,7 +39,7 @@ def token_expire_handler(func):
                     except RTCException:
                         raise RTCException("Relogin Failed: "
                                            "Invalid username or password")
-                    kwargs["headers"]["Cookie"] = rtc_obj.headers["Cookie"]
+                    kwargs["cookies"] = rtc_obj.cookies
                     return func(*args, **kwargs)
                 else:
                     # not expires
