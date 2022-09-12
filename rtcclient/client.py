@@ -127,7 +127,8 @@ class RTCClient(RTCBase):
 
         # fix issue #68
         if not _allow_redirects:
-            _cookies.add_cookie_header(resp)
+            for cookie in resp.cookies:
+                _cookies.set_cookie(cookie)
         else:
             _cookies = resp.cookies
 
@@ -164,7 +165,8 @@ class RTCClient(RTCBase):
                                                  "Invalid username or password")
 
         if not _allow_redirects:
-            _cookies.add_cookie_header(resp)
+            for cookie in resp.cookies:
+                _cookies.set_cookie(cookie)
         else:
             _cookies = resp.cookies
 
