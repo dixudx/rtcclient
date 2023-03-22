@@ -267,7 +267,7 @@ class FieldBase(RTCBase):
         self.log.debug("Start initializing data from %s", self.url)
         resp = self.get(
             self.url,
-            verify=False,
+            verify=self.rtc_obj.verify,
             proxies=self.rtc_obj.proxies,
             headers=self.rtc_obj.headers,
         )
@@ -341,7 +341,7 @@ class FieldBase(RTCBase):
 
         resp = self.get(
             rdf_url,
-            verify=False,
+            verify=self.rtc_obj.verify,
             proxies=self.rtc_obj.proxies,
             headers=self.rtc_obj.headers,
         )

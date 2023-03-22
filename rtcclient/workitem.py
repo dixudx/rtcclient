@@ -103,7 +103,7 @@ class Workitem(FieldBase):
         comments_url = "/".join([self.url, "rtc_cm:comments"])
         headers = copy.deepcopy(self.rtc_obj.headers)
         resp = self.get(comments_url,
-                        verify=False,
+                        verify=self.rtc_obj.verify,
                         proxies=self.rtc_obj.proxies,
                         headers=headers)
 
@@ -121,7 +121,7 @@ class Workitem(FieldBase):
         req_url = "/".join([comments_url, "oslc:comment"])
 
         resp = self.post(req_url,
-                         verify=False,
+                         verify=self.rtc_obj.verify,
                          headers=headers,
                          proxies=self.rtc_obj.proxies,
                          data=comment_msg)
@@ -233,7 +233,7 @@ class Workitem(FieldBase):
         subscribers_url = "".join(
             [self.url, "?oslc_cm.properties=rtc_cm:subscribers"])
         self.put(subscribers_url,
-                 verify=False,
+                 verify=self.rtc_obj.verify,
                  proxies=self.rtc_obj.proxies,
                  headers=headers,
                  data=xmltodict.unparse(raw_data))
@@ -246,7 +246,7 @@ class Workitem(FieldBase):
         headers["Accept"] = self.OSLC_CR_RDF
         headers["OSLC-Core-Version"] = "2.0"
         resp = self.get(subscribers_url,
-                        verify=False,
+                        verify=self.rtc_obj.verify,
                         proxies=self.rtc_obj.proxies,
                         headers=headers)
         headers["If-Match"] = resp.headers.get("etag")
@@ -541,7 +541,7 @@ class Workitem(FieldBase):
         parent_original = {parent_tag: [{"rdf:resource": parent_url}]}
 
         self.put(req_url,
-                 verify=False,
+                 verify=self.rtc_obj.verify,
                  proxies=self.rtc_obj.proxies,
                  headers=headers,
                  data=json.dumps(parent_original))
@@ -615,7 +615,7 @@ class Workitem(FieldBase):
             "linktype.parentworkitem.children"
         ])
         self.put(req_url,
-                 verify=False,
+                 verify=self.rtc_obj.verify,
                  headers=headers,
                  proxies=self.rtc_obj.proxies,
                  data=json.dumps(children_original))
@@ -667,7 +667,7 @@ class Workitem(FieldBase):
         parent_original = {parent_tag: []}
 
         self.put(req_url,
-                 verify=False,
+                 verify=self.rtc_obj.verify,
                  proxies=self.rtc_obj.proxies,
                  headers=headers,
                  data=json.dumps(parent_original))
@@ -736,7 +736,7 @@ class Workitem(FieldBase):
             "linktype.parentworkitem.children"
         ])
         self.put(req_url,
-                 verify=False,
+                 verify=self.rtc_obj.verify,
                  headers=headers,
                  proxies=self.rtc_obj.proxies,
                  data=json.dumps(children_original))
@@ -769,7 +769,7 @@ class Workitem(FieldBase):
             "internal.rest.IAttachmentRestService/"
         ])
         resp = self.post(req_url,
-                         verify=False,
+                         verify=self.rtc_obj.verify,
                          headers=headers,
                          proxies=self.rtc_obj.proxies,
                          params=params,
@@ -792,7 +792,7 @@ class Workitem(FieldBase):
 
         resp = self.post(attachment_collection_url,
                          payload,
-                         verify=False,
+                         verify=self.rtc_obj.verify,
                          headers=self.rtc_obj.headers,
                          proxies=self.rtc_obj.proxies)
         raw_data = xmltodict.parse(resp.content)
