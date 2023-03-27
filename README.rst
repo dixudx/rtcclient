@@ -131,3 +131,21 @@ the tests using pytest_ with the following command:
     (venv) tox -e test
     (venv) tox -e flake
     (venv) tox -e pycodestyle
+
+
+Testing with Poetry
+-------
+
+When using poetry_ , all dependencies and test environment are managed by this tool even when using tox_.
+
+If you have already globally installed poetry_ on your system, you can run
+the tests using pytest_ with the following command:
+
+.. _poetry: https://python-poetry.org/
+
+.. code-block:: bash
+
+    poetry install --with devel
+    poetry run tox -e test
+    poetry run tox -e flake
+    poetry run tox -e pycodestyle
