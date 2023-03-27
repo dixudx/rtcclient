@@ -52,7 +52,7 @@ class ProjectArea(FieldBase):
             [self.rtc_obj.url,
              "process/project-areas/%s/roles" % self.id])
         resp = self.get(roles_url,
-                        verify=False,
+                        verify=self.rtc_obj.verify,
                         proxies=self.rtc_obj.proxies,
                         headers=self.rtc_obj.headers)
 

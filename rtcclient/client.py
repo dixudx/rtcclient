@@ -2,6 +2,8 @@ import copy
 import logging
 from multiprocessing.pool import ThreadPool as Pool
 
+from typing import Union
+
 import six
 import xmltodict
 
@@ -55,7 +57,8 @@ class RTCClient(RTCBase):
                  password,
                  proxies=None,
                  searchpath=None,
-                 ends_with_jazz=True):
+                 ends_with_jazz=True,
+                 verify: Union[bool, str] = False):
         """Initialization
 
         See params above
@@ -64,6 +67,7 @@ class RTCClient(RTCBase):
         self.username = username
         self.password = password
         self.proxies = proxies
+        self.verify = verify
         RTCBase.__init__(self, url)
 
         if not isinstance(ends_with_jazz, bool):
@@ -90,7 +94,7 @@ class RTCClient(RTCBase):
         _headers = {"Content-Type": self.CONTENT_XML}
         resp = self.get(self.url + "/authenticated/identity",
                         auth=(self.username, self.password),
-                        verify=False,
+                        verify=self.verify,
                         headers=_headers,
                         proxies=self.proxies,
                         allow_redirects=_allow_redirects)
@@ -114,7 +118,7 @@ class RTCClient(RTCBase):
 
         resp = self.get(self.url + "/authenticated/identity",
                         auth=(self.username, self.password),
-                        verify=False,
+                        verify=self.verify,
                         headers=_headers,
                         proxies=self.proxies,
                         allow_redirects=_allow_redirects)
@@ -135,7 +139,7 @@ class RTCClient(RTCBase):
             temp_headers = {"Content-Type": self.CONTENT_URL_ENCODED}
             resp = self.post(self.url + "/authenticated/j_security_check",
                              data=post_data,
-                             verify=False,
+                             verify=self.verify,
                              headers=temp_headers,
                              proxies=self.proxies,
                              allow_redirects=True)
@@ -986,7 +990,7 @@ class RTCClient(RTCBase):
             else:
                 req_url = workitem_url
             resp = self.get(req_url,
-                            verify=False,
+                            verify=self.verify,
                             proxies=self.proxies,
                             headers=self.headers)
             raw_data = xmltodict.parse(resp.content)
@@ -1211,7 +1215,7 @@ class RTCClient(RTCBase):
         headers['Content-Type'] = self.OSLC_CR_XML
 
         resp = self.post(url_post,
-                         verify=False,
+                         verify=self.verify,
                          headers=headers,
                          proxies=self.proxies,
                          data=workitem_raw)
@@ -1454,7 +1458,7 @@ class RTCClient(RTCBase):
                   if projectarea_id else None)
 
         resp = self.get(resource_url,
-                        verify=False,
+                        verify=self.verify,
                         proxies=self.proxies,
                         headers=self.headers)
         raw_data = xmltodict.parse(resp.content)
@@ -1502,7 +1506,7 @@ class RTCClient(RTCBase):
             url_next = raw_data.get('oslc_cm:Collection').get('@oslc_cm:next')
             if url_next:
                 resp = self.get(url_next,
-                                verify=False,
+                                verify=self.verify,
                                 proxies=self.proxies,
                                 headers=self.headers)
                 raw_data = xmltodict.parse(resp.content)

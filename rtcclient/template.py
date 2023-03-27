@@ -276,7 +276,7 @@ class Templater(RTCBase):
 
         workitem_url = "/".join([self.url, "oslc/workitems/%s" % copied_from])
         resp = self.get(workitem_url,
-                        verify=False,
+                        verify=self.rtc_obj.verify,
                         proxies=self.rtc_obj.proxies,
                         headers=self.rtc_obj.headers)
         raw_data = xmltodict.parse(resp.content)

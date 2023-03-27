@@ -189,7 +189,7 @@ class ChangeSet(FieldBase):
             "%s?_mediaType=text/xml" % identifier
         ])
         resp = self.get(resource_url,
-                        verify=False,
+                        verify=self.rtc_obj.verify,
                         proxies=self.rtc_obj.proxies,
                         headers=self.rtc_obj.headers)
         raw_data = xmltodict.parse(resp.content).get("scm:ChangeSet")
@@ -291,7 +291,9 @@ class Change(FieldBase):
 
         self.log.debug("Start fetching file from %s ..." % file_url)
 
-        resp = self.get(file_url, verify=False, headers=self.rtc_obj.headers)
+        resp = self.get(file_url,
+                        verify=self.rtc_obj.verify,
+                        headers=self.rtc_obj.headers)
         file_name = re.findall(r".+filename\*=UTF-8''(.+)",
                                resp.headers["content-disposition"])[0]
         file_path = os.path.join(file_folder, file_name)
