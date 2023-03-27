@@ -1,0 +1,60 @@
+[tool.poetry]
+    name = "rtcclient"
+    version = "0.8.3"
+    homepage = "https://github.com/dixudx/rtcclient"
+    description = "RTCClient for Rational Team Concert"
+    authors = ["Di Xu <stephenhsu90@gmail.com>"]
+    readme = "README.rst"
+    license =  "Apache License Version 2.0"
+    keywords = ["rtcclient", "Rational Team Concert", "RTC"]
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Topic :: Utilities",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "Intended Audience :: System Administrators",
+        "Intended Audience :: Information Technology",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+    ]
+    packages = [
+        { include = "rtcclient" },
+        { include = "tests", format = "sdist" },
+    ]
+
+    [tool.poetry.dependencies]
+        python = ">=3.9.0,<4.0"
+        PySocks = ">=1.5.6"
+        jinja2 = ">=2.2"
+        requests = ">=2.10.0"
+        six = "*"
+        xmltodict = "^0.13.0"
+        lxml = "^4.9.2"
+
+
+    [tool.poetry.group.devel]
+        optional = true
+        [tool.poetry.group.devel.dependencies]
+            pip  = "^23.0.1"
+            pycodestyle = "*"
+            pytest = "*"
+            pytest-env = "*"
+            pytest-mock = ">=0.6.0"
+            flake8 = [
+                { version = "^6.0.0", python = ">=3.8.1" },
+                { version = "^3.9.2", python = "<3.8.1" }
+            ]
+            yapf = "*"
+            tox = "^4.4.6"
+
+
+[build-system]
+    requires = ["poetry-core>=1.0.0"]
+    build-backend = "poetry.core.masonry.api"
