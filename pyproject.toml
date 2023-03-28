@@ -53,6 +53,7 @@
             ]
             yapf = "*"
             tox = "*"
+            toml = "*"
 
 
 [build-system]
