@@ -59,7 +59,8 @@ class RTCClient(RTCBase):
                  searchpath=None,
                  ends_with_jazz=True,
                  verify: Union[bool, str] = False,
-                 old_rtc_authentication=False):
+                 old_rtc_authentication=False,
+                 **kwargs):
         """Initialization
 
         See params above
@@ -70,7 +71,7 @@ class RTCClient(RTCBase):
         self.proxies = proxies
         self.verify = verify
         self.old_rtc_authentication = old_rtc_authentication
-        RTCBase.__init__(self, url)
+        RTCBase.__init__(self, url, **kwargs)
 
         if not isinstance(ends_with_jazz, bool):
             raise exception.BadValue("ends_with_jazz is not boolean")
@@ -980,13 +981,14 @@ class RTCClient(RTCBase):
 
         return self.templater.listFieldsFromWorkitem(copied_from, keep=keep)
 
-    def getWorkitem(self, workitem_id, returned_properties=None):
+    def getWorkitem(self, workitem_id, returned_properties=None, skip_full_attributes=True):
         """Get :class:`rtcclient.workitem.Workitem` object by its id/number
 
         :param workitem_id: the workitem id/number
             (integer or equivalent string)
         :param returned_properties: the returned properties that you want.
             Refer to :class:`rtcclient.client.RTCClient` for more explanations
+        :param skip_full_attributes: flag to retrieve all attributes.
         :return: the :class:`rtcclient.workitem.Workitem` object
         :rtype: rtcclient.workitem.Workitem
         """
@@ -1019,7 +1021,8 @@ class RTCClient(RTCBase):
             return Workitem(workitem_url,
                             self,
                             workitem_id=workitem_id,
-                            raw_data=workitem_raw)
+                            raw_data=workitem_raw,
+                            skip_full_attributes=skip_full_attributes)
 
         except ValueError:
             excp_msg = "Please input a valid workitem id"
