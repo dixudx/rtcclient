@@ -8,7 +8,7 @@ import six
 import xmltodict
 
 from rtcclient import exception
-from rtcclient import urlparse, urlencode, urlquote, OrderedDict
+from rtcclient import urlencode, urlparse, urlquote, OrderedDict
 from rtcclient.base import RTCBase
 from rtcclient.models import FiledAgainst, FoundIn, Comment, Action, State  # noqa: F401
 from rtcclient.models import IncludedInBuild, ChangeSet, Attachment  # noqa: F401
@@ -107,8 +107,10 @@ class RTCClient(RTCBase):
             if resp.headers.get("set-cookie") is not None:
                 _headers["Cookie"] = resp.headers.get("set-cookie")
 
-            credentials = urlencode({"j_username": self.username,
-                                     "j_password": self.password})
+            credentials = urlencode({
+                "j_username": self.username,
+                "j_password": self.password
+            })
 
             resp = self.post(self.url + "/authenticated/j_security_check",
                              data=credentials,
