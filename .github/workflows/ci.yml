@@ -36,17 +36,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2
       - name: Display Python version
         run: python --version
       - name: Install dependencies
         run: |
-          pip install -U pip tox
+          poetry install --with devel
       - name: Lint with flake8
         run: |
-          tox -e flake
+          poetry run tox -e flake
       - name: Test with pytest
         run: |
-          tox -e test
+          poetry run tox -e test
