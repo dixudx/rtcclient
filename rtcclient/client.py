@@ -981,7 +981,10 @@ class RTCClient(RTCBase):
 
         return self.templater.listFieldsFromWorkitem(copied_from, keep=keep)
 
-    def getWorkitem(self, workitem_id, returned_properties=None, skip_full_attributes=True):
+    def getWorkitem(self,
+                    workitem_id,
+                    returned_properties=None,
+                    skip_full_attributes=True):
         """Get :class:`rtcclient.workitem.Workitem` object by its id/number
 
         :param workitem_id: the workitem id/number

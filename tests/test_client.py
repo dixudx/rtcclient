@@ -1626,6 +1626,73 @@ class TestRTCClient:
                               raw_data=utils_test.workitem1)
         assert workitem1 == workitem11
 
+    @pytest.mark.parametrize('item,expected', [
+        ('com.ibm.workitem.attribute.custom.completeperc', "0"),
+        ("com.ibm.team.workitem.linktype.parentworkitem.parent",
+         "input title here for 161"),
+        ("com.ibm.team.workitem.linktype.attachment.attachment",
+         "input title here for 161"),
+        ("com.ibm.team.workitem.linktype.resolvesworkitem.resolves",
+         "input title here for 161"),
+        ('com.ibm.team.workitem.linktype.relatedworkitem.related',
+         "input title here for 161"),
+        ('com.ibm.team.workitem.linktype.resolvesworkitem.resolves',
+         "input title here for 161"),
+        ("com.ibm.team.enterprise.promotion.linktype.promotionBuildResult.promotionBuildResult",
+         "input title here for 161"),
+        ("com.ibm.team.enterprise.deployment.linktype.deploymentDefinition.packageDefinition",
+         "input title here for 161"),
+        ("com.ibm.team.enterprise.deployment.linktype.deploymentBuildResult.packageBuildResult",
+         "input title here for 161"),
+        ("com.ibm.team.enterprise.promotion.linktype.resultWorkItem.promoted",
+         "input title here for 161"),
+        ("com.ibm.team.workitem.linktype.schedulePredecessor.predecessor",
+         "input title here for 161"),
+        ("com.ibm.team.build.linktype.includedPackages.com.ibm.team.build.common.link.includedInPackages",
+         "input title here for 161"),
+        ("com.ibm.team.enterprise.promotion.linktype.gapChangeSets.gapChangeSets",
+         "input title here for 161"),
+        ("com.ibm.team.workitem.linktype.resolvesworkitem.resolvedBy",
+         "input title here for 161"),
+        ("com.ibm.team.workitem.linktype.duplicateworkitem.duplicates",
+         "input title here for 161"),
+        ("com.ibm.team.workitem.linktype.parentworkitem.children",
+         "input title here for 161"),
+        ("com.ibm.team.enterprise.promotion.linktype.promotedBuildMaps.promotedBuildMaps",
+         "input title here for 161"),
+        ("com.ibm.team.workitem.linktype.schedulePredecessor.successor",
+         "input title here for 161"),
+        ("com.ibm.team.filesystem.workitems.change_set.com.ibm.team.scm.ChangeSet",
+         "input title here for 161"),
+        ("com.ibm.team.workitem.linktype.blocksworkitem.dependsOn",
+         "input title here for 161"),
+        ("com.ibm.team.enterprise.promotion.linktype.resultWorkItem.result",
+         "input title here for 161"),
+        ("com.ibm.team.workitem.linktype.relatedartifact.relatedArtifact",
+         "input title here for 161"),
+        ("com.ibm.workitem.attribute.custom.odc.deftype", None),
+        ("com.ibm.workitem.attribute.custom.odc.history", None),
+        ("com.ibm.workitem.attribute.custom.odc.qualifier", None),
+        ("com.ibm.workitem.attribute.custom.odc.trigger", None),
+        ("com.ibm.workitem.attribute.custome.isvalid", None)
+    ])
+    def test_get_workitem_full_attributes(self, mocker, myrtcclient, item,
+                                          expected):
+        mocked_get = mocker.patch("requests.get")
+        mock_resp = mocker.MagicMock(spec=requests.Response)
+        mock_resp.status_code = 200
+        mock_resp.content = utils_test.workitem1_raw
+        mocked_get.return_value = mock_resp
+
+        # Workitem1
+        workitem1 = Workitem("http://test.url:9443/jazz/oslc/workitems/161",
+                             myrtcclient,
+                             workitem_id=161,
+                             raw_data=utils_test.workitem1,
+                             skip_full_attributes=False)
+        assert workitem1.identifier == "161"
+        assert workitem1[item] == expected
+
     @pytest.fixture
     def mock_get_workitems(self, mocker):
         mocked_get = mocker.patch("requests.get")
