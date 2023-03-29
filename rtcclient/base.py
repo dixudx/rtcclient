@@ -17,11 +17,16 @@ class RTCBase(object):
     OSLC_CR_XML = "application/x-oslc-cm-change-request+xml"
     OSLC_CR_JSON = "application/x-oslc-cm-change-request+json"
 
-    def __init__(self, url):
+    def __init__(self, url, skip_full_attributes=True, **kwargs):
         self.url = self.validate_url(url)
+        self.__skip_full_attributes = skip_full_attributes
 
     def __repr__(self):
         return "<%s %s>" % (self.__class__.__name__, str(self))
+
+    @property
+    def skip_full_attributes(self):
+        return self.__skip_full_attributes
 
     @abc.abstractmethod
     def __str__(self):
@@ -244,8 +249,8 @@ class FieldBase(RTCBase):
     __metaclass__ = abc.ABCMeta
     log = logging.getLogger("base.FieldBase")
 
-    def __init__(self, url, rtc_obj, raw_data=None):
-        RTCBase.__init__(self, url)
+    def __init__(self, url, rtc_obj, raw_data=None, **kwargs):
+        RTCBase.__init__(self, url, **kwargs)
         self.field_alias = dict()
         self.rtc_obj = rtc_obj
         self.raw_data = raw_data
@@ -306,8 +311,8 @@ class FieldBase(RTCBase):
         attr = key.split(":")[-1].replace("-", "_")
         attr_list = attr.split(".")
 
-        # ignore long attributes
-        if len(attr_list) > 1:
+        # user want to ignore long attributes
+        if self.skip_full_attributes and len(attr_list) > 1:
             # attr = "_".join([attr_list[-2],
             #                  attr_list[-1]])
             return None
