@@ -45,10 +45,14 @@ RTC Server. For this example,
     >>> url = "https://your_domain:9443/jazz"
     >>> username = "your_username"
     >>> password = "your_password"
-    >>> myclient = RTCClient(url, username, password)
+    >>> myclient = RTCClient(url, username, password, ends_with_jazz=True, old_rtc_authentication=False)
 
 If your url ends with **ccm**, set `ends_with_jazz` to `False`,
 refer to **issue #68** for detailed explanation.
+
+If your rtc server is behind a proxy, remember to set "proxies" explicitly.
+
+If your rtc server is too old (such as Rational Team Concert 5.0.1, 5.0.2), please set `old_rtc_authentication` to `True`.
 
 About Proxies
 -------------
