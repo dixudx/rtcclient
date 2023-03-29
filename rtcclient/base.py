@@ -17,9 +17,9 @@ class RTCBase(object):
     OSLC_CR_XML = "application/x-oslc-cm-change-request+xml"
     OSLC_CR_JSON = "application/x-oslc-cm-change-request+json"
 
-    def __init__(self, url, **kwargs):
+    def __init__(self, url, skip_full_attributes=True, **kwargs):
         self.url = self.validate_url(url)
-        self.__skip_full_attributes = kwargs.get('skip_full_attributes', True)
+        self.__skip_full_attributes = skip_full_attributes
 
     def __repr__(self):
         return "<%s %s>" % (self.__class__.__name__, str(self))
