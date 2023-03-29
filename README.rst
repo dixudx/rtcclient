@@ -42,11 +42,9 @@ This library can help you:
 Python & Rational Team Concert Versions
 ---------------------------------------
 
-This project has been tested against multiple Python versions, such as 2.7, 3.5, 3.6, 3.7, 3.8 and 3.9.
+This project has been tested against multiple Python versions, such as "3.7", "3.8", "3.9", "3.10" and "3.11".
 
-Currently the newest release of **rtcclient** is **0.7.0**, which works well with ``Rational Team Concert`` 6.0.6.1 and ``ELM`` 7.0.
-
-For ``Rational Team Concert`` with version **5.0.1**, **5.0.2**, it is suggested to install **rtcclient** with version **0.6.0**.
+Please install **rtcclient** with version >= 0.9.0, which works well with ``Rational Team Concert`` 6.0.6.1, **5.0.1**, **5.0.2** and ``ELM`` 7.0.
 
 Important Links
 ---------------
@@ -86,11 +84,11 @@ Team Areas, Workitems) into easily managed Python objects:
     >>> url = "https://your_domain:9443/jazz"
     >>> username = "your_username"
     >>> password = "your_password"
-    # if your rtc server is behind a proxy, remember to set "proxies"
-    # explicitly. detailed can be found in quick start of the doc
-    # if your url ends with ccm, set ends_with_jazz to False
-    # refer to issue #68 for detailed explanation
-    >>> myclient = RTCClient(url, username, password, ends_with_jazz=True)
+    # If your rtc server is behind a proxy, remember to set "proxies" explicitly.
+    # If your url ends with ccm, set ends_with_jazz to False.
+    # Please refer to issue #68 for detailed explanation
+    # If your rtc server is too old (such as Rational Team Concert 5.0.1, 5.0.2), please set old_rtc_authentication to True
+    >>> myclient = RTCClient(url, username, password, ends_with_jazz=True, old_rtc_authentication=False)
     # it will be faster if returned properties is specified
     # see in below query example
     >>> wk = myclient.getWorkitem(123456) # get a workitem whose id is 123456
@@ -134,7 +132,7 @@ the tests using pytest_ with the following command:
 
 
 Testing with Poetry
--------
+-------------------
 
 When using poetry_ , all dependencies and test environment are managed by this tool even when using tox_.
 

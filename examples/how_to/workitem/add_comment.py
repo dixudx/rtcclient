@@ -9,7 +9,10 @@ if __name__ == "__main__":
     url = "https://your_domain:9443/jazz"
     username = "your_username"
     password = "your_password"
-    myclient = RTCClient(url, username, password)
+    # If your rtc server is too old (such as Rational Team Concert 5.0.1, 5.0.2),
+    # please set old_rtc_authentication to True.
+    # Other kwargs, such as ends_with_jazz, old_rtc_authentication
+    myclient = RTCClient(url, username, password, old_rtc_authentication=False)
 
     # change workitem id here
     workitem_id = 123456
