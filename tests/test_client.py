@@ -2,6 +2,8 @@ from rtcclient import RTCClient
 import requests
 import pytest
 import utils_test
+from unittest.mock import call
+
 from rtcclient.project_area import ProjectArea
 from rtcclient.models import Severity, Priority, FoundIn, FiledAgainst
 from rtcclient.models import TeamArea, Member, PlannedFor
@@ -40,6 +42,254 @@ def test_headers(mocker):
                        username="user",
                        password="password")
     assert client.headers == expected_headers
+
+
+def test_client_rest_calls_new_auth(mocker):
+    mocked_get = mocker.patch("requests.get")
+    mocked_post = mocker.patch("requests.post")
+
+    mock_rsp = mocker.MagicMock(spec=requests.Response)
+    mock_rsp.status_code = 200
+
+    mocked_get.return_value = mock_rsp
+    mocked_post.return_value = mock_rsp
+
+    mock_rsp.headers = {"set-cookie": "cookie-id"}
+    _ = RTCClient(url="http://test.url:9443/jazz",
+                  username="user",
+                  password="password")
+
+    # assert GET calls
+    assert mocked_get.call_count == 2
+    mocked_get.assert_has_calls([
+        call('http://test.url:9443/jazz/authenticated/identity',
+             verify=False,
+             headers={
+                 'Content-Type': 'text/xml',
+                 'Cookie': 'cookie-id',
+                 'Accept': 'text/xml'
+             },
+             proxies=None,
+             timeout=60,
+             auth=('user', 'password'),
+             allow_redirects=True),
+        call('http://test.url:9443/jazz/authenticated/identity',
+             verify=False,
+             headers={
+                 'Content-Type': 'text/xml',
+                 'Cookie': 'cookie-id',
+                 'Accept': 'text/xml'
+             },
+             proxies=None,
+             timeout=60,
+             auth=('user', 'password'),
+             allow_redirects=True)
+    ])
+
+    # assert POST calls
+    assert mocked_post.call_count == 0
+
+
+def test_client_rest_calls_old_auth(mocker):
+    mocked_get = mocker.patch("requests.get")
+    mocked_post = mocker.patch("requests.post")
+
+    mock_rsp = mocker.MagicMock(spec=requests.Response)
+    mock_rsp.status_code = 200
+
+    mocked_get.return_value = mock_rsp
+    mocked_post.return_value = mock_rsp
+
+    mock_rsp.headers = {"set-cookie": "cookie-id"}
+    _ = RTCClient(url="http://test.url:9443/jazz",
+                  username="user",
+                  password="password",
+                  old_rtc_authentication=True)
+
+    # assert GET calls
+    assert mocked_get.call_count == 2
+    mocked_get.assert_has_calls([
+        call('http://test.url:9443/jazz/authenticated/identity',
+             verify=False,
+             headers={
+                 'Content-Type': 'application/x-www-form-urlencoded',
+                 'Cookie': 'cookie-id',
+                 'Accept': 'text/xml'
+             },
+             proxies=None,
+             timeout=60,
+             auth=('user', 'password'),
+             allow_redirects=True),
+        call('http://test.url:9443/jazz/authenticated/identity',
+             verify=False,
+             headers={
+                 'Content-Type': 'application/x-www-form-urlencoded',
+                 'Cookie': 'cookie-id',
+                 'Accept': 'text/xml'
+             },
+             proxies=None,
+             timeout=60,
+             auth=('user', 'password'),
+             allow_redirects=True)
+    ])
+
+    # assert POST calls
+    assert mocked_post.call_count == 1
+    mocked_post.assert_has_calls([
+        call('http://test.url:9443/jazz/authenticated/j_security_check',
+             data='j_username=user&j_password=password',
+             json=None,
+             verify=False,
+             headers={
+                 'Content-Type': 'application/x-www-form-urlencoded',
+                 'Cookie': 'cookie-id',
+                 'Accept': 'text/xml'
+             },
+             proxies=None,
+             timeout=60,
+             allow_redirects=True)
+    ])
+
+
+def test_headers_auth_required_new_auth(mocker):
+    mocked_get = mocker.patch("requests.get")
+    mocked_post = mocker.patch("requests.post")
+
+    mock_rsp = mocker.MagicMock(spec=requests.Response)
+    mock_rsp.status_code = 200
+
+    # auth required
+    mock_rsp.headers = {
+        "set-cookie": "cookie-id",
+        "X-com-ibm-team-repository-web-auth-msg": "authrequired"
+    }
+
+    mocked_get.return_value = mock_rsp
+    mocked_post.return_value = mock_rsp
+
+    _ = RTCClient(url="http://test.url:9443/jazz",
+                  username="user",
+                  password="password")
+
+    # assert GET calls
+    assert mocked_get.call_count == 2
+    mocked_get.assert_has_calls([
+        call('http://test.url:9443/jazz/authenticated/identity',
+             verify=False,
+             headers={
+                 'Content-Type': 'text/xml',
+                 'Cookie': 'cookie-id',
+                 'Accept': 'text/xml'
+             },
+             proxies=None,
+             timeout=60,
+             auth=('user', 'password'),
+             allow_redirects=True),
+        call('http://test.url:9443/jazz/authenticated/identity',
+             verify=False,
+             headers={
+                 'Content-Type': 'text/xml',
+                 'Cookie': 'cookie-id',
+                 'Accept': 'text/xml'
+             },
+             proxies=None,
+             timeout=60,
+             auth=('user', 'password'),
+             allow_redirects=True)
+    ])
+
+    # assert POST calls
+    assert mocked_post.call_count == 1
+    mocked_post.assert_has_calls([
+        call('http://test.url:9443/jazz/authenticated/j_security_check',
+             data={
+                 'j_username': 'user',
+                 'j_password': 'password'
+             },
+             json=None,
+             verify=False,
+             headers={'Content-Type': 'application/x-www-form-urlencoded'},
+             proxies=None,
+             timeout=60,
+             allow_redirects=True)
+    ])
+
+
+def test_headers_auth_required_old_auth(mocker):
+    mocked_get = mocker.patch("requests.get")
+    mocked_post = mocker.patch("requests.post")
+
+    mock_rsp = mocker.MagicMock(spec=requests.Response)
+    mock_rsp.status_code = 200
+
+    # auth required
+    mock_rsp.headers = {
+        "set-cookie": "cookie-id",
+        "X-com-ibm-team-repository-web-auth-msg": "authrequired"
+    }
+
+    mocked_get.return_value = mock_rsp
+    mocked_post.return_value = mock_rsp
+
+    _ = RTCClient(url="http://test.url:9443/jazz",
+                  username="user",
+                  password="password",
+                  old_rtc_authentication=True)
+
+    # assert GET calls
+    assert mocked_get.call_count == 2
+    mocked_get.assert_has_calls([
+        call('http://test.url:9443/jazz/authenticated/identity',
+             verify=False,
+             headers={
+                 'Content-Type': 'application/x-www-form-urlencoded',
+                 'Cookie': 'cookie-id',
+                 'Accept': 'text/xml'
+             },
+             proxies=None,
+             timeout=60,
+             auth=('user', 'password'),
+             allow_redirects=True),
+        call('http://test.url:9443/jazz/authenticated/identity',
+             verify=False,
+             headers={
+                 'Content-Type': 'application/x-www-form-urlencoded',
+                 'Cookie': 'cookie-id',
+                 'Accept': 'text/xml'
+             },
+             proxies=None,
+             timeout=60,
+             auth=('user', 'password'),
+             allow_redirects=True)
+    ])
+
+    # assert POST calls
+    assert mocked_post.call_count == 2
+    mocked_post.assert_has_calls([
+        call('http://test.url:9443/jazz/authenticated/j_security_check',
+             data='j_username=user&j_password=password',
+             json=None,
+             verify=False,
+             headers={
+                 'Content-Type': 'application/x-www-form-urlencoded',
+                 'Cookie': 'cookie-id',
+                 'Accept': 'text/xml'
+             },
+             proxies=None,
+             timeout=60,
+             allow_redirects=True),
+        call('http://test.url:9443/jazz/authenticated/j_security_check',
+             data={
+                 'j_username': 'user',
+                 'j_password': 'password'
+             },
+             json=None,
+             verify=False,
+             headers={'Content-Type': 'application/x-www-form-urlencoded'},
+             proxies=None,
+             timeout=60,
+             allow_redirects=True)
+    ])
 
 
 class TestRTCClient:

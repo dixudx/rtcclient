@@ -8,7 +8,7 @@ import six
 import xmltodict
 
 from rtcclient import exception
-from rtcclient import urlparse, urlquote, OrderedDict
+from rtcclient import urlencode, urlparse, urlquote, OrderedDict
 from rtcclient.base import RTCBase
 from rtcclient.models import FiledAgainst, FoundIn, Comment, Action, State  # noqa: F401
 from rtcclient.models import IncludedInBuild, ChangeSet, Attachment  # noqa: F401
@@ -58,7 +58,8 @@ class RTCClient(RTCBase):
                  proxies=None,
                  searchpath=None,
                  ends_with_jazz=True,
-                 verify: Union[bool, str] = False):
+                 verify: Union[bool, str] = False,
+                 old_rtc_authentication=False):
         """Initialization
 
         See params above
@@ -68,6 +69,7 @@ class RTCClient(RTCBase):
         self.password = password
         self.proxies = proxies
         self.verify = verify
+        self.old_rtc_authentication = old_rtc_authentication
         RTCBase.__init__(self, url)
 
         if not isinstance(ends_with_jazz, bool):
@@ -98,6 +100,24 @@ class RTCClient(RTCBase):
                         headers=_headers,
                         proxies=self.proxies,
                         allow_redirects=_allow_redirects)
+
+        if self.old_rtc_authentication:
+            # works with server that needs 0.6.0 version
+            _headers["Content-Type"] = self.CONTENT_URL_ENCODED
+            if resp.headers.get("set-cookie") is not None:
+                _headers["Cookie"] = resp.headers.get("set-cookie")
+
+            credentials = urlencode({
+                "j_username": self.username,
+                "j_password": self.password
+            })
+
+            resp = self.post(self.url + "/authenticated/j_security_check",
+                             data=credentials,
+                             verify=False,
+                             headers=_headers,
+                             proxies=self.proxies,
+                             allow_redirects=_allow_redirects)
 
         # authfailed
         authfailed = resp.headers.get("x-com-ibm-team-repository-web-auth-msg")
