@@ -7,8 +7,8 @@ rtcclient
 .. image:: https://img.shields.io/pypi/v/rtcclient.svg
     :target: https://pypi.python.org/pypi/rtcclient
 
-.. image:: https://api.travis-ci.org/dixudx/rtcclient.svg?branch=master
-    :target: https://pypi.python.org/pypi/rtcclient
+.. image:: https://github.com/dixudx/rtcclient/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/dixudx/rtcclient
 
 .. image:: https://img.shields.io/badge/slack-rtcclient-blue.svg
     :target: https://rtcclient.slack.com
@@ -44,7 +44,7 @@ Python & Rational Team Concert Versions
 
 This project has been tested against multiple Python versions, such as "3.7", "3.8", "3.9", "3.10" and "3.11".
 
-Please install **rtcclient** with version >= 0.9.0, which works well with ``Rational Team Concert`` 6.0.6.1, **5.0.1**, **5.0.2** and ``ELM`` 7.0.
+Please install **rtcclient** with version **>= 0.9.0**, which works well with ``Rational Team Concert`` **6.0.6.1**, **5.0.1**, **5.0.2** and ``ELM`` **7.0**.
 
 Important Links
 ---------------
