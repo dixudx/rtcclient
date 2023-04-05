@@ -253,11 +253,14 @@ class Workitem(FieldBase):
         raw_data = xmltodict.parse(resp.content)
         return headers, raw_data
 
-    def _add_subscriber(self, email, raw_data):
+    def _check_email_field(self, email):
         if not isinstance(email, six.string_types) or "@" not in email:
             excp_msg = "Please specify a valid email address name: %s" % email
             self.log.error(excp_msg)
             raise exception.BadValue(excp_msg)
+
+    def _add_subscriber(self, email, raw_data):
+        self._check_email_field(email)
 
         existed_flag = False
         new_subscriber = self.rtc_obj.getOwnedBy(email)
@@ -293,10 +296,7 @@ class Workitem(FieldBase):
         return existed_flag, raw_data
 
     def _remove_subscriber(self, email, raw_data):
-        if not isinstance(email, six.string_types) or "@" not in email:
-            excp_msg = "Please specify a valid email address name: %s" % email
-            self.log.error(excp_msg)
-            raise exception.BadValue(excp_msg)
+        self._check_email_field(email)
 
         missing_flag = True
         del_sub = self.rtc_obj.getOwnedBy(email)
