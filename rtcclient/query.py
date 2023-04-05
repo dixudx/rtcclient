@@ -188,7 +188,7 @@ class Query(RTCBase):
         self.log.info("Start to fetch my saved queries")
         return self.getAllSavedQueries(projectarea_id=projectarea_id,
                                        projectarea_name=projectarea_name,
-                                       creator=self.rtc_obj.username,
+                                       creator=self.rtc_obj.email,
                                        saved_query_name=saved_query_name)
 
     def runSavedQueryByUrl(self, saved_query_url, returned_properties=None):

@@ -55,6 +55,7 @@ class RTCClient(RTCBase):
                  url,
                  username,
                  password,
+                 email=None,
                  proxies=None,
                  searchpath=None,
                  ends_with_jazz=True,
@@ -68,6 +69,7 @@ class RTCClient(RTCBase):
 
         self.username = username
         self.password = password
+        self.email = email
         self.proxies = proxies
         self.verify = verify
         self.old_rtc_authentication = old_rtc_authentication
