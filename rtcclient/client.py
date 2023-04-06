@@ -55,6 +55,7 @@ class RTCClient(RTCBase):
                  url,
                  username,
                  password,
+                 email=None,
                  proxies=None,
                  searchpath=None,
                  ends_with_jazz=True,
@@ -68,6 +69,7 @@ class RTCClient(RTCBase):
 
         self.username = username
         self.password = password
+        self.email = email
         self.proxies = proxies
         self.verify = verify
         self.old_rtc_authentication = old_rtc_authentication
@@ -490,15 +492,10 @@ class RTCClient(RTCBase):
                                          returned_properties=rp,
                                          filter_rule=filter_rule)
 
-    def getOwnedBy(self, email, projectarea_id=None, projectarea_name=None):
-
-        if not isinstance(email, six.string_types) or "@" not in email:
-            excp_msg = "Please specify a valid email address name"
-            self.log.error(excp_msg)
-            raise exception.BadValue(excp_msg)
+    def getOwnedBy(self, username, projectarea_id=None, projectarea_name=None):
 
         parse_result = urlparse.urlparse(self.url)
-        new_path = "/".join(["/jts/users", urlquote(email)])
+        new_path = "/".join(["/jts/users", urlquote(username)])
         new_parse_result = urlparse.ParseResult(scheme=parse_result.scheme,
                                                 netloc=parse_result.netloc,
                                                 path=new_path,
