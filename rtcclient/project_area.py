@@ -21,7 +21,11 @@ class ProjectArea(FieldBase):
     log = logging.getLogger("project_area.ProjectArea")
 
     def __init__(self, url, rtc_obj, raw_data, skip_full_attributes=True):
-        FieldBase.__init__(self, url, rtc_obj, raw_data, skip_full_attributes=skip_full_attributes)
+        FieldBase.__init__(self,
+                           url,
+                           rtc_obj,
+                           raw_data,
+                           skip_full_attributes=skip_full_attributes)
         self.id = self.url.split("/")[-1]
 
     def __str__(self):

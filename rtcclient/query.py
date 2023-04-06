@@ -20,7 +20,9 @@ class Query(RTCBase):
         """Initialize <Query> object"""
 
         self.rtc_obj = rtc_obj
-        RTCBase.__init__(self, self.rtc_obj.url, skip_full_attributes=skip_full_attributes)
+        RTCBase.__init__(self,
+                         self.rtc_obj.url,
+                         skip_full_attributes=skip_full_attributes)
 
     def __str__(self):
         return "Query @ %s" % self.rtc_obj
@@ -62,13 +64,14 @@ class Query(RTCBase):
         query_str = urlquote(query_str)
         rp = returned_properties
 
-        return (self.rtc_obj._get_paged_resources("Query",
-                                                  projectarea_id=pa_id,
-                                                  customized_attr=query_str,
-                                                  page_size="100",
-                                                  returned_properties=rp,
-                                                  archived=archived,
-                                                  skip_full_attributes=skip_full_attributes))
+        return (self.rtc_obj._get_paged_resources(
+            "Query",
+            projectarea_id=pa_id,
+            customized_attr=query_str,
+            page_size="100",
+            returned_properties=rp,
+            archived=archived,
+            skip_full_attributes=skip_full_attributes))
 
     def getAllSavedQueries(self,
                            projectarea_id=None,

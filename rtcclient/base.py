@@ -253,8 +253,16 @@ class FieldBase(RTCBase):
     __metaclass__ = abc.ABCMeta
     log = logging.getLogger("base.FieldBase")
 
-    def __init__(self, url, rtc_obj, raw_data=None, skip_full_attributes=True, **kwargs):
-        RTCBase.__init__(self, url, skip_full_attributes=skip_full_attributes, **kwargs)
+    def __init__(self,
+                 url,
+                 rtc_obj,
+                 raw_data=None,
+                 skip_full_attributes=True,
+                 **kwargs):
+        RTCBase.__init__(self,
+                         url,
+                         skip_full_attributes=skip_full_attributes,
+                         **kwargs)
         self.field_alias = dict()
         self.rtc_obj = rtc_obj
         self.raw_data = raw_data

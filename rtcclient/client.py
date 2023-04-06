@@ -1084,12 +1084,13 @@ class RTCClient(RTCBase):
 
         rp = self._validate_returned_properties(returned_properties)
         for projarea_id in projectarea_ids:
-            workitems = self._get_paged_resources("Workitem",
-                                                  projectarea_id=projarea_id,
-                                                  page_size="100",
-                                                  returned_properties=rp,
-                                                  archived=archived,
-                                                  skip_full_attributes=skip_full_attributes)
+            workitems = self._get_paged_resources(
+                "Workitem",
+                projectarea_id=projarea_id,
+                page_size="100",
+                returned_properties=rp,
+                archived=archived,
+                skip_full_attributes=skip_full_attributes)
             if workitems is not None:
                 workitems_list.extend(workitems)
 
@@ -1510,12 +1511,13 @@ class RTCClient(RTCBase):
 
             # for the last single entry
             if isinstance(entries, OrderedDict):
-                resource = self._handle_resource_entry(resource_name,
-                                                       entries,
-                                                       projectarea_url=pa_url,
-                                                       archived=archived,
-                                                       filter_rule=filter_rule,
-                                                       skip_full_attributes = skip_full_attributes)
+                resource = self._handle_resource_entry(
+                    resource_name,
+                    entries,
+                    projectarea_url=pa_url,
+                    archived=archived,
+                    filter_rule=filter_rule,
+                    skip_full_attributes=skip_full_attributes)
                 if resource is not None:
                     resources_list.append(resource)
                 break
@@ -1528,7 +1530,8 @@ class RTCClient(RTCBase):
                             None,
                             p.starmap(self._handle_resource_entry,
                                       [(resource_name, entry, pa_url, archived,
-                                        filter_rule, skip_full_attributes) for entry in entries]))))
+                                        filter_rule, skip_full_attributes)
+                                       for entry in entries]))))
 
             # find the next page
             url_next = raw_data.get('oslc_cm:Collection').get('@oslc_cm:next')
@@ -1613,7 +1616,10 @@ class RTCClient(RTCBase):
         else:
             resource_url = entry.get("@rdf:resource")
 
-        resource = resource_cls(resource_url, self, raw_data=entry, skip_full_attributes=skip_full_attributes)
+        resource = resource_cls(resource_url,
+                                self,
+                                raw_data=entry,
+                                skip_full_attributes=skip_full_attributes)
         return resource
 
     def queryWorkitems(self,

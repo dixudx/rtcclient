@@ -27,9 +27,20 @@ class Workitem(FieldBase):
 
     OSLC_CR_RDF = "application/rdf+xml"
 
-    def __init__(self, url, rtc_obj, workitem_id=None, raw_data=None, skip_full_attributes=True, **kwargs):
+    def __init__(self,
+                 url,
+                 rtc_obj,
+                 workitem_id=None,
+                 raw_data=None,
+                 skip_full_attributes=True,
+                 **kwargs):
         self.identifier = workitem_id
-        FieldBase.__init__(self, url, rtc_obj, raw_data, skip_full_attributes=skip_full_attributes, **kwargs)
+        FieldBase.__init__(self,
+                           url,
+                           rtc_obj,
+                           raw_data,
+                           skip_full_attributes=skip_full_attributes,
+                           **kwargs)
         if self.identifier is None:
             self.identifier = self.url.split("/")[-1]
 
