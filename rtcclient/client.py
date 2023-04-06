@@ -1036,7 +1036,8 @@ class RTCClient(RTCBase):
                      projectarea_id=None,
                      projectarea_name=None,
                      returned_properties=None,
-                     archived=False):
+                     archived=False,
+                     skip_full_attributes=True):
         """Get all :class:`rtcclient.workitem.Workitem` objects by
         project area id or name
 
@@ -1087,7 +1088,8 @@ class RTCClient(RTCBase):
                                                   projectarea_id=projarea_id,
                                                   page_size="100",
                                                   returned_properties=rp,
-                                                  archived=archived)
+                                                  archived=archived,
+                                                  skip_full_attributes = skip_full_attributes)
             if workitems is not None:
                 workitems_list.extend(workitems)
 
@@ -1342,7 +1344,8 @@ class RTCClient(RTCBase):
                              page_size="100",
                              archived=False,
                              returned_properties=None,
-                             filter_rule=None):
+                             filter_rule=None,
+                             skip_full_attributes=True):
 
         self.log.debug(
             "Start to fetch all %ss with [ProjectArea ID: %s] "

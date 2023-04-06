@@ -16,11 +16,11 @@ class Query(RTCBase):
 
     log = logging.getLogger("query:Query")
 
-    def __init__(self, rtc_obj):
+    def __init__(self, rtc_obj, skip_full_attributes=True):
         """Initialize <Query> object"""
 
         self.rtc_obj = rtc_obj
-        RTCBase.__init__(self, self.rtc_obj.url)
+        RTCBase.__init__(self, self.rtc_obj.url, skip_full_attributes=skip_full_attributes)
 
     def __str__(self):
         return "Query @ %s" % self.rtc_obj
@@ -33,7 +33,8 @@ class Query(RTCBase):
                        projectarea_id=None,
                        projectarea_name=None,
                        returned_properties=None,
-                       archived=False):
+                       archived=False,
+                       skip_full_attributes=True):
         """Query workitems with the query string in a certain
         :class:`rtcclient.project_area.ProjectArea`
 
@@ -66,7 +67,8 @@ class Query(RTCBase):
                                                   customized_attr=query_str,
                                                   page_size="100",
                                                   returned_properties=rp,
-                                                  archived=archived))
+                                                  archived=archived,
+                                                  skip_full_attributes=skip_full_attributes))
 
     def getAllSavedQueries(self,
                            projectarea_id=None,
