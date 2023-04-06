@@ -28,6 +28,10 @@ class RTCBase(object):
     def skip_full_attributes(self):
         return self.__skip_full_attributes
 
+    @skip_full_attributes.setter
+    def skip_full_attributes(self, value):
+        self.__skip_full_attributes = value
+
     @abc.abstractmethod
     def __str__(self):
         pass

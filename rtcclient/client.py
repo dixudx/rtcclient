@@ -1089,7 +1089,7 @@ class RTCClient(RTCBase):
                                                   page_size="100",
                                                   returned_properties=rp,
                                                   archived=archived,
-                                                  skip_full_attributes = skip_full_attributes)
+                                                  skip_full_attributes=skip_full_attributes)
             if workitems is not None:
                 workitems_list.extend(workitems)
 
@@ -1483,6 +1483,7 @@ class RTCClient(RTCBase):
         pa_url = ("/".join([self.url, "oslc/projectareas", projectarea_id])
                   if projectarea_id else None)
 
+        self.skip_full_attributes = skip_full_attributes
         resp = self.get(resource_url,
                         verify=self.verify,
                         proxies=self.proxies,
