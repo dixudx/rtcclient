@@ -28,6 +28,10 @@ class RTCBase(object):
     def skip_full_attributes(self):
         return self.__skip_full_attributes
 
+    @skip_full_attributes.setter
+    def skip_full_attributes(self, value):
+        self.__skip_full_attributes = value
+
     @abc.abstractmethod
     def __str__(self):
         pass
@@ -249,8 +253,16 @@ class FieldBase(RTCBase):
     __metaclass__ = abc.ABCMeta
     log = logging.getLogger("base.FieldBase")
 
-    def __init__(self, url, rtc_obj, raw_data=None, **kwargs):
-        RTCBase.__init__(self, url, **kwargs)
+    def __init__(self,
+                 url,
+                 rtc_obj,
+                 raw_data=None,
+                 skip_full_attributes=True,
+                 **kwargs):
+        RTCBase.__init__(self,
+                         url,
+                         skip_full_attributes=skip_full_attributes,
+                         **kwargs)
         self.field_alias = dict()
         self.rtc_obj = rtc_obj
         self.raw_data = raw_data

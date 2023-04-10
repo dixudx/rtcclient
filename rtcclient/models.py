@@ -22,8 +22,12 @@ class Member(FieldBase):
 
     log = logging.getLogger("models.Member")
 
-    def __init__(self, url, rtc_obj, raw_data=None):
-        FieldBase.__init__(self, url, rtc_obj, raw_data=raw_data)
+    def __init__(self, url, rtc_obj, raw_data=None, skip_full_attributes=True):
+        FieldBase.__init__(self,
+                           url,
+                           rtc_obj,
+                           raw_data=raw_data,
+                           skip_full_attributes=skip_full_attributes)
         # add a new attribute mainly for the un-recorded member use
         self.email = urlunquote(self.url.split("/")[-1])
 
@@ -136,9 +140,13 @@ class Comment(FieldBase):
 
     log = logging.getLogger("models.Comment")
 
-    def __init__(self, url, rtc_obj, raw_data=None):
+    def __init__(self, url, rtc_obj, raw_data=None, skip_full_attributes=True):
         self.id = url.split("/")[-1]
-        FieldBase.__init__(self, url, rtc_obj, raw_data)
+        FieldBase.__init__(self,
+                           url,
+                           rtc_obj,
+                           raw_data,
+                           skip_full_attributes=skip_full_attributes)
 
     def __str__(self):
         return self.id
@@ -149,9 +157,13 @@ class SavedQuery(FieldBase):
 
     log = logging.getLogger("models.SavedQuery")
 
-    def __init__(self, url, rtc_obj, raw_data=None):
+    def __init__(self, url, rtc_obj, raw_data=None, skip_full_attributes=True):
         self.id = url.split("/")[-1]
-        FieldBase.__init__(self, url, rtc_obj, raw_data)
+        FieldBase.__init__(self,
+                           url,
+                           rtc_obj,
+                           raw_data,
+                           skip_full_attributes=skip_full_attributes)
 
     def __str__(self):
         return self.title
@@ -224,8 +236,12 @@ class Change(FieldBase):
 
     log = logging.getLogger("models.Change")
 
-    def __init__(self, url, rtc_obj, raw_data=None):
-        FieldBase.__init__(self, url, rtc_obj, raw_data)
+    def __init__(self, url, rtc_obj, raw_data=None, skip_full_attributes=True):
+        FieldBase.__init__(self,
+                           url,
+                           rtc_obj,
+                           raw_data,
+                           skip_full_attributes=skip_full_attributes)
 
     def __str__(self):
         return self.internalId
@@ -314,8 +330,12 @@ class Attachment(FieldBase):
 
     log = logging.getLogger("models.Attachment")
 
-    def __init__(self, url, rtc_obj, raw_data=None):
-        FieldBase.__init__(self, url, rtc_obj, raw_data)
+    def __init__(self, url, rtc_obj, raw_data=None, skip_full_attributes=True):
+        FieldBase.__init__(self,
+                           url,
+                           rtc_obj,
+                           raw_data,
+                           skip_full_attributes=skip_full_attributes)
 
     def __str__(self):
         return self.identifier + ": " + self.title
