@@ -26,7 +26,6 @@ if __name__ == "__main__":
     # to create complex query string, fields are appended with " and ", an example
     # myquerystr = 'dc:title="use case 1" and dc:type="workitem_type"'
 
-
     # specify the returned properties: title, id, state, owner
     # This is optional. All properties will be returned if not specified
     returned_prop = "dc:title,dc:identifier,rtc_cm:state,rtc_cm:ownedBy"
