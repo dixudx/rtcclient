@@ -44,7 +44,7 @@
         [tool.poetry.group.devel.dependencies]
             pip  = "^23.0.1"
             pycodestyle = "*"
-            pytest = "*"
+            pytest = "^7.2.0"
             pytest-env = "*"
             pytest-mock = ">=0.6.0"
             flake8 = [
