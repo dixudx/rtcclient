@@ -1037,7 +1037,8 @@ class RTCClient(RTCBase):
                      projectarea_name=None,
                      returned_properties=None,
                      archived=False,
-                     skip_full_attributes=True):
+                     skip_full_attributes=True,
+                     page_size=100):
         """Get all :class:`rtcclient.workitem.Workitem` objects by
         project area id or name
 
@@ -1087,7 +1088,7 @@ class RTCClient(RTCBase):
             workitems = self._get_paged_resources(
                 "Workitem",
                 projectarea_id=projarea_id,
-                page_size="100",
+                page_size=str(page_size),
                 returned_properties=rp,
                 archived=archived,
                 skip_full_attributes=skip_full_attributes)
