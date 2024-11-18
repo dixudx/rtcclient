@@ -97,6 +97,7 @@ class RTCClient(RTCBase):
             _allow_redirects = False
 
         _headers = {"Content-Type": self.CONTENT_XML}
+        _headers["OSLC-Core-Version"] = self.OSLC_CORE_VERSION
         resp = self.get(self.url + "/authenticated/identity",
                         auth=(self.username, self.password),
                         verify=self.verify,

@@ -13,6 +13,7 @@ class RTCBase(object):
     log = logging.getLogger("base.RTCBase")
 
     CONTENT_XML = "text/xml"
+    OSLC_CORE_VERSION = "2.0"
     CONTENT_URL_ENCODED = "application/x-www-form-urlencoded"
     OSLC_CR_XML = "application/x-oslc-cm-change-request+xml"
     OSLC_CR_JSON = "application/x-oslc-cm-change-request+json"
