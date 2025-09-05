@@ -47,7 +47,7 @@ jobs:
         run: |
           poetry install --with devel
       - name: Check lock file
-        run: poetry lock --check
+        run: poetry check --lock
       - name: Lint with flake8
         run: |
           poetry run tox -e flake
