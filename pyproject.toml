@@ -1,6 +1,6 @@
 [tool.poetry]
     name = "rtcclient"
-    version = "0.9.0"
+    version = "0.10.0"
     homepage = "https://github.com/dixudx/rtcclient"
     description = "RTCClient for Rational Team Concert"
     authors = ["Di Xu <stephenhsu90@gmail.com>"]
