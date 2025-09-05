@@ -36,7 +36,7 @@
         requests = ">=2.10.0"
         six = "*"
         xmltodict = "^0.13.0"
-        lxml = "^4.9.2"
+        lxml = "^5.0.0"
 
 
     [tool.poetry.group.devel]

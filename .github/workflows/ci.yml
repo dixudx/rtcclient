@@ -32,7 +32,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -47,7 +47,7 @@ jobs:
         run: |
           poetry install --with devel
       - name: Check lock file
-        run: poetry lock --check
+        run: poetry check --lock
       - name: Lint with flake8
         run: |
           poetry run tox -e flake
